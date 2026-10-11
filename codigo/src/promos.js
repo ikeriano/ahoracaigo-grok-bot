@@ -345,12 +345,12 @@ const PROMOS = {
     } },
 };
 // ---------- «Elige el valor de cada huella»: 20 valores (10 de la huella blanca y 10 de la negra) ----------
-const HUELLA_DEF = ['+1000', '+25000', '+15000', '+1000', '+1', '+5000', '+1000', 'vida', '+5000', '+50000', '+25000', '+1000', '+1000', '+15000', '+15000', 'mitad', '+5000', '+5000', 'doble', 'cero'];
+const HUELLA_DEF = ETAPAS_DATOS['2021'].cifras.slice(); // las 20 cifras están en src/etapas_datos.js
 function huellaValores() { try { const v = JSON.parse(localStorage.getItem('ac_huellas') || 'null'); if (Array.isArray(v) && v.length === 20 && [...v].sort().join() === [...HUELLA_DEF].sort().join()) return v; } catch (e) {} return HUELLA_DEF.slice(); }
 const huellaTxt = v => v === 'vida' ? 'COMODÍN' : v === 'mitad' ? '÷2' : v === 'doble' ? 'x2' : v === 'cero' ? 'LO PIERDES TODO' : String(+String(v).replace('+', '')).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 function huellaMapa(def, lado) { // en el especial «Elige tu huella» (o si se activa para todos) la moneda usa la pirámide del jugador
-  const usar = (Xe && Xe.theme && Xe.theme.id === 'eligehuella') || localStorage.getItem('ac_huellas_siempre') === '1'; if (!usar) return def;
-  const v = huellaValores(), m = { ...def }; for (let i = 1; i <= 10; i++) m[i] = v[lado * 10 + i - 1]; return m;
+  const usar = (Xe && Xe.theme && Xe.theme.id === 'eligehuella') || localStorage.getItem('ac_huellas_siempre') === '1';
+  const v = usar ? huellaValores() : HUELLA_DEF, m = { ...def }; for (let i = 1; i <= 10; i++) m[i] = v[lado * 10 + i - 1]; return m;
 }
 function huellaPantallaValores(g, w, h, cual) {
   const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#0a3ac8'); gr.addColorStop(1, '#06124a'); g.fillStyle = gr; g.fillRect(0, 0, w, h);

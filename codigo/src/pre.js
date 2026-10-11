@@ -11,39 +11,160 @@
 import { unzipSync } from 'fflate';
 
 let LOGO_IMG = null; // logo cargado por el usuario (Opciones › Logo)
+// ---------------- utilidades de audio: WAV IMA-ADPCM de Scratch → WAV PCM (decodeAudioData no lee ADPCM) ----------------
+const ADPCM_STEP = [7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 21, 23, 25, 28, 31, 34, 37, 41, 45, 50, 55, 60, 66, 73, 80, 88, 97, 107, 118, 130, 143, 157, 173, 190, 209, 230, 253, 279, 307, 337, 371, 408, 449, 494, 544, 598, 658, 724, 796, 876, 963, 1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066, 2272, 2499, 2749, 3024, 3327, 3660, 4026, 4428, 4871, 5358, 5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899, 15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767];
+const ADPCM_IDX = [-1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8];
+function wavPCM16(samples, rate) {
+  const n = samples.length, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const str = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  str(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); str(8, 'WAVE'); str(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, 'data'); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, samples[i], true);
+  return buf;
+}
+/** Si es un WAV ADPCM (formato 17, mono) lo devuelve convertido a PCM 16 bits; si no, null */
+function adpcmAPcm(u8) {
+  try {
+    const v = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+    if (v.getUint32(0) !== 0x52494646 || v.getUint32(8) !== 0x57415645) return null;
+    let p = 12, fmt = null, data = null;
+    while (p + 8 <= u8.length) { const id = String.fromCharCode(u8[p], u8[p + 1], u8[p + 2], u8[p + 3]); const len = v.getUint32(p + 4, true); if (id === 'fmt ') fmt = p + 8; else if (id === 'data') data = [p + 8, Math.min(len, u8.length - p - 8)]; p += 8 + len + (len & 1); }
+    if (!fmt || !data || v.getUint16(fmt, true) !== 17 || v.getUint16(fmt + 2, true) !== 1) return null;
+    const rate = v.getUint32(fmt + 4, true), block = v.getUint16(fmt + 12, true); const out = [];
+    for (let b = data[0]; b + 4 <= data[0] + data[1]; b += block) {
+      let s = v.getInt16(b, true), idx = Math.min(88, u8[b + 2]); out.push(s); const fin = Math.min(b + block, data[0] + data[1]);
+      for (let k = b + 4; k < fin; k++) for (const nib of [u8[k] & 15, u8[k] >> 4]) {
+        const st = ADPCM_STEP[idx]; let d = st >> 3; if (nib & 4) d += st; if (nib & 2) d += st >> 1; if (nib & 1) d += st >> 2;
+        s += nib & 8 ? -d : d; s = Math.max(-32768, Math.min(32767, s)); idx = Math.max(0, Math.min(88, idx + ADPCM_IDX[nib])); out.push(s);
+      }
+    }
+    return new Uint8Array(wavPCM16(out, rate));
+  } catch (e) { return null; }
+}
+const TIPOS = { mp3: 'audio/mpeg', ogg: 'audio/ogg', wav: 'audio/wav', m4a: 'audio/mp4', aac: 'audio/aac', webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', svg: 'image/svg+xml', mp4: 'video/mp4' };
+const normNom = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\.(mp3|wav|ogg|m4a|aac|png|svg|jpe?g|webp|gif)$/i, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+// Nombres en español de los sonidos del Scratch (y alias para reconocer archivos sueltos: «acierto.mp3», «fallo.wav»…)
+const SND_ES = {
+  'Trilha': ['Sintonía (menú y plató)', 'Músicas', 'sintonia musica menu'], 'TrilhaCurta': ['Sintonía corta', 'Músicas', 'sintonia corta'], 'TemaCurto': ['Tema corto (pantalla de inicio)', 'Músicas', 'tema corto inicio'],
+  'Intro': ['Intro del minijuego', 'Músicas', ''], 'Intro2': ['Intro 2 del minijuego', 'Músicas', ''],
+  'AcerteOuCaia Susp.mp3': ['Suspense «Acierta o cae»', 'Músicas', 'suspense acierta o cae'], 'AcerteOuCaia SuspEdit': ['Suspense «Acierta o cae» (corto)', 'Músicas', ''],
+  'AhoraCaigo - Decisão.mp3': ['Decisión: plantarse o juego final', 'Músicas', 'decision'],
+  'AhoraCaigo - Intro.mp3': ['Cabecera del programa', 'Cabeceras', 'cabecera intro'], 'AhoraCaigo - Fim.mp3': ['Despedida (fin del programa)', 'Cabeceras', 'despedida fin'],
+  'AhoraCaigo - ComeceDuelo.mp3': ['¡Que comience el duelo!', 'Duelo', 'comienza el duelo duelo'], 'SuspenseDuelo': ['Suspense del duelo', 'Duelo', 'suspense duelo'], 'Suspense': ['Suspense del reloj', 'Duelo', 'suspense'],
+  'QuemFicaEmPé-Acerto': ['Acierto', 'Efectos', 'acierto correcto'], 'Erro': ['Fallo', 'Efectos', 'fallo error'], 'QuemFicaEmPé-SomRelogio': ['Tic-tac del reloj', 'Efectos', 'tic tac reloj'],
+  '10': ['Aviso: quedan 10 segundos', 'Efectos', '10 segundos'], '5': ['Aviso: quedan 5 segundos', 'Efectos', '5 segundos'],
+  'DropM.mp3': ['Trampilla (se abre)', 'Trampilla y caída', 'trampilla'], 'AhoraCaigo - Queda.mp3': ['Caída: ¡ahora cae!', 'Trampilla y caída', 'caida ahora cae'],
+  'Moeda': ['Moneda (efecto)', 'Monedas', 'moneda'], 'AhoraCaigo - Moeda.mp3': ['Música de la moneda', 'Monedas', 'musica moneda'], 'fairydust': ['Brillo mágico', 'Efectos', 'brillo'],
+  'pop': ['Pop', 'Efectos', ''], 'SomPalavra': ['Letra / palabra', 'Efectos', 'letra palabra'], 'saltar': ['Cambio / salto', 'Efectos', 'salto'], 'Tecla': ['Tecla (botones)', 'Efectos', 'tecla boton'],
+};
+for (let i = 1; i <= 8; i++) SND_ES[`AhoraCaigo - Round${i}.mp3`] = [`Duelo ${i}: entrada del oponente`, 'Duelo', `duelo ${i} ronda ${i} round ${i}`];
+// Sprites del Scratch → nombre en español y grupo
+const SPR_ES = [
+  [/^Menu$/, 'Pantalla del logo (menú y pantallas 3D)', 'Logo, menú y pantallas'], [/^Stage$/, 'Fondo del escenario', 'Logo, menú y pantallas'], [/^Tela1b?$/, 'Pantalla grande', 'Logo, menú y pantallas'],
+  [/^Setch/, 'Suelo del plató', 'Logo, menú y pantallas'], [/^gcprojetos/, 'Créditos del proyecto', 'Logo, menú y pantallas'], [/^Bot.oMenu/, 'Botón del menú', 'Logo, menú y pantallas'],
+  [/^MenuEscolhaop(\d+)/, 'Huella $1', 'Huellas'], [/^MenuEscolha2$/, 'Rótulo del duelo / nº de preguntas', 'Huellas'], [/^MenuEscolha$/, 'Elección de huella', 'Huellas'], [/^Valores2$/, 'Número de huella', 'Huellas'],
+  [/^Valores$/, 'Moneda (valores)', 'Monedas'], [/^Moeda1$/, 'Moneda: cara', 'Monedas'], [/^Moeda2$/, 'Moneda: cruz', 'Monedas'], [/^Gc$/, 'Gráfico de la moneda', 'Monedas'],
+  [/^Gcpgt/, 'Rótulo de la pregunta', 'Rótulos'], [/^ContagemDuelos$/, 'Rótulo «Quedan N oponentes»', 'Rótulos'], [/^Painel$/, 'Panel (turno, transición, premios)', 'Rótulos'],
+  [/^NvAhcg/, 'Rótulo de la decisión', 'Rótulos'], [/^EfeitoSetas$/, 'Efecto flechas', 'Rótulos'], [/^EfeitoTexto$/, 'Efecto de texto', 'Rótulos'], [/^1as1a1b3$/, 'Transición', 'Rótulos'],
+  [/^Quedatela(\d+)/, 'Caída $1 (trampilla)', 'Trampilla y caída'],
+  [/^RelogioDig(\d+)/, 'Dígito del reloj $1', 'Relojes'], [/^Relogio2$/, 'Barra del reloj', 'Relojes'], [/^Relogio$/, 'Reloj', 'Relojes'], [/^Teclado/, 'Botón PASA', 'Relojes'],
+  [/^PlacarDig(\d+)/, 'Marcador: dígito $1', 'Marcadores'], [/^PlacarFinal$/, 'Marcador del juego final', 'Marcadores'], [/^PlacarI(\d+)/, 'Marcador del oponente $1', 'Marcadores'],
+  [/^Oponente(\d+)/, 'Oponente $1', 'Oponentes y vidas'], [/^L.der$/, 'Líder', 'Oponentes y vidas'], [/^Vidas$/, 'Vidas', 'Oponentes y vidas'],
+  [/^Pergunta$/, 'Pregunta en imagen', 'Preguntas en imagen'], [/^Resposta$/, 'Respuesta en imagen', 'Preguntas en imagen'],
+];
+const sprEs = sp => { for (const [re, n, g] of SPR_ES) if (re.test(sp)) return [sp.replace(re, n), g]; return [sp, 'Otras imágenes']; };
 const RC = (() => {
   const FILE = location.protocol === 'file:';
   const DB = 'ac3d_recursos', ST = 'r';
   let dbP = null;
   const db = () => dbP || (dbP = new Promise((res, rej) => { const r = indexedDB.open(DB, 1); r.onupgradeneeded = () => r.result.createObjectStore(ST); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }));
   const tx = (m, f) => db().then(d => new Promise((res, rej) => { const t = d.transaction(ST, m); const s = t.objectStore(ST); const q = f(s); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); }));
-  const imgs = new Map(), snds = new Map(); let logoBlob = null, logoUrl = null, video = null, videoUrl = null, cab3d = null, localCab3d = false; const extras = new Map(); const EXTRAS = ['estreno', 'promo_anuncio', 'promo_estanoche', 'promo_huella'];
+  const imgs = new Map(), snds = new Map(); let logoBlob = null, logoUrl = null, video = null, videoUrl = null, cab3d = null, cab3dBlob = null, localCab3d = false; const extras = new Map(), extrasBlob = new Map(); const EXTRAS = ['estreno', 'promo_anuncio', 'promo_estanoche', 'promo_huella'];
+  const imgBlob = new Map(); const pool = new Map(); let origen = {};
+  let usar = (() => { try { return localStorage.getItem('ac_usar_mios') !== '0'; } catch (e) { return true; } })();
   let localImg = false, localSnd = false, localVideo = false, localClasico = false;
   const fb = new Map(); // respaldos dibujados
   let byHash = null;
   const meta = h => { if (!byHash) { byHash = new Map(); for (const [sp, v] of Object.entries(__MANIFEST.sprites)) v.c.forEach((c, i) => { if (!byHash.has(c.f)) byHash.set(c.f, { sp, n: c.n, i, w: c.w, h: c.h }); }); } return byHash.get(h); };
   const probeImg = (src, ms = 2500) => new Promise(r => { const i = new Image(); const t = setTimeout(() => r(false), ms); i.onload = () => { clearTimeout(t); r(true); }; i.onerror = () => { clearTimeout(t); r(false); }; i.src = src; });
   const b64 = s => { const bin = atob(s); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u.buffer; };
-  const nombreSonido = () => { const m = new Map(); for (const [n, h] of Object.entries(__MANIFEST.sounds)) m.set(n.replace(/\.mp3$/i, '').toLowerCase(), h); for (const v of Object.values(__MANIFEST.sprites)) for (const [n, h] of Object.entries(v.s || {})) { const k = n.replace(/\.mp3$/i, '').toLowerCase(); if (!m.has(k)) m.set(k, h); } return m; };
+  // ---- huecos (slots) del juego, sacados del manifest del Scratch ----
+  let SL = null;
+  const slots = () => {
+    if (SL) return SL;
+    const snd = new Map(); const add = (n, h, sp) => { if (!snd.has(h)) snd.set(h, { nombres: new Set(), sprites: new Set() }); snd.get(h).nombres.add(n); sp && snd.get(h).sprites.add(sp); };
+    for (const [sp, v] of Object.entries(__MANIFEST.sprites)) for (const [n, h] of Object.entries(v.s || {})) add(n, h, sp);
+    for (const [n, h] of Object.entries(__MANIFEST.sounds)) add(n.replace(/@.*/, ''), h);
+    const cuenta = {}; for (const [, o] of snd) for (const n of o.nombres) cuenta[n] = (cuenta[n] || 0) + 1;
+    const lista = [];
+    for (const [h, o] of snd) { const n = [...o.nombres][0]; const es = SND_ES[n] || [n, 'Efectos', '']; lista.push({ key: 'snd:' + h, h, kind: 'snd', nombre: n, sprites: [...o.sprites], etiqueta: es[0] + (cuenta[n] > 1 ? ` (${[...o.sprites].slice(0, 2).join(', ') || 'Stage'})` : ''), grupo: es[1], alias: es[2] }); }
+    lista.push({ key: 'cab3d', kind: 'snd', nombre: 'cabecera3d', etiqueta: 'Música de la cabecera 3D', grupo: 'Cabeceras', alias: 'cabecera 3d musica cabecera' });
+    for (const [k, t] of [['estreno', 'Promo «Gran estreno» (audio)'], ['promo_anuncio', 'Promo «Gran anuncio» (audio)'], ['promo_estanoche', 'Promo «Esta noche» (audio)'], ['promo_huella', 'Promo «La huella» (audio)']]) lista.push({ key: 'aud:' + k, kind: 'snd', nombre: k, etiqueta: t, grupo: 'Cabeceras', alias: '' });
+    lista.push({ key: 'video', kind: 'video', nombre: 'cabecera-iker.mp4', etiqueta: 'Cabecera de Iker (vídeo mp4)', grupo: 'Cabeceras', alias: 'cabecera iker' });
+    const img = [{ key: 'logo', kind: 'img', nombre: 'logo', etiqueta: 'Logo de ¡Ahora caigo! (menú y pantallas)', grupo: 'Logo, menú y pantallas', sprite: '', alias: 'logo' }]; const vistos = new Set();
+    for (const [sp, v] of Object.entries(__MANIFEST.sprites)) v.c.forEach(c => { if (vistos.has(c.f) || (c.w <= 2 && c.h <= 2)) return; vistos.add(c.f); const [es, g] = sprEs(sp); img.push({ key: 'img:' + c.f, h: c.f, kind: 'img', nombre: c.n, sprite: sp, etiqueta: es + (v.c.length > 1 ? ' · ' + c.n : ''), grupo: g, w: c.w, h2: c.h }); });
+    const porPar = new Map(), porNom = new Map(), sndNom = new Map(), alias = new Map();
+    for (const [sp, v] of Object.entries(__MANIFEST.sprites)) v.c.forEach(c => { const key = 'img:' + c.f; if (!vistos.has(c.f) && c.f !== img[0].h) return; const kp = normNom(sp) + '|' + normNom(c.n); if (!porPar.has(kp)) porPar.set(kp, key); });
+    for (const s of img) if (s.sprite) { const k = normNom(s.nombre); porNom.set(k, (porNom.get(k) || []).concat(s.key)); }
+    for (const s of lista) { for (const n of (s.h ? snd.get(s.h).nombres : [s.nombre])) { const k = normNom(n); sndNom.set(k, (sndNom.get(k) || []).concat(s)); } for (const a of [s.etiqueta, ...(s.alias ? [s.alias] : [])]) { const k = normNom(a); if (k && !alias.has(k)) alias.set(k, s.key); } }
+    SL = { snd: lista, img, todos: lista.concat(img), porKey: new Map(lista.concat(img).map(s => [s.key, s])), porPar, porNom, sndNom, alias };
+    return SL;
+  };
+  const tipoDe = nombre => TIPOS[(String(nombre).split('.').pop() || '').toLowerCase()];
+  const blobDe = (nombre, datos) => { const t = tipoDe(nombre); if (!t) return null; if (datos instanceof Blob) return datos.type ? datos : new Blob([datos], { type: t }); if (t === 'audio/wav') { const c = adpcmAPcm(datos); if (c) datos = c; } return new Blob([datos], { type: t }); };
+  const kindDe = blob => /^audio/.test(blob.type) ? 'snd' : /^image/.test(blob.type) ? 'img' : /^video/.test(blob.type) ? 'video' : null;
+  /** Hueco(s) para un archivo: {kind, nombre, sprite, hash} */
+  const huecosPara = c => {
+    const S = slots(), n = normNom(c.nombre);
+    if (c.kind === 'video') return ['video'];
+    if (c.kind === 'img') {
+      if (c.hash && S.porKey.has('img:' + c.hash)) return ['img:' + c.hash];
+      if (c.sprite) { const k = S.porPar.get(normNom(c.sprite) + '|' + n); if (k) return [k]; }
+      if (/^logo\b/.test(n)) return ['logo'];
+      const u = S.porNom.get(n); if (u && u.length === 1 && !/^\d+$/.test(n)) return u;
+      const a = S.alias.get(n); if (a && S.porKey.get(a).kind === 'img') return [a];
+      return [];
+    }
+    if (c.hash && S.porKey.has('snd:' + c.hash)) return ['snd:' + c.hash];
+    if (EXTRAS.includes(String(c.nombre).replace(/\.[^.]+$/, '').toLowerCase())) return ['aud:' + String(c.nombre).replace(/\.[^.]+$/, '').toLowerCase()];
+    if (n === 'cabecera3d' || n === 'cabecera 3d') return ['cab3d'];
+    const l = S.sndNom.get(n); if (l && l.length) { const mismo = c.sprite ? l.filter(s => s.sprites && s.sprites.includes(c.sprite)) : []; return (mismo.length ? mismo : l).map(s => s.key); }
+    const a = S.alias.get(n); if (a && S.porKey.get(a).kind === 'snd') return [a];
+    return [];
+  };
+  const ponerMem = (key, blob) => {
+    if (key.startsWith('img:')) { imgBlob.set(key.slice(4), blob); imgs.set(key.slice(4), URL.createObjectURL(blob)); }
+    else if (key.startsWith('snd:')) snds.set(key.slice(4), blob);
+    else if (key === 'logo') { logoBlob = blob; logoUrl = URL.createObjectURL(blob); }
+    else if (key === 'video') { video = blob; videoUrl = URL.createObjectURL(blob); }
+    else if (key === 'cab3d') { cab3dBlob = blob; cab3d = URL.createObjectURL(blob); }
+    else if (key.startsWith('aud:')) { extrasBlob.set(key.slice(4), blob); extras.set(key.slice(4), URL.createObjectURL(blob)); }
+  };
+  const quitarMem = key => {
+    if (key.startsWith('img:')) { imgs.delete(key.slice(4)); imgBlob.delete(key.slice(4)); }
+    else if (key.startsWith('snd:')) snds.delete(key.slice(4));
+    else if (key === 'logo') logoBlob = logoUrl = null; else if (key === 'video') video = videoUrl = null; else if (key === 'cab3d') cab3d = cab3dBlob = null;
+    else if (key.startsWith('aud:')) { extras.delete(key.slice(4)); extrasBlob.delete(key.slice(4)); }
+  };
+  const blobMio = key => key.startsWith('img:') ? imgBlob.get(key.slice(4)) : key.startsWith('snd:') ? snds.get(key.slice(4)) : key === 'logo' ? logoBlob : key === 'video' ? video : key === 'cab3d' ? cab3dBlob : key.startsWith('aud:') ? extrasBlob.get(key.slice(4)) : null;
+  const guardaOrigen = () => tx('readwrite', s => s.put(origen, 'origen')).catch(() => {});
   const R = {
     FILE,
     get localImg() { return localImg; }, get localSnd() { return localSnd; },
+    get usar() { return usar; },
+    set usar(v) { usar = !!v; try { localStorage.setItem('ac_usar_mios', usar ? '1' : '0'); } catch (e) { } },
     async init() {
       try {
         const keys = await tx('readonly', s => s.getAllKeys());
         for (const k of keys || []) {
           const v = await tx('readonly', s => s.get(k));
           if (!v) continue;
-          if (k.startsWith('img:')) imgs.set(k.slice(4), URL.createObjectURL(v));
-          else if (k.startsWith('snd:')) snds.set(k.slice(4), v);
-          else if (k === 'logo') { logoBlob = v; logoUrl = URL.createObjectURL(v); }
-          else if (k === 'video') { video = v; videoUrl = URL.createObjectURL(v); }
-          else if (k === 'cab3d') { cab3d = URL.createObjectURL(v); }
-          else if (k.startsWith('aud:')) extras.set(k.slice(4), URL.createObjectURL(v));
+          if (k === 'origen') origen = v || {};
+          else if (k.startsWith('pool:')) pool.set(k.slice(5), { ...v, url: URL.createObjectURL(v.blob) });
+          else if (k.startsWith('img:') || k.startsWith('snd:') || k.startsWith('aud:') || k === 'logo' || k === 'video' || k === 'cab3d') ponerMem(k, v);
         }
       } catch (e) { /* sin IndexedDB */ }
-      if (!logoUrl && window.__LOGO_LOCAL) logoUrl = window.__LOGO_LOCAL;
-      if (logoUrl) await new Promise(r => { LOGO_IMG = new Image(); LOGO_IMG.onload = LOGO_IMG.onerror = () => { if (!LOGO_IMG.naturalWidth) LOGO_IMG = null; r(); }; LOGO_IMG.src = logoUrl; });
+      const lu = R.logo; if (lu) await new Promise(r => { LOGO_IMG = new Image(); LOGO_IMG.onload = LOGO_IMG.onerror = () => { if (!LOGO_IMG.naturalWidth) LOGO_IMG = null; r(); }; LOGO_IMG.src = lu; });
       const menu = __MANIFEST.sprites.Menu.c[0].f;
       [localImg, localVideo] = await Promise.all([probeImg(`./sb3/img/${menu}.webp`), FILE ? Promise.resolve(!!window.__CABECERA_LOCAL) : fetch('./cabecera/cabecera-iker.mp4', { method: 'HEAD' }).then(r => r.ok).catch(() => false)]);
       localSnd = !!window.__SND_EMB || (!FILE && await fetch(`./sb3/snd/${__MANIFEST.sounds.Trilha}.mp3`, { method: 'HEAD' }).then(r => r.ok).catch(() => false));
@@ -51,54 +172,118 @@ const RC = (() => {
       localClasico = !!window.__CLASICO_LOCAL || (!FILE && await fetch('./clasico/index.html', { method: 'HEAD' }).then(r => r.ok).catch(() => false));
       return R;
     },
-    estado() { return { imgs: imgs.size + (localImg ? 999 : 0), snds: snds.size + (localSnd ? 999 : 0), cargadasImg: imgs.size, cargadasSnd: snds.size, logo: !!logoBlob, video: !!video || localVideo, localImg, localSnd, clasico: localClasico }; },
-    tieneImagenes: () => localImg || imgs.size > 0,
-    tieneSonidos: () => localSnd || snds.size > 0,
+    estado() { return { imgs: imgs.size + (localImg ? 999 : 0), snds: snds.size + (localSnd ? 999 : 0), cargadasImg: imgs.size, cargadasSnd: snds.size, logo: !!logoBlob, video: !!video || localVideo, localImg, localSnd, clasico: localClasico, usar }; },
+    tieneImagenes: () => localImg || (usar && imgs.size > 0),
+    tieneSonidos: () => localSnd || (usar && snds.size > 0),
     clasico: () => localClasico,
     img(h) {
-      if (imgs.has(h)) return imgs.get(h);
+      if (usar && imgs.has(h)) return imgs.get(h);
       if (localImg) return `./sb3/img/${h}.webp`;
       if (!fb.has(h)) { const m = meta(h); fb.set(h, m ? respaldo(m) : 'data:image/gif;base64,R0lGODlhAQABAAAAACw='); }
       return fb.get(h);
     },
     /** Bytes de un sonido del sb3 (hash): cargado > incrustado (zip) > carpeta sb3/snd > null */
     async snd(h) {
-      if (snds.has(h)) return snds.get(h).arrayBuffer();
+      if (usar && snds.has(h)) return snds.get(h).arrayBuffer();
       if (window.__SND_EMB && window.__SND_EMB[h]) return b64(window.__SND_EMB[h]);
       if (localSnd && !FILE) { const r = await fetch(`./sb3/snd/${h}.mp3`); if (r.ok) return r.arrayBuffer(); }
       return null;
     },
     async url(u) { if (FILE) return null; try { const r = await fetch(u); return r.ok ? r.arrayBuffer() : null; } catch (e) { return null; } },
-    audioExtra(n) { if (n === 'cabecera3d') return R.cab3dUrl(); return extras.get(n) || (localCab3d ? `./cabecera/${n}.mp3` : null); },
-    cab3dUrl() { return cab3d || (localCab3d ? './cabecera/cabecera3d.mp3' : null); },
-    videoUrl() { return videoUrl || (localVideo ? './cabecera/cabecera-iker.mp4' : null); },
+    audioExtra(n) { if (n === 'cabecera3d') return R.cab3dUrl(); return (usar && extras.get(n)) || (localCab3d ? `./cabecera/${n}.mp3` : null); },
+    cab3dUrl() { return (usar && cab3d) || (localCab3d ? './cabecera/cabecera3d.mp3' : null); },
+    videoUrl() { return (usar && videoUrl) || (localVideo ? './cabecera/cabecera-iker.mp4' : null); },
+    // ---------------- huecos: estado, vista previa, subir, borrar ----------------
+    slots,
+    /** 'mio' (cargado por ti) | 'incluido' (viene en esta copia) | null (falta) */
+    estadoHueco(key) {
+      if (blobMio(key)) return 'mio';
+      if (key.startsWith('img:')) return localImg ? 'incluido' : null;
+      if (key.startsWith('snd:')) return localSnd || (window.__SND_EMB && window.__SND_EMB[key.slice(4)]) ? 'incluido' : null;
+      if (key === 'logo') return window.__LOGO_LOCAL ? 'incluido' : null;
+      if (key === 'video') return localVideo ? 'incluido' : null;
+      if (key === 'cab3d' || key.startsWith('aud:')) return localCab3d ? 'incluido' : null;
+      return null;
+    },
+    origen: key => origen[key] || '',
+    /** URL para ver/escuchar el hueco (lo tuyo primero) */
+    async vistaHueco(key) {
+      const b = blobMio(key); if (b) return key.startsWith('img:') ? imgs.get(key.slice(4)) : URL.createObjectURL(b);
+      if (key.startsWith('img:')) return localImg ? `./sb3/img/${key.slice(4)}.webp` : null;
+      if (key.startsWith('snd:')) { const h = key.slice(4); if (window.__SND_EMB && window.__SND_EMB[h]) return URL.createObjectURL(new Blob([b64(window.__SND_EMB[h])], { type: 'audio/mpeg' })); return localSnd ? `./sb3/snd/${h}.mp3` : null; }
+      if (key === 'logo') return window.__LOGO_LOCAL || null;
+      if (key === 'video') return localVideo ? './cabecera/cabecera-iker.mp4' : null;
+      if (key === 'cab3d') return localCab3d ? './cabecera/cabecera3d.mp3' : null;
+      if (key.startsWith('aud:')) return localCab3d ? `./cabecera/${key.slice(4)}.mp3` : null;
+      return null;
+    },
+    async ponerHueco(key, blob, de = '') { await tx('readwrite', s => s.put(blob, key)); quitarMem(key); ponerMem(key, blob); origen[key] = de; await guardaOrigen(); },
+    async quitarHueco(key) { await tx('readwrite', s => s.delete(key)); quitarMem(key); delete origen[key]; await guardaOrigen(); },
+    pool: () => [...pool.entries()].map(([id, v]) => ({ id, ...v })),
+    async asignar(id, key) { const p = pool.get(id); if (!p) return; await R.ponerHueco(key, p.blob, (p.sprite ? p.sprite + ' / ' : '') + p.nombre); await tx('readwrite', s => s.delete('pool:' + id)); pool.delete(id); },
+    async quitarPool(id) { await tx('readwrite', s => s.delete('pool:' + id)); pool.delete(id); },
+    /**
+     * Carga archivos: .sb3/.sprite3 (Scratch), .zip, sonidos e imágenes sueltos y vídeo mp4.
+     * Cada archivo se coloca en su hueco por hash, por sprite+disfraz o por nombre; lo no reconocido va a «Sin asignar».
+     */
     async cargar(files, progreso = () => {}) {
-      const porNombre = nombreSonido(); let ni = 0, ns = 0, nl = 0, nv = 0; const hashes = new Set(Object.values(__MANIFEST.sounds)); for (const v of Object.values(__MANIFEST.sprites)) Object.values(v.s || {}).forEach(h => hashes.add(h));
-      const guardar = async (nombre, datos) => {
-        const base = nombre.split('/').pop(); const ext = (base.split('.').pop() || '').toLowerCase(); const sin = base.replace(/\.[^.]+$/, '');
-        const tipo = { mp3: 'audio/mpeg', ogg: 'audio/ogg', wav: 'audio/wav', m4a: 'audio/mp4', webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', mp4: 'video/mp4' }[ext];
-        if (!tipo) return; const blob = datos instanceof Blob ? datos : new Blob([datos], { type: tipo });
-        if (/^audio/.test(tipo) && EXTRAS.includes(sin.toLowerCase())) { await tx('readwrite', s => s.put(blob, 'aud:' + sin.toLowerCase())); extras.set(sin.toLowerCase(), URL.createObjectURL(blob)); ns++; return; }
-        if (/^audio/.test(tipo) && /^cabecera3d$/i.test(sin)) { await tx('readwrite', s => s.put(blob, 'cab3d')); cab3d = URL.createObjectURL(blob); ns++; return; }
-        if (/^audio/.test(tipo)) { const h = hashes.has(sin) ? sin : porNombre.get(sin.toLowerCase()); if (!h) return; await tx('readwrite', s => s.put(blob, 'snd:' + h)); snds.set(h, blob); ns++; }
-        else if (tipo === 'video/mp4') { await tx('readwrite', s => s.put(blob, 'video')); video = blob; videoUrl = URL.createObjectURL(blob); nv++; }
-        else if (/^logo/i.test(sin)) { await tx('readwrite', s => s.put(blob, 'logo')); logoBlob = blob; logoUrl = URL.createObjectURL(blob); nl++; }
-        else if (meta(sin)) { await tx('readwrite', s => s.put(blob, 'img:' + sin)); imgs.set(sin, URL.createObjectURL(blob)); ni++; }
+      const r = { ns: 0, ni: 0, nl: 0, nv: 0, np: 0, sb3: 0, total: 0, huecos: new Set() };
+      const cands = [];
+      const leerScratch = (z, nombreArch) => {
+        const pj = Object.keys(z).find(n => /(^|\/)(project|sprite)\.json$/.test(n)); if (!pj) return false;
+        const p = JSON.parse(new TextDecoder().decode(z[pj])); const targets = p.targets || [p];
+        const dir = pj.replace(/[^/]*$/, ''); const vistos = new Set(); r.sb3++;
+        for (const t of targets) {
+          for (const c of t.costumes || []) { const f = c.md5ext || (c.assetId + '.' + c.dataFormat); if (vistos.has('c' + c.assetId + t.name + c.name)) continue; vistos.add('c' + c.assetId + t.name + c.name); const d = z[dir + f]; if (!d) continue; cands.push({ kind: 'img', nombre: c.name, sprite: t.name, hash: c.assetId, ext: c.dataFormat, datos: d }); }
+          for (const s of t.sounds || []) { const f = s.md5ext || (s.assetId + '.' + s.dataFormat); if (vistos.has('s' + s.assetId + t.name + s.name)) continue; vistos.add('s' + s.assetId + t.name + s.name); const d = z[dir + f]; if (!d) continue; cands.push({ kind: 'snd', nombre: s.name, sprite: t.name, hash: s.assetId, ext: s.dataFormat, datos: d }); }
+        }
+        return true;
+      };
+      const suelto = (ruta, datos) => {
+        const partes = ruta.split('/'); const base = partes.pop(); const ext = (base.split('.').pop() || '').toLowerCase(); const t = TIPOS[ext]; if (!t) return;
+        const sin = base.replace(/\.[^.]+$/, ''); const hash = /^[0-9a-f]{32}$/i.test(sin) ? sin.toLowerCase() : null;
+        const carpeta = partes.filter(x => !/^(sb3|img|snd|sonidos|imagenes|sprites|por_nombre|cabecera|sounds|costumes|disfraces)$/i.test(x)).pop() || '';
+        cands.push({ kind: /^audio/.test(t) ? 'snd' : /^image/.test(t) ? 'img' : 'video', nombre: sin, sprite: carpeta, hash, ext, datos, nombreArch: base });
       };
       for (const f of files) {
         progreso('⏳ Leyendo ' + f.name + '…');
-        if (/\.zip$/i.test(f.name)) {
-          const z = unzipSync(new Uint8Array(await f.arrayBuffer()), { filter: e => !/(^|\/)(__MACOSX|\.)/.test(e.name) && /\.(mp3|ogg|wav|m4a|webp|png|jpe?g|mp4)$/i.test(e.name) });
-          let k = 0; const tot = Object.keys(z).length;
-          for (const [n, d] of Object.entries(z)) { await guardar(n, d); if (++k % 20 === 0) progreso(`⏳ Guardando ${k}/${tot}…`); }
-        } else await guardar(f.name, f);
+        const u8 = new Uint8Array(await f.arrayBuffer());
+        const esZip = u8[0] === 0x50 && u8[1] === 0x4b;
+        if (esZip) {
+          const z = unzipSync(u8, { filter: e => !/(^|\/)(__MACOSX|\.)/.test(e.name) });
+          if (leerScratch(z, f.name)) continue;
+          for (const [n, d] of Object.entries(z)) {
+            if (/\.(sb3|sprite3)$/i.test(n)) { try { leerScratch(unzipSync(d)); } catch (e) { } continue; }
+            if (TIPOS[(n.split('.').pop() || '').toLowerCase()]) suelto(n, d);
+          }
+        } else suelto(f.name, u8);
       }
-      return { ni, ns, nl, nv };
+      // 1) por hash exacto; 2) por sprite+disfraz o por nombre (sin pisar lo puesto por hash en esta carga)
+      const puestos = new Set(), enPool = new Set(); const pendientes = [];
+      const nombreOrigen = c => (c.sprite ? c.sprite + ' / ' : '') + c.nombre;
+      const guardaEn = async (key, c, blob) => { await R.ponerHueco(key, blob, nombreOrigen(c)); puestos.add(key); r.huecos.add(key); if (key === 'logo') r.nl++; else if (key === 'video') r.nv++; else if (key.startsWith('img:')) r.ni++; else r.ns++; };
+      let k = 0;
+      for (const c of cands) {
+        if (++k % 25 === 0) progreso(`⏳ Colocando ${k}/${cands.length}…`);
+        const blob = blobDe(c.nombreArch || ('x.' + c.ext), c.datos); if (!blob) continue; c.blob = blob; c.kind = kindDe(blob) || c.kind; r.total++;
+        const exacto = c.hash && slots().porKey.has((c.kind === 'img' ? 'img:' : 'snd:') + c.hash);
+        if (exacto) { const key = (c.kind === 'img' ? 'img:' : 'snd:') + c.hash; if (!puestos.has(key)) await guardaEn(key, c, blob); } else pendientes.push(c);
+      }
+      for (const c of pendientes) {
+        const hs = huecosPara(c).filter(h => !puestos.has(h));
+        if (hs.length) { for (const h of hs) await guardaEn(h, c, c.blob); continue; }
+        if (huecosPara(c).length) continue; // ya lo tenía puesto el mismo sb3 por hash
+        if (c.hash && enPool.has(c.hash)) continue; c.hash && enPool.add(c.hash);
+        const id = (c.kind + ':' + (c.sprite ? c.sprite + '/' : '') + c.nombre + '#' + (c.hash || '').slice(0, 8)).slice(0, 200);
+        await tx('readwrite', s => s.put({ kind: c.kind, nombre: c.nombre, sprite: c.sprite || '', blob: c.blob }, 'pool:' + id)); const old = pool.get(id); if (old) URL.revokeObjectURL(old.url);
+        pool.set(id, { kind: c.kind, nombre: c.nombre, sprite: c.sprite || '', blob: c.blob, url: URL.createObjectURL(c.blob) }); r.np++;
+      }
+      r.huecos = r.huecos.size; return r;
     },
-    async guardarLogo(f) { await tx('readwrite', s => s.put(f, 'logo')); logoBlob = f; logoUrl = URL.createObjectURL(f); },
-    async quitarLogo() { await tx('readwrite', s => s.delete('logo')); logoBlob = null; logoUrl = null; },
-    get logo() { return logoUrl; },
-    async borrar() { await tx('readwrite', s => s.clear()); imgs.clear(); snds.clear(); logoBlob = logoUrl = video = videoUrl = cab3d = null; extras.clear(); },
+    async guardarLogo(f) { await R.ponerHueco('logo', f, f.name || 'logo'); },
+    async quitarLogo() { await R.quitarHueco('logo'); },
+    get logo() { return (usar && logoBlob && logoUrl) || window.__LOGO_LOCAL || null; },
+    async borrar() { await tx('readwrite', s => s.clear()); imgs.clear(); imgBlob.clear(); snds.clear(); logoBlob = logoUrl = video = videoUrl = cab3d = cab3dBlob = null; extras.clear(); extrasBlob.clear(); pool.clear(); origen = {}; },
   };
   return R;
 })();

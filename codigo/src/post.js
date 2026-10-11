@@ -57,10 +57,10 @@ function estudioA3(em, s, movil) {
     g.fillStyle = osc ? '#020205' : '#0c0a0c'; g.fillRect(0, 0, w, w);
     if (osc) { const cols = ['#ffffff', '#ff3a5a', '#ffffff', '#c8d8ff', '#ffffff', '#ff8aa0']; for (let i = 0; i < 160; i++) { const a = i / 160 * Math.PI * 2; g.strokeStyle = cols[i % cols.length]; g.globalAlpha = 0.8; g.lineWidth = 2.5; g.beginPath(); g.moveTo(w / 2 + Math.sin(a) * w * 0.148, w / 2 + Math.cos(a) * w * 0.148); g.lineTo(w / 2 + Math.sin(a) * w * 0.235, w / 2 + Math.cos(a) * w * 0.235); g.stroke(); } g.globalAlpha = 1; }
     else { g.strokeStyle = 'rgba(255,120,40,.10)'; g.lineWidth = 2; for (let r = 40; r < w / 2; r += 34) { g.beginPath(); g.arc(w / 2, w / 2, r, 0, 7); g.stroke(); } }
-  }) })); suelo.rotation.x = -Math.PI / 2; R.add(suelo);
+  }) })); suelo.rotation.x = -Math.PI / 2; suelo.name = 'suelo'; R.add(suelo);
   // anillo de juego (plataforma baja) con borde iluminado
   const plat = new T.Mesh(new T.CylinderGeometry(gn, gn + 0.05, Ht, 120), [lam(osc ? 0x0a0a10 : 0x3a2622, osc ? 0x080008 : 0x2a0c06), new T.MeshPhongMaterial({ color: osc ? 0xffffff : 0xa89c88, specular: 0x554444, shininess: 70, map: Vt(1024, 1024, (g, w) => { const gg = g.createRadialGradient(w / 2, w / 2, w * 0.2, w / 2, w / 2, w / 2); gg.addColorStop(0, osc ? '#0c0c12' : '#e8d6aa'); gg.addColorStop(1, osc ? '#08080c' : '#b89a64'); g.fillStyle = gg; g.fillRect(0, 0, w, w); g.strokeStyle = osc ? 'rgba(255,40,60,.18)' : 'rgba(120,80,30,.18)'; g.lineWidth = 3; for (let r = w * 0.25; r < w / 2; r += 26) { g.beginPath(); g.arc(w / 2, w / 2, r, 0, 7); g.stroke(); } for (let i = 0; i < 40; i++) { const a = i / 40 * Math.PI * 2; g.beginPath(); g.moveTo(w / 2 + Math.sin(a) * w * 0.24, w / 2 + Math.cos(a) * w * 0.24); g.lineTo(w / 2 + Math.sin(a) * w * 0.5, w / 2 + Math.cos(a) * w * 0.5); g.stroke(); } }) }), lam(0)]);
-  plat.position.y = Ht / 2; R.add(plat);
+  plat.position.y = Ht / 2; plat.name = 'plat'; R.add(plat);
   anillo(gn - 0.04, gn + 0.06, Ht + 0.004, glowMat(NAR, 0.95));
   anillo(gn + 0.05, gn + 0.12, 0.02, glowMat(NAR, 0.5));
   // foso entre la tarima y el anillo
@@ -83,19 +83,18 @@ function estudioA3(em, s, movil) {
   pos.forEach((O, k) => {
     const h = em.makeHole(O, A3.RT, puerta, sTheme); h.halo.material.opacity = 0.22;
     // aro exterior fijo (rojo/naranja) como en las fotos
-    const aro = new T.Mesh(new T.RingGeometry(A3.RT * 1.14, A3.RT * (osc ? 1.55 : 1.5), 48), bas(osc ? 0xff1020 : 0xd80818)); aro.rotation.x = -Math.PI / 2; aro.position.set(O.x, Ht + 0.018, O.z); R.add(aro);
+    const aro = new T.Mesh(new T.RingGeometry(A3.RT * 1.14, A3.RT * (osc ? 1.55 : 1.5), 48), bas(osc ? 0xff1020 : 0xd80818)); aro.rotation.x = -Math.PI / 2; aro.position.set(O.x, Ht + 0.018, O.z); aro.name = 'aroT'; R.add(aro);
     const tw = new T.Mesh(new T.CylinderGeometry(A3.RT * 1.62, A3.RT * 1.7, 0.3, 48, 1, true), new T.MeshPhongMaterial({ color: osc ? 0x18181e : 0x6a6e78, specular: 0xffffff, shininess: 80, emissive: 0x000000 })); tw.position.set(O.x, Ht + 0.15, O.z); R.add(tw);
     const tin = new T.Mesh(new T.CylinderGeometry(A3.RT * 1.55, A3.RT * 1.55, 0.29, 48, 1, true), bas(osc ? 0xc00818 : 0xc00a14, { side: T.DoubleSide })); tin.position.set(O.x, Ht + 0.15, O.z); R.add(tin);
     const tb = new T.Mesh(new T.RingGeometry(A3.RT * 1.55, A3.RT * 1.72, 48), new T.MeshPhongMaterial({ color: osc ? 0x26262e : 0x9a9ea8, specular: 0xffffff, shininess: 100, side: T.DoubleSide })); tb.rotation.x = -Math.PI / 2; tb.position.set(O.x, Ht + 0.3, O.z); R.add(tb);
-    const tr = new T.Mesh(new T.RingGeometry(A3.RT * 1.18, A3.RT * 1.55, 48), bas(osc ? 0xff1020 : 0xe8101a)); tr.rotation.x = -Math.PI / 2; tr.position.set(O.x, Ht + 0.2, O.z); R.add(tr);
+    const tr = new T.Mesh(new T.RingGeometry(A3.RT * 1.18, A3.RT * 1.55, 48), bas(osc ? 0xff1020 : 0xe8101a)); tr.rotation.x = -Math.PI / 2; tr.position.set(O.x, Ht + 0.2, O.z); tr.name = 'aroT'; R.add(tr); tin.name = 'aroT';
     const tl = new T.Mesh(new T.TorusGeometry(A3.RT * 1.6, 0.025, 6, 48), glowMat(osc ? 0xff2030 : 0xff3a2a, 0.95)); tl.rotation.x = Math.PI / 2; tl.position.set(O.x, Ht + 0.3, O.z); R.add(tl);
     const lab = new T.Sprite(new T.SpriteMaterial({ map: rh(String(k + 1), me.rival(k + 1)), depthWrite: false, transparent: true }));
     lab.scale.set(1, 0.78, 1); lab.center.set(0.5, 0.68); lab.position.set(O.x, Ht + 2.25, O.z); R.add(lab); h.label = lab;
     // pedestal tipo copa, hacia el centro
     const d = new T.Vector3(-O.x, 0, -O.z).normalize(), p = O.clone().addScaledVector(d, 0.98);
     const t = new T.Mesh(tallo, tMat); t.position.set(p.x, Ht + 0.43, p.z); R.add(t);
-    const cp = new T.Mesh(copaGeo, copaMat); cp.position.set(p.x, Ht + 0.82, p.z); R.add(cp);
-    const bc = new T.Mesh(new T.TorusGeometry(0.32, 0.02, 6, 32), bordeCopa); bc.rotation.x = Math.PI / 2; bc.position.set(p.x, Ht + 1.21, p.z); R.add(bc);
+    pedestalCristal(R, p, k + 1, Ht);
     const base = new T.Mesh(new T.CylinderGeometry(0.2, 0.24, 0.05, 20), lam(0x55555c)); base.position.set(p.x, Ht + 0.025, p.z); R.add(base);
     em.holes.push(h);
   });
@@ -120,7 +119,7 @@ function estudioA3(em, s, movil) {
   });
   // pared del fondo con franjas de luz
   const pared = new T.Mesh(new T.CylinderGeometry(Cn, Cn, 7, 96, 1, true), texPared(osc, Vt(2048, 256, (g, w, h) => { g.fillStyle = osc ? '#05050a' : '#120a0c'; g.fillRect(0, 0, w, h); for (let y = 40; y < h; y += 46) { g.fillStyle = osc ? 'rgba(160,40,255,.55)' : 'rgba(255,90,30,.55)'; g.fillRect(0, y, w, 6); } for (let x = 0; x < w; x += 64) { g.fillStyle = osc ? 'rgba(255,40,80,.25)' : 'rgba(255,170,60,.18)'; g.fillRect(x, 0, 3, h); } })));
-  pared.position.y = 3.5; R.add(pared);
+  pared.position.y = 3.5; pared.name = 'pared'; R.add(pared);
   // techo: gran anillo blanco (2011-2017) / anillo oscuro con LEDs (2017-2021)
   const techoMat = osc ? lam(0x15151c, 0x0a0410) : new T.MeshLambertMaterial({ color: 0xffffff, emissive: 0xd8d8e0, emissiveIntensity: 0.85, side: T.DoubleSide });
   if (!osc) techoMat.map = Vt(2048, 64, (g, w, h) => { g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h); for (let x = 0; x < w; x += 64) { g.fillStyle = 'rgba(40,40,50,.55)'; g.fillRect(x, 0, 4, h); } });
@@ -135,17 +134,18 @@ function estudioA3(em, s, movil) {
   // pantallas: logo (izquierda del fondo) y premios (derecha); en la versión oscura, pantalla grande del logo al fondo
   const logoMat = new T.MeshBasicMaterial({ map: texLogoPantalla(s), color: 0xffffff }); em.screenMats.push(logoMat);
   const marco = (w, h, mat, x, y, z) => { const g = new T.Group(); const sc = new T.Mesh(new T.PlaneGeometry(w, h), mat); g.add(sc); const fr = new T.Mesh(new T.BoxGeometry(w + 0.3, h + 0.3, 0.2), lam(osc ? 0x0a0a10 : 0xd8dce4, osc ? 0x000000 : 0x202024)); fr.position.z = -0.12; g.add(fr); const gl = new T.Mesh(new T.PlaneGeometry(w + 0.5, h + 0.5), glowMat(osc ? 0xff2040 : 0x2a8aff, 0.35)); gl.position.z = -0.2; g.add(gl); g.position.set(x, y, z); g.lookAt(0, y * 0.8, 0); R.add(g); return g; };
-  if (osc) { const L = lo(11.2, Math.PI + 0.7, 4.0); marco(6.0, 3.6, logoMat, L.x, L.y, L.z); em.screenFocus = L.clone().multiplyScalar(0.98); const B = lo(11.6, Math.PI - 0.55, 3.4); marco(2.4, 1.4, logoMat, B.x, B.y, B.z); }
+  PANT.mat = logoMat; PANT.logoMap = logoMat.map;
+  if (osc) { const L = lo(11.2, Math.PI + 0.7, 4.0); marco(6.0, 3.6, logoMat, L.x, L.y, L.z); em.screenFocus = L.clone().multiplyScalar(0.98); const B = lo(11.6, Math.PI - 0.55, 3.6); const pb = marco(3.2, 2.15, new T.MeshBasicMaterial({ map: PANT.texPremios() }), B.x, B.y, B.z); em.prizeBoards.push(pb); }
   else {
     const L = lo(11.0, Math.PI + 0.85, 3.7); const g = marco(5.0, 3.4, logoMat, L.x, L.y, L.z); { const col = new T.Mesh(new T.CylinderGeometry(11.35, 11.35, 6.4, 40, 1, true, Math.PI + 0.85 - 0.3, 0.6), new T.MeshLambertMaterial({ color: 0xf0f0f4, emissive: 0x6a6a70, side: T.DoubleSide })); col.position.y = 3.2; R.add(col); } em.screenFocus = L.clone().multiplyScalar(0.98);
-    if (A3VAR === '2015') { const P2 = lo(11.2, Math.PI - 0.62, 4.0); const pb = marco(2.6, 3.2, new T.MeshBasicMaterial({ map: texPremios() }), P2.x, P2.y, P2.z); em.prizeBoards.push(pb); }
-    else { const P2 = lo(11.2, Math.PI - 0.62, 4.0); marco(4.2, 2.8, logoMat, P2.x, P2.y, P2.z); }
+    { const P2 = lo(11.2, Math.PI - 0.62, 4.0); const pb = marco(4.2, 2.8, new T.MeshBasicMaterial({ map: PANT.texPremios() }), P2.x, P2.y, P2.z); em.prizeBoards.push(pb); }
   }
   if (!osc) { const esp = Vt(512, 512, (g, w) => { const gr = g.createRadialGradient(w / 2, w / 2, 10, w / 2, w / 2, w / 2); gr.addColorStop(0, '#ff6ad8'); gr.addColorStop(0.35, '#5a2ad8'); gr.addColorStop(0.7, '#1a3ad8'); gr.addColorStop(1, '#0a0a3a'); g.fillStyle = gr; g.fillRect(0, 0, w, w); g.strokeStyle = 'rgba(255,255,255,.25)'; g.lineWidth = 6; for (let r = 30; r < w / 2; r += 34) { g.beginPath(); g.arc(w / 2, w / 2, r, 0, 7); g.stroke(); } });
     const C = lo(11.9, Math.PI + 0.3, 3.6); const cs = new T.Mesh(new T.CircleGeometry(1.7, 64), new T.MeshBasicMaterial({ map: esp })); cs.position.copy(C); cs.lookAt(0, 3.4, 0); R.add(cs); const cm = new T.Mesh(new T.TorusGeometry(1.75, 0.12, 8, 64), lam(0xe0e2ea, 0x303034)); cm.position.copy(C); cm.lookAt(0, 3.4, 0); R.add(cm); }
   // brillo animado de los aros
   const aros = []; R.traverse(o => { if (o.material && o.material.blending === T.AdditiveBlending && o.geometry && o.geometry.type === 'RingGeometry') aros.push(o); });
   em.anim.push((dt, t) => { const k = 0.82 + Math.sin(t * 2.2) * 0.12; aros.forEach((o, i) => o.material.opacity = Math.min(1, k + (i % 3) * 0.04)); });
+  try { retocaPlatoFotos(em, osc, lo, marco); } catch (e) { console.warn(e); }
   try { ym(em, s); } catch (e) { /* decorados */ }
 }
 function alturaA3(x, z) {
@@ -163,11 +163,29 @@ function alturaA3(x, z) {
 // Etapas del programa (Opciones › Etapa) y especiales
 // ===================================================================================================
 const ETAPAS = {
-  '2011': { nombre: '2011-2014', sub: 'Antena 3 · estreno', plato: 'antena3', pruebas: ['clasico'], eleccion: false, moneda: 'fija', nota: 'Plató de Antena 3: techo circular blanco, 10 trampillas con aros rojos y naranjas y pedestales tipo copa. Solo duelos clásicos. Al ganar un duelo te llevas la moneda de esa trampilla (sin elegir lado).' },
-  '2015': { nombre: '2015-2017', sub: 'Antena 3 · Entre tres y Adivina', plato: 'antena3', pruebas: ['clasico', 'entretres', 'adivina'], eleccion: false, moneda: 'fija', nota: 'Mismo plató, con la pantalla verde de premios. Llegan los duelos «Entre tres» y «Adivina». Moneda fija de cada trampilla.' },
-  '2017': { nombre: '2017-2021', sub: 'Plató oscuro · Gallina y Vaya lío', plato: 'oscuro', pruebas: ['clasico', 'entretres', 'adivina', 'vayalio', 'gallina'], eleccion: true, moneda: 'fija', dobladora: true, nota: 'Plató oscuro con aros de neón rojo, suelo negro con líneas LED y barandilla blanca. El central se elige con la tablet. Duelos «Palabra gallina» y «Vaya lío». Una trampilla esconde la Gallina Dobladora: dobla tu bote.' },
-  '2021': { nombre: '2021-actual', sub: 'Huella blanca o negra', plato: 'virtual', pruebas: null, eleccion: true, moneda: 'huella', nota: 'Plató morado con tarima blanca. Al ganar cada duelo eliges la huella blanca o la negra de la moneda (20 valores). 8 duelos y duelo final de 10 preguntas en 2 minutos.' },
+  '2011': { nombre: '2011-2014', sub: 'Antena 3 · 10 rivales, duelos clásicos', plato: 'antena3', nota: 'Plató de Antena 3. El central se elige con la tableta y se enfrenta a 10 rivales, cada uno en su trampilla. Solo duelos clásicos. Cada trampilla esconde una de las 10 cifras. Tras cada duelo ganado: plantarte o seguir. Si tiras a los 10, te llevas el bote.' },
+  '2015': { nombre: '2015-2017', sub: 'Antena 3 · Entre tres, Adivina, Gallina, Vaya lío', plato: 'antena3', nota: 'Mismo plató, con la pantalla verde de premios. Duelos Clásico, Entre tres, Adivina, Palabra gallina y Vaya lío, y comodines. Si pierdes, el oponente ocupa tu sitio y se queda con tu dinero y tu comodín. 10 cifras, una por trampilla.' },
+  '2017': { nombre: '2017-2021', sub: 'Plató oscuro · monedas y Gallina Dobladora', plato: 'oscuro', nota: 'Plató oscuro con aros de neón rojo. 10 rivales y 10 cifras de las monedas, una por trampilla. Una trampilla esconde la Gallina Dobladora: dobla tu bote. Tras cada duelo ganado: plantarte o seguir.' },
+  '2021': { nombre: '2021-actual', sub: 'Huella blanca o negra · Duelo final', plato: 'virtual', nota: 'Plató morado con tarima blanca. Al ganar cada duelo eliges la huella blanca o la negra de la moneda (20 cifras). 8 duelos y Duelo final de 10 preguntas en 2 minutos.' },
 };
+for (const [k, e] of Object.entries(ETAPAS)) Object.assign(e, ETAPAS_DATOS[k] || {});
+// registro de la mecánica usada (para las pruebas automáticas)
+window.__mec = []; const mec = t => { window.__mec.push(t); };
+/** reparte las 10 cifras de la etapa entre las 10 trampillas (al azar en cada programa) */
+function cifrasTrampillas() { const c = (etapa().cifras || []).slice(0, 10).map((v, i) => i); for (let i = c.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [c[i], c[j]] = [c[j], c[i]]; } const m = {}; c.forEach((v, i) => m[i + 1] = v); return m; }
+const cifraTxt = v => v === 'vida' ? 'un comodín' : v === 'mitad' ? 'la mitad' : v === 'doble' ? 'el doble' : v === 'cero' ? 'lo pierdes todo' : Uo(+String(v).replace('+', '')) + ' €';
+/** 2011-2021: al tirar al rival, la trampilla descubre su cifra (sin elegir lado). 2017-2021: Gallina Dobladora. */
+async function ayFija(a, e, t) {
+  const { s } = a; F.stopMusic(), F.play('AhoraCaigo - Moeda.mp3'), F.play('Moeda@Valores');
+  const ix = (t.cifrasT || {})[e] ?? 0, v = (etapa().cifras || [1000])[ix]; t.moedas.push(e);
+  try { a.eng.studio.setHoleColor(e, 0xffd23a); } catch (x) { }
+  a.hud.hint('🪙 La trampilla ' + e + ' esconde…'); await s.w(1400); a.hud.hint(null);
+  TA(typeof v === 'number' ? '+' + v : v, t); F.play('fairydust@Moeda1'); mec('moneda fija ' + v);
+  ze.aplauso(2, 0.6); a.hud.toast(`🪙 Trampilla ${e}: <b>${cifraTxt(v)}</b>`, 2600); await s.w(2000);
+  if (etapa().dobladora && t.dobladora === e) { mec('dobladora'); t.placar *= 2; F.play('pop'); ze.vitores(3); a.hud.toast('🐔 ¡GALLINA DOBLADORA! Doblas tu bote', 2800); await s.w(2600); }
+  PANT.actualiza({ usadas: PANT.est.usadas.concat(ix), placar: t.placar, comodines: Math.max(0, t.vidas) }); PANT.mostrar('premios');
+  return { val: v, other: null };
+}
 let ETAPA = localStorage.getItem('ac_etapa') || '2021';
 const etapa = () => ETAPAS[ETAPA] || ETAPAS['2021'];
 const monedaFija = () => etapa().moneda === 'fija' && !window.__botForce;
@@ -175,9 +193,10 @@ function platoDe(p) { return p === 'oscuro' ? (A3VAR = '2017', 'antena3') : p ==
 function aplicarPlato(theme) { const p = (theme && theme.plato) || (it && it.plato) || null; p && yv(platoDe(p)); }
 function planEtapa(a) {
   const e = etapa(), base = Zv0(a);
-  if (!e.pruebas) return base;
+  const N = e.duelos || 8; while (base.length < N) base.push(base[base.length % 8] || 'clasico');
+  if (!e.pruebas) return base.slice(0, N);
   const ok = e.pruebas; const alt = ok.filter(x => x !== 'gallina');
-  const plan = base.map(p => ok.includes(p) ? p : alt[Math.floor(Math.random() * alt.length)]);
+  const plan = base.slice(0, N).map(p => ok.includes(p) ? p : alt[Math.floor(Math.random() * alt.length)]);
   if (ok.includes('gallina') && !plan.includes('gallina')) plan[4] = 'gallina';
   return plan;
 }
@@ -211,14 +230,17 @@ function filaRecursos() {
   const box = document.createElement('div');
   const row = document.createElement('div'); row.className = 'orow'; row.id = 'rowRecursos';
   const lb = document.createElement('label'); lb.textContent = '🎶 Músicas, sonidos y gráficos del APK'; row.appendChild(lb);
-  const inp = document.createElement('input'); inp.type = 'file'; inp.multiple = true; inp.accept = '.zip,audio/*,image/*,video/mp4'; inp.style.display = 'none';
+  const inp = document.createElement('input'); inp.type = 'file'; inp.multiple = true; inp.accept = '.zip,.sb3,audio/*,image/*,video/mp4'; inp.style.display = 'none';
   const b = document.createElement('button'); b.className = 'tbtn sel'; b.textContent = '📂 Cargar músicas'; b.onclick = ev => { ev.stopPropagation(); inp.click(); };
   const est = document.createElement('p'); est.className = 'onote';
   const pinta = () => { const e = RC.estado(); est.innerHTML = (e.localSnd || e.cargadasSnd ? `✅ Sonidos y músicas: ${e.localSnd ? 'incluidos en esta copia' : e.cargadasSnd + ' guardados en este dispositivo'}` : '🔇 Sin las músicas del APK: carga <b>ahoracaigo_sonidos.zip</b> una sola vez y quedarán guardadas en este navegador.') + '<br>' + (e.localImg || e.cargadasImg ? `✅ Gráficos del APK: ${e.localImg ? 'incluidos' : e.cargadasImg + ' guardados'}` : '🖼️ Gráficos dibujados por el juego (el zip de sonidos trae también los del APK).') + (e.logo ? '<br>✅ Logo propio cargado' : ''); };
-  inp.onchange = async () => { const fs = [...inp.files]; inp.value = ''; if (!fs.length) return; try { const r = await RC.cargar(fs, t => est.textContent = t); F.buffers.clear(); est.textContent = `✅ Guardados: ${r.ns} sonidos, ${r.ni} imágenes${r.nl ? ', logo' : ''}${r.nv ? ', vídeo de la cabecera' : ''}. Recargando…`; setTimeout(() => location.reload(), 1200); } catch (e) { est.textContent = '❌ No se pudo leer: ' + e.message; } };
+  inp.onchange = async () => { const fs = [...inp.files]; inp.value = ''; if (!fs.length) return; try { const r = await RC.cargar(fs, t => est.textContent = t); F.buffers.clear(); est.textContent = `✅ Guardados: ${r.ns} sonidos, ${r.ni} imágenes${r.nl ? ', logo' : ''}${r.nv ? ', vídeo de la cabecera' : ''}${r.np ? `, ${r.np} sin reconocer (ver «Cargar sb3 / sonidos / sprites»)` : ''}. Recargando…`; setTimeout(() => location.reload(), 1200); } catch (e) { est.textContent = '❌ No se pudo leer: ' + e.message; } };
   const inpL = document.createElement('input'); inpL.type = 'file'; inpL.accept = 'image/*'; inpL.style.display = 'none';
   const bl = document.createElement('button'); bl.className = 'tbtn'; bl.textContent = '🖼️ Logo'; bl.onclick = ev => { ev.stopPropagation(); inpL.click(); };
   inpL.onchange = async () => { const f = inpL.files[0]; inpL.value = ''; if (!f) return; await RC.guardarLogo(f); est.textContent = '✅ Logo guardado. Recargando…'; setTimeout(() => location.reload(), 900); };
   const bb = document.createElement('button'); bb.className = 'tbtn'; bb.textContent = '🗑️ Borrar'; bb.onclick = async ev => { ev.stopPropagation(); if (!confirm('¿Borrar las músicas, gráficos y logo guardados en este dispositivo?')) return; await RC.borrar(); location.reload(); };
-  row.append(b, bl, bb, inp, inpL); pinta(); box.append(row, est); return box;
+  const row2 = document.createElement('div'); row2.className = 'orow'; row2.id = 'rowSb3';
+  const lb2 = document.createElement('label'); lb2.textContent = '📦 Cargar sb3 / sonidos / sprites'; row2.appendChild(lb2);
+  const b2 = document.createElement('button'); b2.className = 'tbtn sel'; b2.id = 'btnRecursos'; b2.textContent = 'Abrir ▶'; b2.onclick = ev => { ev.stopPropagation(); try { F.play('Tecla'); } catch (e) { } Lt('recursos'); }; row2.appendChild(b2);
+  row.append(b, bl, bb, inp, inpL); pinta(); box.append(row2, row, est); return box;
 }
