@@ -23436,7 +23436,7 @@ async function jA() {
   e.className = "modal ui";
   const t = matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches;
   e.innerHTML = `<div class="mcard"><h2>Instalar ¡Ahora Caigo!</h2>
-  ${t ? "<p>✅ Ya estás usando la app instalada.</p>" : (yc ? '<p><button class="mbtn gold" id="instNow">📲 Instalar ahora</button></p>' : "") + "<p><b>Android (Chrome):</b> menú ⋮ → «Instalar aplicación» o «Añadir a pantalla de inicio».</p><p><b>iPhone/iPad (Safari):</b> botón Compartir → «Añadir a pantalla de inicio».</p><p><b>PC (Chrome/Edge):</b> icono de instalar ⊕ en la barra de direcciones.</p>"}
+  ${t ? "<p>✅ Ya estás usando la app instalada.</p>" : (yc ? '<p><button class="mbtn gold" id="instNow">📲 Instalar ahora</button></p>' : "") + "<p><a class=\"mbtn gold\" id=\"descApk\" href=\"https://github.com/ikeriano/ahoracaigo-web/releases/latest/download/AhoraCaigo-web.apk\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-block;text-decoration:none\">⬇️ Descargar APK (Android)</a></p><p style=\"font-size:13px;opacity:.85\">El APK se instala en Android permitiendo «instalar apps de origen desconocido». Las músicas originales se añaden desde Opciones › Cargar músicas.</p>" + "<p><b>Android (Chrome):</b> menú ⋮ → «Instalar aplicación» o «Añadir a pantalla de inicio».</p><p><b>iPhone/iPad (Safari):</b> botón Compartir → «Añadir a pantalla de inicio».</p><p><b>PC (Chrome/Edge):</b> icono de instalar ⊕ en la barra de direcciones.</p>"}
   <p>Una vez instalada funciona <b>sin conexión</b>.</p>
   <p><a class="mbtn" href="${qA}" download>⬇️ Descargar APK para Android</a></p>
   <button class="tbtn back" id="instClose">Cerrar</button></div>`, a.appendChild(e), e.querySelector("#instClose").onclick = (i) => {
