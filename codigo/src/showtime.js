@@ -240,7 +240,7 @@ function menuShowTime(a, r) {
 }
 async function modoShowTime(a, e, n, t) {
   if (a === 'promoadrian') {
-    const l = ST_DATOS.promosAdrian, d = l.find(x => x.id === e) || l[0]; await promoAdrianCorre(n, d, t);
+    const l = ST_DATOS.promosAdrian, d = l.find(x => x.id === e) || l[0]; await promoAdrianCorre(n, d, t); await copresentador(n, t, { ctx: 'promo' });
     const sig = l[(l.indexOf(d) + 1) % l.length];
     yn.score(`📺 «${d.titulo}»`, true); yn.actions([{ label: 'Siguiente ▶', cls: 'gold', fn: () => ii('promoadrian', sig.id) }, { label: 'Repetir', fn: () => ii('promoadrian', d.id) }, { label: 'Lista', fn: () => { jt && (jt.alive = false), jt = null, Mi = false, Lt('promosadrian'); } }]);
     Xe.startOrbit(new P(0, 0, 0), 10.8, 5, 0, 0.08, 1); await t.until(() => false);

@@ -19836,7 +19836,7 @@ class y2 {
   }
   resize() {
     const e = innerWidth, t = innerHeight;
-    this.renderer.setSize(e, t, false), this.camera.aspect = e / t, this.camera.fov = e / t < 1.4 ? 68 : 58, this.camera.updateProjectionMatrix();
+    this.renderer.setSize(e, t, false), this.camera.aspect = e / t, e / t < 1 ? (this.camera.fov = Math.min(95, 2 * Math.atan(Math.tan(29 * Math.PI / 180) * 1.2 / (e / t)) * 180 / Math.PI), this.camera.setViewOffset(e, t, 0, t * 0.2, e, t)) : (this.camera.fov = e / t < 1.4 ? 68 : 58, this.camera.clearViewOffset()), document.documentElement.classList.toggle("vertical", e < t), this.camera.updateProjectionMatrix();
   }
   setTheme(e) {
     this.gold = false, this.studio && (this.scene.remove(this.studio.root), Fm(this.studio.root));
@@ -20277,7 +20277,7 @@ class xv {
   }
   fit() {
     const e = innerWidth, t = innerHeight, n = Math.min(e / this.W, t / this.H);
-    this.box.style.transform = `translate(${(e - this.W * n) / 2}px,${(t - this.H * n) / 2}px) scale(${n})`;
+    this.box.style.transform = `translate(${(e - this.W * n) / 2}px,${e < t ? Math.min(52, (t - this.H * n) / 2) : (t - this.H * n) / 2}px) scale(${n})`;
   }
   show(e, t, n = {}) {
     const i = n.key || e;
@@ -20876,7 +20876,7 @@ class V2 {
   fit() {
     const e = innerWidth, t = visualViewport ? visualViewport.height : innerHeight;
     innerHeight > this.maxH && (this.maxH = innerHeight), this.kbOpen = this.active && t < this.maxH * 0.72;
-    const n = Math.min(e / 960, (this.kbOpen ? t * 0.98 : t * 0.5) / 330), i = (visualViewport ? visualViewport.offsetTop : 0) + t - 330 * n;
+    const n = Math.min(e < t && !this.kbOpen ? e / 800 : e / 960, (this.kbOpen ? t * 0.98 : t * 0.5) / 330), i = (visualViewport ? visualViewport.offsetTop : 0) + t - 330 * n;
     this.box.style.transform = `translate(${(e - 960 * n) / 2}px,${i}px) scale(${n})`, document.body.classList.toggle("kb-open", this.kbOpen);
   }
   showBg(e) {
@@ -21233,7 +21233,7 @@ class Z2 {
     this.cur = null, e == null || e.stop();
   }
 }
-const Zt = new Z2(), Ym = "1.10", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
+const Zt = new Z2(), Ym = "1.11", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
 function Hv() {
   const a = [["Presentado por", [Vv()]], ...Jr.final], e = [];
   return me.central && e.push(["Concursante central", [me.central + (me.profesion ? " · " + me.profesion : "")]]), e.push(["Oponentes", jn.map((t, n) => `${n + 1}. ${me.rival(n + 1)} · ${t.job}`)]), a.splice(1, 0, ...e), a;
@@ -22482,6 +22482,7 @@ class sy {
       if (await ay(this.c, c, this), F.playMusic("SuspenseDuelo", true), await Wd(this.c), await n.w(1500), ET.moneda === "fija" ? (PANT.actualiza({ placar: this.placar, comodines: Math.max(0, this.vidas) }), await PANT.tarjeta("premios", n, 3500)) : await PA(this.c, this.moedas, this.placar, !!e.theme.festivo), this.rodadas === ND) break;
       if (ET.plantarse && await this.plantarseOSeguir(ND) === "plantarse") return mec("plantado"), F.stopAll(), F.playMusic("Trilha"), Ot.player(e, 1.5), t.say(`¡Te plantas! Te llevas ${Uo(this.placar)} €.`, 3e3), ze.aplauso(3.5, 0.75), await n.w(1500), await uu(this.c, this.placar, 4e3, true), this.fin("plantado");
       await n.w(600), this.jokeDone || (Ot.wide(e, 1), await this.joke("entre"));
+      if (!this.copreHecho && this.rodadas >= 2 && this.rodadas < ND && await copresentador(this.c, n, { ctx: "programa" })) this.copreHecho = true;
       if (pubEnPrograma() && !this.pubHecha && this.rodadas === Math.floor(ND / 2)) { this.pubHecha = true; mec("publicidad"); Ot.wide(e, 1); He(e.host, "saluda", 2); await t.say(ST_DATOS.frases[0], 3e3); F.stopAll(); await stCorre("pausa", n); F.playMusic("SuspenseDuelo", true); Ot.wide(e, 1); He(e.host, "aplaude", 2); await t.say(ST_DATOS.frases[1], 2500); }
     }
     if (ET.final === "bote") return mec("bote"), this.placar += ET.bote || 0, F.stopAll(), F.playMusic("TrilhaCurta@Stage"), (r = e.lights) == null || r.event("ganador"), ea(e.studio, $t(0, Ae + 1, 0)), ea(e.studio, $t(-3, 2, -3)), ea(e.studio, $t(3, 2, -3)), He(e.player, "arriba", 3), He(e.host, "aplaude", 3), Ot.player(e, 1.2), ze.ovacion(8), await t.say(`¡Has tirado a los ${ND} oponentes! Te llevas el bote: ${Uo(ET.bote || 0)} €. En total, ${Uo(this.placar)} €.`, 4500), await uu(this.c, this.placar, 5e3, true), this.fin("ganado");
@@ -23269,7 +23270,7 @@ function Lt(a = "main") {
   const o = document.createElement("div");
   o.className = "mtag", o.textContent = t.id === "normal" ? "EL JUEGO · 3D" : t.emoji + " " + (t.banner || "Especial " + t.name), i.appendChild(o);
   const r = document.createElement("div");
-  if (r.className = "col ui", a === "main") r.append(ei("Jugar", "Programa completo, entrenamiento, clásico…", "gold", () => Lt("play")), ei("Promos", "Promos 3D con Adrián Vega: casting, gran anuncio, esta noche…", "", () => Lt("promos")), ei("Promos de Adrián", "Adrián Vega presenta ¡Ahora caigo! en el plató: próximo programa, bote, casting, especiales", "", () => Lt("promosadrian")), ei("Publicidad", "Pausa de Show Time TV: anuncios inventados, cortinillas y promos de la cadena", "", () => Lt("publicidad")), ei("Casting", "Apúntate y sal como concursante en las partidas", "", () => Lt("casting")), ei("Elige el valor de cada huella", "Coloca los 20 valores de la moneda", "", () => Lt("huellas")), ei("Opciones", "Sonido, calidad gráfica, pantalla completa", "", () => Lt("options")), ei("La historia de ¡Ahora Caigo!", `${me.presentador} te cuenta la historia del programa`, "hist", () => ii("historia")), ei("Cómo se juega", "Las reglas del concurso", "", () => Lt("help")), ei("Créditos", "", "", () => Lt("credits"))), Th || r.append(ei("Instalar app", "Juega sin conexión desde tu pantalla de inicio", "inst", () => jA()));
+  if (r.className = "col ui", a === "main") r.append(ei("Jugar", "Programa completo, entrenamiento, clásico…", "gold", () => Lt("play")), ei("Promos", "Promos 3D con Adrián Vega: casting, gran anuncio, esta noche…", "", () => Lt("promos")), ei("Promos de Adrián", "Adrián Vega presenta ¡Ahora caigo! en el plató: próximo programa, bote, casting, especiales", "", () => Lt("promosadrian")), ei("Publicidad", "Pausa de Show Time TV: anuncios inventados, cortinillas y promos de la cadena", "", () => Lt("publicidad")), ei("Cámara oculta", "Bromas a Adrián en el plató… ¡Inocente, inocente!", "", () => Lt("oculta")), ei("Tomas falsas", "Lapsus, trampillas impacientes y «¡Corten!»", "", () => Lt("tomas")), ei("Fuera de cámaras", "Maquillaje, ensayos, técnicos y la pausa", "", () => Lt("fuera")), ei("Paseo", "Pasea por el plató, sube a la grada y sal a la calle", "", () => ii("paseo")), ei("Casting", "Apúntate y sal como concursante en las partidas", "", () => Lt("casting")), ei("Elige el valor de cada huella", "Coloca los 20 valores de la moneda", "", () => Lt("huellas")), ei("Opciones", "Sonido, calidad gráfica, pantalla completa", "", () => Lt("options")), ei("La historia de ¡Ahora Caigo!", `${me.presentador} te cuenta la historia del programa`, "hist", () => ii("historia")), ei("Cómo se juega", "Las reglas del concurso", "", () => Lt("help")), ei("Créditos", "", "", () => Lt("credits"))), Th || r.append(ei("Instalar app", "Juega sin conexión desde tu pantalla de inicio", "inst", () => jA()));
   else if (a === "play") {
     r.append(ei("Programa completo", "Cabecera, 8 duelos, moneda, juego final y despedida", "gold", () => ii("programa")), ei("Entrenamiento", "Practica pruebas y la elección de huellas", "", () => Lt("train")), ei("Clásico", "El minijuego original de Scratch", "", () => ii("clasico")), ei("Explorar el plató", "Pasea libremente por el plató 3D", "", () => ii("explorar")), ei("Monólogos del presentador", "Sus números de humor: con el público, al teléfono y las normas", "", () => Lt("monologos"))), r.appendChild(Pa("Programa especial"));
     const u = document.createElement("div");
@@ -23293,6 +23294,8 @@ function Lt(a = "main") {
     d.onclick = (p) => {
       p.stopPropagation(), mo = !mo, localStorage.setItem("ac_orig", mo ? "1" : "0"), f();
     }, f(), h.append(d, Ia("play")), r.appendChild(h);
+  } else if (a === "oculta" || a === "tomas" || a === "fuera") {
+    menuExtras2(a, r);
   } else if (a === "publicidad" || a === "promosadrian") {
     menuShowTime(a, r);
   } else if (a === "recursos") {
@@ -23362,7 +23365,7 @@ function Lt(a = "main") {
     const b = document.createElement("button");
     b.className = "tbtn" + (document.fullscreenElement ? " sel" : ""), b.textContent = document.fullscreenElement ? "Salir" : "Activar", b.onclick = async (_) => {
       _.stopPropagation(), await YA(), setTimeout(() => Lt("options"), 300);
-    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), ZA(), HA(() => Lt("gallina")));
+    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), ZA(), HA(() => Lt("gallina")));
     const A = document.createElement("p");
     A.className = "mtext", A.textContent = `Rendimiento actual: ${Math.round(Xe.fps)} fps. Si el juego va lento en tu móvil, elige calidad «Baja».`, r.append(g, x, A, Ia("main"));
   } else if (a === "monologos") {
@@ -23662,7 +23665,7 @@ function ry() {
   var t;
   if (!en("classicWrap").classList.contains("hidden")) return en("classicBack").click(), true;
   if ((t = document.querySelector("#menu .modal")) == null || t.remove(), jt) return Cf(), true;
-  const e = { title: null, main: "title", play: "main", train: "play", options: "main", help: "main", credits: "main", concursantes: "options", gallina: "options", recursos: "options", publicidad: "main", promosadrian: "main", monologos: "play" }[Gr];
+  const e = { title: null, main: "title", play: "main", train: "play", options: "main", help: "main", credits: "main", concursantes: "options", gallina: "options", recursos: "options", publicidad: "main", promosadrian: "main", oculta: "main", tomas: "main", fuera: "main", monologos: "play" }[Gr];
   return e ? (Lt(e), true) : false;
 }
 window.__back = ry;
@@ -23702,11 +23705,13 @@ async function ii(a, e) {
     else if (a === "historia") await BA(n, +(e || 0)), jt === t && (jt.alive = false, jt = null, Mi = false, Lt("main"));
     else if (a === "monologos") {
       const i = ko.map((r) => r.id), s = e && e !== "azar" ? ko.find((r) => r.id === e) : $v(Ms);
-      Xe.opps.forEach((r) => r.root.visible = true), F.playMusic("TrilhaCurta@Stage"), ze.aplauso(2.5, 0.7), Xe.startOrbit(new P(0, 0, 0), 9.5, 4.2, 0.4, 0.15, 1.2), await t.w(1800), F.stopMusic(1.2), await jv(n, s, t);
+      Xe.opps.forEach((r) => r.root.visible = true), F.playMusic("TrilhaCurta@Stage"), ze.aplauso(2.5, 0.7), Xe.startOrbit(new P(0, 0, 0), 9.5, 4.2, 0.4, 0.15, 1.2), await t.w(1800), F.stopMusic(1.2), await jv(n, s, t), await copresentador(n, t, { ctx: "monologo" });
       const o = e === "azar" ? "azar" : i[(i.indexOf(s.id) + 1) % i.length];
       yn.score(`🎭 «${s.titulo}»`, true), yn.actions([{ label: "Siguiente ▶", cls: "gold", fn: () => ii("monologos", o) }, { label: "Repetir", fn: () => ii("monologos", s.id) }, { label: "Lista", fn: () => {
         jt && (jt.alive = false), jt = null, Mi = false, Lt("monologos");
       } }]), Xe.startOrbit(new P(0, 0, 0), 10.8, 5, 0, 0.08, 1), await t.until(() => false);
+    } else if (a === "oculta" || a === "tomas" || a === "fuera" || a === "paseo") {
+      await modoExtras(a, e, n, t);
     } else if (a === "promoadrian" || a === "publicidad") {
       await modoShowTime(a, e, n, t);
     } else if (a === "explorar") {

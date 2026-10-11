@@ -13,5 +13,5 @@ grep '^import ' src/pre.js > tmp/all.js
 cat tmp/gen.js >> tmp/all.js
 grep -v '^import ' src/pre.js >> tmp/all.js
 cat src/etapas_datos.js >> tmp/all.js
-cat src/app.js src/preguntas_extra.js src/post.js src/etapas_clasicas.js src/cabecera3d.js src/promos.js src/recursos.js src/showtime_datos.js src/showtime.js >> tmp/all.js
+cat src/app.js src/preguntas_extra.js src/post.js src/etapas_clasicas.js src/cabecera3d.js src/promos.js src/recursos.js src/showtime_datos.js src/showtime.js src/extras_datos.js src/extras.js >> tmp/all.js
 node_modules/.bin/esbuild tmp/all.js --bundle --minify --charset=utf8 --format=iife --outfile=js/app.js --log-level=warning

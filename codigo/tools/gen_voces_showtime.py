@@ -19,6 +19,15 @@ for m in D['promosAdrian']:
 for t in D['cortinillas'].values(): trabajos.append(('daniela', t, 'voz/st', fnv('daniela|' + t)))
 for a in D['anuncios'] + D['promosCadena']:
     for l in a['lineas']: trabajos.append((a['voz'], l, 'voz/st', fnv(a['voz'] + '|' + l)))
+s2 = open(os.path.join(RAIZ, 'src/extras_datos.js'), encoding='utf8').read(); X = json.loads(s2[s2.index('=') + 1:s2.rindex(';')])
+PER = X['personajes']
+for modo in ('oculta', 'tomas', 'fuera'):
+    for sk in X[modo]:
+        for p in sk['pasos']:
+            v = PER[p[0]][1]; trabajos.append((v, p[1], 'voz', fnv(p[1])) if v == 'davefx' else (v, p[1], 'voz/st', fnv(v + '|' + p[1])))
+for t in X['copres']['invita'] + X['copres']['gracias'] + list(X['paseo'].values()): trabajos.append(('davefx', t, 'voz', fnv(t)))
+for g in X['copres']['invitados']:
+    for l in g['lineas']: trabajos.append((g['voz'], l, 'voz/st', fnv(g['voz'] + '|' + l)))
 os.makedirs(os.path.join(RAIZ, 'voz/st'), exist_ok=True)
 idx = {'voz': json.load(open(os.path.join(RAIZ, 'voz/index.json'))), 'voz/st': json.load(open(os.path.join(RAIZ, 'voz/st/index.json'))) if os.path.exists(os.path.join(RAIZ, 'voz/st/index.json')) else {}}
 voces = {}; n = 0
