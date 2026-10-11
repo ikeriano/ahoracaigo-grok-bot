@@ -132,7 +132,7 @@ async function promoCorre(def, hud, sess) {
   const usarOrig = orig && (def.soloMusica || PROMO_AUDIO() === 'original');
   if (usarOrig) { audio = new Audio(orig); audio.volume = vol; try { await audio.play(); } catch (e) { audio = null; } }
   if (!audio) { try { F.ctx.state === 'suspended' && await F.ctx.resume(); const gm = F.ctx.createGain(); gm.gain.value = vol * 0.45; gm.connect(F.ctx.destination); synth = promoSynth(F.ctx, gm, def.dur, def.musica || {}); synth.gain = gm; } catch (e) { synth = null; } }
-  const ahora = () => audio && !audio.paused && audio.currentTime > 0 ? audio.currentTime : synth ? Math.max(0, F.ctx.currentTime - synth.t0) : (performance.now() - reloj0) / 1000;
+  const ahora = () => window.__promoT != null ? window.__promoT : audio && !audio.paused && audio.currentTime > 0 ? audio.currentTime : synth ? Math.max(0, F.ctx.currentTime - synth.t0) : (performance.now() - reloj0) / 1000;
   const vozOn = !usarOrig && !To.mute && it.voz !== false; const vPend = vozOn ? (def.voces || []).map(v => ({ ...v })) : [];
   st.estado = 'reproduciendo'; st.audio = usarOrig ? 'original' : synth ? 'sintetizada' : 'sin';
   const frame = def.montar(C);
@@ -148,7 +148,7 @@ async function promoCorre(def, hud, sess) {
     requestAnimationFrame(bucle);
   };
   requestAnimationFrame(bucle);
-  const tope = setTimeout(() => acaba('tiempo'), (def.dur + 8) * 1000);
+  const tope = setTimeout(() => { if (window.__promoT == null) acaba('tiempo'); }, (def.dur + 8) * 1000);
   await termina; clearTimeout(tope); clearInterval(vigila); hud && hud.skip && hud.skip(null); removeEventListener('resize', resize);
   voces.forEach(a => { try { a.pause(); } catch (e) {} });
   if (audio) { const a0 = audio, v0 = a0.volume; let i = 0; const fd = setInterval(() => { a0.volume = Math.max(0, v0 * (1 - ++i / 8)); if (i >= 8) { clearInterval(fd); a0.pause(); } }, 40); }
@@ -270,6 +270,43 @@ const PROMOS = {
         if (t >= 16.2) promoShowTime2D(C.g2, C.c2.width, C.c2.height, (t - 16.2) / 4.8, C.cfg);
       };
     } },
+  proximamente: { id: 'proximamente', nombre: 'Gran estreno · Próximamente', dur: 23, emoji: '🌟', sub: '10 oponentes, 6 juegos diferentes… ¡próximamente!', audio: 'promo_proximamente', voces: [{ t: 0.4, url: './voz/promo_prox_1.mp3' }, { t: 6.4, url: './voz/promo_prox_2.mp3' }, { t: 9.6, url: './voz/promo_prox_3.mp3' }], musica: { bpm: 120, golpes: [1, 2.2, 3.2, 4, 8.2, 9, 10.2, 13], fin: 18 },
+    montar(C) {
+      const T = C.T, cfg = cabTema({ id: 'normal' }), E = cabEstudio(cfg, { id: 'normal' }, { sinObjetos: true });
+      const H = new T.Scene(); H.add(new T.HemisphereLight(0xffffff, 0x303050, 1.8)); const bgC = document.createElement('canvas'); bgC.width = 1024; bgC.height = 576; const bgT = new T.CanvasTexture(bgC); bgT.colorSpace = T.SRGBColorSpace; const Bs = new T.Scene(); Bs.background = bgT; { const l = new T.DirectionalLight(0xffffff, 1); l.position.set(2, 3, 4); H.add(l); }
+      const A = promoAdrian(); H.add(A.root); const hc = new T.PerspectiveCamera(30, 1, 0.1, 50); hc.position.set(0, 1.2, 3.4); hc.lookAt(0, 1.15, 0);
+      C.escenas = [E.scene, H, Bs];
+      const tit = cabFrase('¡AHORA', 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }), tit2 = cabFrase('CAIGO!', 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }); tit.position.set(0, 2.6, 0.6); tit2.position.set(0, 1.55, 0.6); E.scene.add(tit, tit2); [tit, tit2].forEach(G => G.visible = false);
+      const fondoCurvas = t => { curvas(bgC.getContext('2d'), 1024, 576, t); bgT.needsUpdate = true; C.render(Bs); };
+      const R = [[C.rotulo('10 OPONENTES', 1.0, { cara: 'amarillo' }), 1.0, 2.2, 'golpe'], [C.rotulo('1 CONCURSANTE CENTRAL', 0.62, { cara: 'amarillo' }), 2.2, 3.2, 'vuela'], [C.rotulo('8 FASES', 1.9, { cara: 'amarillo' }), 3.2, 4.0, 'golpe'], [C.rotulo('6 JUEGOS DIFERENTES', 0.7, { cara: 'amarillo' }), 4.0, 7.0, 'vuela'], [C.rotulo('600.000', 1.5, { cara: 'blanco' }), 9.0, 10.2, 'golpe']];
+      const huellas = cabHuellas('#ff8a1a'); const disco = new T.Mesh(new T.CircleGeometry(2.2, 64), new T.MeshBasicMaterial({ map: huellas, transparent: true })); disco.position.z = -2; C.txt.add(disco); disco.visible = false;
+      const curvas = (g, w, h, t) => { const gr = g.createLinearGradient(0, 0, w, h); gr.addColorStop(0, '#0a2ab0'); gr.addColorStop(1, '#1a6ae8'); g.fillStyle = gr; g.fillRect(0, 0, w, h); for (let i = 0; i < 7; i++) { g.strokeStyle = `rgba(${90 + i * 20},${180 + i * 8},255,${0.25 + i * 0.07})`; g.lineWidth = h * (0.05 + i * 0.012); g.beginPath(); g.arc(-w * 0.05, h * 1.15, h * (0.45 + i * 0.16) + Math.sin(t * 2 + i) * 4, -1.4, 0.1); g.stroke(); } };
+      const caja = (g, x, y, bw, bh, col, tx, fs) => { g.fillStyle = col; g.beginPath(); g.roundRect ? g.roundRect(x, y, bw, bh, bh * 0.25) : g.rect(x, y, bw, bh); g.fill(); g.font = `900 ${fs}px ${CAB_FUENTE}`; g.fillStyle = '#fff'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(tx, x + bh * 0.3, y + bh / 2, bw - bh * 0.5); };
+      return t => {
+        const g = C.g2, w = C.c2.width, h = C.c2.height, vert = w < h; { const sc = Math.min(1, (w / h) * 1.5); tit.scale.setScalar(sc); tit2.scale.setScalar(sc); tit2.position.y = 2.6 - 1.05 * sc; }
+        disco.visible = t >= 0.2 && t < 2.2; if (disco.visible) { const k = C.rebote((t - 0.2) / 0.8); disco.scale.setScalar(Math.max(0.01, k) * Math.min(1, C.anchoTxt() * 0.45 / 4.4)); disco.rotation.z = Math.sin(t * 3) * 0.05; }
+        if (t < 2.2) { const r = Math.min(w, h) * (0.15 + Math.min(1, t / 1) * 0.3); g.strokeStyle = '#ff9a2a'; g.shadowColor = '#ff7a1a'; g.shadowBlur = h * 0.06; g.lineWidth = h * 0.012; g.beginPath(); g.arc(w / 2, h / 2, r, 0, 7); g.stroke(); g.shadowBlur = 0; }
+        else if (t < 3.2) { E.update(t); const k = C.ease((t - 2.2) / 1); C.cam.position.set(C.lerp(-2.4, 2.4, k), 1.6, 3.6); C.cam.lookAt(0, 1.2, 0); C.render(E.scene); }
+        else if (t < 4.0) { const x = bgC.getContext('2d'); x.fillStyle = (t * 8) % 2 < 1 ? '#ffffff' : '#ff9a1a'; x.fillRect(0, 0, 1024, 576); bgT.needsUpdate = true; C.render(Bs); }
+        else if (t < 8.2) { E.update(t); const k = (t - 4) / 4.2; const a = C.lerp(-1.4, 1.2, C.ease(k)); C.cam.position.set(Math.sin(a) * C.lerp(11, 6, k), C.lerp(4.6, 2.2, k), Math.cos(a) * C.lerp(11, 6, k)); C.cam.lookAt(0, 1.6, 0); C.render(E.scene); }
+        else if (t < 9.0) { E.update(t); tit.visible = tit2.visible = true; [tit, tit2].forEach(G => G.userData.letras.forEach(L => L.position.copy(L.userData.dest))); const k = C.ease((t - 8.2) / 0.8); C.cam.position.set(C.lerp(-1.2, 0, k), C.lerp(2.6, 2.2, k), C.lerp(1.6, 5.5, k)); C.cam.lookAt(C.lerp(-1.2, 0, k), C.lerp(2.6, 2.1, k), 0); C.render(E.scene); }
+        else if (t < 10.2) { tit.visible = tit2.visible = false; fondoCurvas(t); }
+        else if (t < 13.0) { E.update(t); tit.visible = tit2.visible = true; const d = t - 10.2; [tit, tit2].forEach((G, gi) => G.userData.letras.forEach((L, i) => { const D = L.userData.dest, k = C.rebote((d - (gi * 6 + i) * 0.04) / 0.7); L.position.set(D.x + (1 - k) * (i - 3) * 2, D.y + (1 - k) * 5, D.z - (1 - k) * 8); L.rotation.y = (1 - k) * 2; }));
+          C.cam.position.set(0, 2.1, C.lerp(7.5, 6.6, Math.min(1, d / 2.8))); C.cam.lookAt(0, 2.05, 0); C.render(E.scene); if (d < 0.5) { g.fillStyle = `rgba(255,255,255,${1 - d / 0.5})`; g.fillRect(0, 0, w, h); } }
+        else if (t < 18.0) { tit.visible = tit2.visible = false; fondoCurvas(t); A.A.habla ? A.A.habla(t) : A.A.idle(t); A.root.rotation.y = Math.sin(t * 0.7) * 0.08;
+          const lw = vert ? w * 0.7 : h * 0.62, cx = vert ? w / 2 : w * 0.72, cy = vert ? h * 0.3 : h * 0.5; g.save(); g.strokeStyle = '#ffd23a'; g.lineWidth = h * 0.01; g.beginPath(); g.arc(cx, cy, lw * 0.5, 0, 7); g.stroke(); g.restore();
+          C.render(H, hc, vert ? [0.1, 0.45, 0.8, 0.5] : [0.5, 0, 0.44, 1]);
+          const lg = vert ? w * 0.36 : h * 0.3; g.drawImage(promoLogoCanvas(), cx + lw * 0.12, cy + lw * 0.12, lg, lg * 420 / 480);
+          const bx = vert ? w * 0.06 : w * 0.05, by = vert ? h * 0.62 : h * 0.34, B = vert ? w * 0.88 : w * 0.38, uh = vert ? w * 0.1 : h * 0.08;
+          const e = k0 => C.ease((t - 13 - k0) / 0.45);
+          caja(g, bx - (1 - e(0)) * w, by, B * 0.75, uh, '#0a1a7a', 'GRAN ESTRENO', uh * 0.55);
+          caja(g, bx - (1 - e(0.25)) * w, by + uh * 1.2, B, uh * 1.6, '#ff7a10', '¡AHORA CAIGO!', uh * 0.95);
+          if (t > 14.2) caja(g, bx - (1 - e(1.2)) * w, by + uh * 3.0, B * 0.75, uh, '#0a1a7a', 'PRÓXIMAMENTE', uh * 0.55);
+          promoMarcas(g, w, h, {}); }
+        R.forEach(([G, a, b, m]) => C.anima(G, t, a, b, m));
+        if (t >= 18) promoShowTime2D(g, w, h, (t - 18) / 5, C.cfg);
+      };
+    } },
   estanoche: { id: 'estanoche', nombre: 'Esta noche', dur: 31, emoji: '🌙', sub: 'Descubre el secreto mejor guardado', audio: 'promo_estanoche', musica: { bpm: 100, menor: true, golpes: [6, 14, 20, 21, 22], fin: 26 },
     montar(C) {
       const T = C.T, U = promoTunel({ pilares: true, largo: 64 }); C.escenas = [U.scene];
@@ -383,10 +420,10 @@ function menuExtra(a, r) {
   if (a === 'promos') {
     r.appendChild(Pa('Promos'));
     r.appendChild(caja('Promos de ¡Ahora caigo! en 3D, en tiempo real, con nuestro presentador virtual <b>Adrián Vega</b> (personajes virtuales, sin personas reales).'));
-    const lista = [['cabecera', '🎬', 'Cabecera del programa', '26 s · la cabecera de cada programa']].concat(['estreno', 'casting', 'anuncio', 'estanoche', 'huella'].map(k => [k, PROMOS[k].emoji, PROMOS[k].nombre, Math.round(PROMOS[k].dur) + ' s · ' + PROMOS[k].sub]));
+    const lista = [['cabecera', '🎬', 'Cabecera del programa', '26 s · la cabecera de cada programa']].concat(['estreno', 'proximamente', 'casting', 'anuncio', 'estanoche', 'huella'].map(k => [k, PROMOS[k].emoji, PROMOS[k].nombre, Math.round(PROMOS[k].dur) + ' s · ' + PROMOS[k].sub]));
     for (const [k, em, n, s] of lista) r.appendChild(ei(em + ' ' + n, s, k === 'estreno' ? 'gold' : '', () => k === 'cabecera' ? cab3D(null, null, xf(Ms)) : promoCorre(PROMOS[k])));
     const fila = document.createElement('div'); fila.className = 'orow orow-wrap'; const lb = document.createElement('label'); lb.textContent = '🔊 Audio de las promos'; fila.appendChild(lb);
-    const hay = ['estreno', 'promo_anuncio', 'promo_estanoche', 'promo_huella'].some(n => RC.audioExtra && RC.audioExtra(n));
+    const hay = ['estreno', 'promo_proximamente', 'promo_anuncio', 'promo_estanoche', 'promo_huella'].some(n => RC.audioExtra && RC.audioExtra(n));
     for (const [v, t] of [['recreado', 'Recreado (voz de Adrián Vega)'], ['original', 'Original del vídeo' + (hay ? '' : ' (cárgalo en Opciones)')]]) fila.appendChild(boton(t, b => { localStorage.setItem('ac_promo_audio', v); fila.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b)); }, PROMO_AUDIO() === v));
     r.appendChild(fila);
     const f2 = document.createElement('div'); f2.className = 'mrow'; f2.append(boton(estrenoPendiente() ? '🎬 El Gran estreno sale en el próximo programa' : '🔁 Ver el Gran estreno en el próximo programa', b => { localStorage.removeItem('ac_estreno_visto'); b.innerHTML = '🎬 El Gran estreno sale en el próximo programa'; })); r.appendChild(f2);

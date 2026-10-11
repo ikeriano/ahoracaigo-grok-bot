@@ -30,7 +30,7 @@ MD
 mkdir -p $P; find $P -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 cp -r $WEBFILES $P/; mkdir -p $P/sb3 $P/cabecera $P/codigo
 cp -r $WWW/sb3/img $WWW/sb3/snd $P/sb3/; cp -r $WWW/clasico $P/; cp $WWW/cabecera/cabecera-iker.mp4 $P/cabecera/
-cp $PRIV/cabecera3d.mp3 $PRIV/estreno.mp3 $PRIV/promo_anuncio.mp3 $PRIV/promo_estanoche.mp3 $PRIV/promo_huella.mp3 $P/cabecera/
+cp $PRIV/cabecera3d.mp3 $PRIV/estreno.mp3 $PRIV/promo_anuncio.mp3 $PRIV/promo_proximamente.mp3 $PRIV/promo_estanoche.mp3 $PRIV/promo_huella.mp3 $P/cabecera/
 cp $PRIV/logo.png $P/logo.png; cp -r src tools package.json $P/codigo/
 node -e "
 const fs=require('fs');const d='$WWW/sb3/snd';const o={};for(const f of fs.readdirSync(d))o[f.replace(/\.mp3\$/,'')]=fs.readFileSync(d+'/'+f).toString('base64');
