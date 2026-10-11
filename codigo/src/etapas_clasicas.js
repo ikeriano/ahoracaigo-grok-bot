@@ -104,3 +104,13 @@ function retocaPlatoFotos(em, osc, lo, marco) {
     const tira = new T.Mesh(new T.CylinderGeometry(10.85, 10.85, 7.0, 6, 1, true, a - 0.012, 0.024), luz); tira.position.y = 3.6; R.add(tira);
   }
 }
+/** 2011-2021: los tableros laterales de premios del plató muestran la tabla clásica (10 cifras + comodines), no la de 2021 */
+function clasicaPremiosEnPlato(eng, clasica) {
+  const st = eng && eng.studio; if (!st || !st.prizeBoards) return; const tex = PANT.texPremios(); let n = 0;
+  for (const b of st.prizeBoards) {
+    const m = b.children && b.children[0]; if (!m || !m.material || !m.material.map) continue;
+    if (clasica && m.material.map !== tex) { m.userData.mapOrig = m.material.map; m.material.map = tex; m.material.needsUpdate = true; if (b.children[3]) { b.children[3].userData.visOrig = b.children[3].visible; b.children[3].visible = false; b.children[3].scale.setScalar(0.0001); } n++; }
+    else if (!clasica && m.userData.mapOrig) { m.material.map = m.userData.mapOrig; delete m.userData.mapOrig; m.material.needsUpdate = true; if (b.children[3]) { b.children[3].visible = true; b.children[3].scale.setScalar(1); } }
+  }
+  typeof mec === 'function' && mec('tablero premios ' + (clasica ? 'clasico' : '2021') + ' ' + n);
+}

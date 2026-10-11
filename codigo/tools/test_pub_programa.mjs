@@ -21,7 +21,7 @@ await p.evaluate((prueba) => {
   }, 450);
 }, prueba);
 const t0 = Date.now(); let n = 0;
-while (Date.now() - t0 < 14 * 60e3) {
+while (Date.now() - t0 < 25 * 60e3) {
   await new Promise(r => setTimeout(r, 20000));
   const st = await p.evaluate(() => ({ menu: !document.getElementById('menu').classList.contains('hidden'), fin: !!document.getElementById('finCard'), score: (document.getElementById('hashtag') || {}).textContent }));
   await p.screenshot({ path: `${out}_${String(++n).padStart(2, '0')}.png` });
