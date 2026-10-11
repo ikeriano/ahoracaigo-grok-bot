@@ -20912,17 +20912,22 @@ class V2 {
       n.className = "pq", n.style.top = "72px", n.textContent = e.text;
       const i = document.createElement("div");
       i.className = "pboxes", i.style.top = "160px";
-      const s = e.word.length, o = Math.min(50, Math.floor(900 / s) - 6);
+      const s = e.word.length, o = Math.max(18, Math.min(50, Math.floor(400 / s) - 9)); // las casillas no pueden pasar de ~400 px (barra roja a la derecha)
       if ([...e.word].forEach((r, l) => {
         const c = document.createElement("div");
-        c.className = "b" + (r === " " ? " sp" : "") + (e.hidden[l] ? " h" : ""), c.textContent = r === " " ? "" : r, r !== " " && (c.style.width = o + "px", c.style.fontSize = Math.round(o * 0.9) + "px"), i.appendChild(c);
+        c.className = "b" + (r === " " ? " sp" : "") + (e.hidden[l] ? " h" : ""), c.textContent = r === " " ? "" : r, r === " " && o < 50 && (c.style.height = Math.round(o * 1.24) + "px", c.style.width = Math.round(o * 0.5) + "px"), r !== " " && (c.style.width = o + "px", c.style.fontSize = Math.round(o * 0.9) + "px", o < 50 && (c.style.height = Math.round(o * 1.24) + "px", c.style.lineHeight = Math.round(o * 1.24) + "px")), i.appendChild(c);
       }), e.cancion) {
         t.classList.add("escuchando");
         const r = document.createElement("div");
         r.className = "gesc", r.innerHTML = "🐔🎵 Escucha la canción…", t.appendChild(r);
       }
       t.append(n, i), t.style.zIndex = "4", t.style.position = "absolute", t.style.inset = "0", this.box.appendChild(t), this.txt = t;
-      { let fs = 28; n.style.lineHeight = "1.15"; while (n.offsetHeight > 86 && fs > 16) n.style.fontSize = --fs + "px"; const h = n.offsetHeight; h > 88 && i.style.setProperty("top", 70 + h + 6 + "px", "important"); }
+      { // respuestas largas con espacio: dos filas de casillas más grandes en vez de una fila diminuta
+        const w = [...e.word]; if (o < 30 && w.includes(" ")) { let mejor = -1, md = 1e9; w.forEach((c, l) => { if (c === " ") { const d = Math.abs(l - (w.length - l - 1)); d < md && (md = d, mejor = l); } }); const fila = Math.max(mejor, w.length - mejor - 1), o2 = Math.min(30, Math.floor(400 / fila) - 9);
+          if (o2 > o) { i.style.flexWrap = "wrap"; i.style.rowGap = "4px"; i.style.left = "240px"; i.style.width = "480px"; [...i.children].forEach((c, l) => { if (l === mejor) { c.style.flexBasis = "100%"; c.style.width = "100%"; c.style.height = "0"; c.style.margin = "0"; } else { c.style.width = (w[l] === " " ? Math.round(o2 * 0.5) : o2) + "px"; c.style.height = Math.round(o2 * 1.15) + "px"; c.style.fontSize = Math.round(o2 * 0.9) + "px"; c.style.lineHeight = Math.round(o2 * 1.15) + "px"; } }); } } }
+      { // la pregunta y las casillas caben entre y=70 y y=226 (debajo van los botones): primero se colocan las casillas y la pregunta se ajusta encima
+        const ch = [...i.children].filter(c => c.offsetHeight > 0), hb = ch.length ? Math.max(...ch.map(c => c.offsetTop + c.offsetHeight)) - Math.min(...ch.map(c => c.offsetTop)) : 66, top = Math.min(162, 226 - hb); top < 162 && i.style.setProperty("top", top + "px", "important"); const lim = top - 74;
+        let fs = 28; n.style.lineHeight = "1.15"; while (n.offsetHeight > lim && fs > 15) n.style.fontSize = --fs + "px"; }
     }
     this.hint.textContent = "";
   }

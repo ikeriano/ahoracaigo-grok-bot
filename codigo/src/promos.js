@@ -421,4 +421,4 @@ function menuExtra(a, r) {
 }
 // rutas directas: …/#casting y …/#huellas (el QR de la promo del casting apunta aquí)
 (function rutas() { const ir = () => { const h = (location.hash || '').slice(1); if (!['casting', 'huellas', 'promos'].includes(h)) return; const ld = document.getElementById('loading'); if (!window.__eng || !ld || !ld.classList.contains('hidden') || !document.getElementById('menu')) return setTimeout(ir, 700); setTimeout(() => { try { Lt(h); } catch (e) {} }, 600); }; setTimeout(ir, 1200); addEventListener('hashchange', ir); })();
-window.__ac = { CASTING, castingNombre, castingJob, menu: x => Lt(x), huellaValores };
+window.__ac = { V2, CASTING, castingNombre, castingJob, menu: x => Lt(x), huellaValores };
