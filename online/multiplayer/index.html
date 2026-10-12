@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#02040c">
+<title>¡Ahora Caigo! Multijugador</title>
+<link rel="icon" href="../web/icon-192.png">
+<link rel="stylesheet" href="mp.css">
+</head>
+<body>
+<div id="app">
+  <header><img src="../web/logo.png" alt="¡Ahora Caigo!" id="logo"><span id="salaTag" class="hidden"></span></header>
+
+  <section id="vInicio" class="vista">
+    <h1>Multijugador</h1>
+    <label>Tu nombre <input id="nombre" maxlength="16" autocomplete="nickname" placeholder="Ej.: Iker"></label>
+    <button id="btnCrear" class="gold">Crear sala</button>
+    <div class="o">— o —</div>
+    <label>Código de sala <input id="codigo" maxlength="4" autocapitalize="characters" placeholder="ABCD"></label>
+    <button id="btnUnir">Unirme</button>
+    <p class="nota">Cada jugador entra desde su móvil con el código. El anfitrión es el concursante de la trampilla central.</p>
+    <p><a href="../web/index.html">← Jugar en solitario (juego 3D)</a></p>
+  </section>
+
+  <section id="vEspera" class="vista hidden">
+    <h2>Sala <b id="codGrande"></b></h2>
+    <p class="nota">Comparte este código o el enlace: <a id="enlace" href="#"></a></p>
+    <ul id="listaEspera" class="lista"></ul>
+    <button id="btnEmpezar" class="gold hidden">¡Empezar!</button>
+    <p id="esperaMsg" class="nota"></p>
+  </section>
+
+  <section id="vEleccion" class="vista hidden">
+    <h2 id="elTitulo"></h2>
+    <div id="huellas"></div>
+    <p id="elMsg" class="nota"></p>
+  </section>
+
+  <section id="vDuelo" class="vista hidden">
+    <div id="marcador">
+      <div class="lado" id="ladoA"><span class="n"></span><span class="t"></span><span class="c"></span></div>
+      <div class="vs">VS</div>
+      <div class="lado" id="ladoB"><span class="n"></span><span class="t"></span><span class="c"></span></div>
+    </div>
+    <div id="turnoMsg"></div>
+    <div id="pregunta"><div id="pImgBox" class="hidden"><img id="pImg" alt=""></div><p id="pTexto"></p></div>
+    <div id="casillas"></div>
+    <div id="controles">
+      <input id="kb" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="Escribe letras">
+      <div class="fila"><button id="btnEnviar" class="gold">OK</button><button id="btnPasar">PASAR</button></div>
+    </div>
+  </section>
+
+  <section id="vCaida" class="vista hidden">
+    <div id="trampilla"><div class="hoyo"></div><div id="caeNombre"></div></div>
+    <h2>¡Ahora cae!</h2>
+    <p id="caeMsg"></p>
+  </section>
+
+  <section id="vFin" class="vista hidden">
+    <h2>🏆 ¡Fin de la partida!</h2>
+    <p id="finMsg"></p>
+    <ul id="historial" class="lista"></ul>
+    <button id="btnRevancha" class="gold hidden">Revancha</button>
+    <p><a href="./">Salir</a></p>
+  </section>
+
+  <div id="toast" class="hidden"></div>
+</div>
+<script src="mp.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "ahoracaigo-online-server",
+  "version": "1.12.0",
+  "private": true,
+  "description": "Servidor multijugador en tiempo real de ¡Ahora Caigo! (salas con código, duelos autoritativos)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "test": "node test/simular.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "ws": "^8.18.0" }
+}
