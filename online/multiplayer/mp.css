@@ -1,0 +1,36 @@
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#02040c radial-gradient(circle at 50% 0,#1b52e6 0,#0b2fa8 30%,#02040c 75%) fixed;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:560px;margin:0 auto;padding:10px 14px 30px;min-height:100%}
+header{text-align:center;position:relative}#logo{width:min(62vw,240px);filter:drop-shadow(0 4px 10px #0008)}
+#salaTag{position:absolute;right:0;top:4px;background:#ffd23a;color:#3a2600;font-weight:900;border-radius:8px;padding:2px 8px}
+.hidden{display:none!important}h1,h2{text-align:center;margin:.4em 0}.vista{display:flex;flex-direction:column;gap:10px}
+label{display:flex;flex-direction:column;gap:4px;font-weight:600}
+input{font-size:20px;padding:12px;border-radius:12px;border:2px solid #39c8ff;background:#061a5a;color:#fff;text-transform:uppercase;outline:none}
+button{font-size:19px;font-weight:800;padding:13px;border-radius:14px;border:0;background:#1b52e6;color:#fff;box-shadow:0 4px 0 #0b2370;cursor:pointer}
+button:active{transform:translateY(2px);box-shadow:0 2px 0 #0b2370}button:disabled{opacity:.45}
+button.gold{background:linear-gradient(#ffd23a,#f39a12);color:#3a2600;box-shadow:0 4px 0 #8a5a00}
+.o{text-align:center;opacity:.7}.nota{opacity:.8;font-size:14px;text-align:center}a{color:#ffd23a}
+.lista{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.lista li{background:#0b2fa8aa;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between}
+#codGrande{color:#ffd23a;letter-spacing:6px;font-size:1.3em}
+#huellas{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.huella{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;font-size:16px}
+.huella .pie{font-size:34px}.huella.muerto{opacity:.3;pointer-events:none;text-decoration:line-through}.huella.central{background:#f39a12;pointer-events:none}
+#marcador{display:flex;align-items:stretch;gap:6px}.vs{align-self:center;font-weight:900;color:#ffd23a}
+.lado{flex:1;background:#061a5a;border:3px solid #1b52e6;border-radius:14px;padding:8px;text-align:center;display:flex;flex-direction:column}
+.lado.turno{border-color:#ffd23a;box-shadow:0 0 18px #ffd23a88}.lado .n{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lado .t{font-size:34px;font-weight:900;font-variant-numeric:tabular-nums}.lado .t.poco{color:#ff3b3b}.lado .c{font-size:13px;opacity:.85}
+#turnoMsg{text-align:center;font-weight:800;font-size:18px;min-height:1.4em}
+#pregunta{background:#02040ccc;border-radius:12px;padding:10px;text-align:center;min-height:60px}
+#pImgBox{overflow:hidden;width:100%;height:auto}#pImg{width:100%;display:block}
+#pTexto{margin:0;font-size:18px;font-weight:600}
+#casillas{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.cas{width:34px;height:44px;border-radius:5px;background:linear-gradient(#fff,#c9d6ef);color:#0b2370;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #6a84c0}
+.cas.hueco{background:#0b2370;border-color:#39c8ff}.cas.esp{width:14px;background:none;border:0}
+#controles{display:flex;flex-direction:column;gap:8px}.fila{display:flex;gap:8px}.fila button{flex:1}
+#controles.bloq{opacity:.4;pointer-events:none}
+#trampilla{height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.hoyo{width:160px;height:160px;border-radius:50%;background:radial-gradient(#000 40%,#ffd23a 42%,#f39a12 50%,#0b2fa8 52%);animation:abre 1s ease-out}
+#caeNombre{position:absolute;font-size:24px;font-weight:900;animation:cae 1.6s ease-in forwards}
+@keyframes abre{from{transform:scale(.2)}to{transform:scale(1)}}@keyframes cae{0%{transform:translateY(-60px) scale(1);opacity:1}100%{transform:translateY(20px) scale(.1);opacity:0}}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#000d;padding:10px 16px;border-radius:12px;max-width:90vw}
+.flash-ok{animation:fok .5s}.flash-ko{animation:fko .4s}@keyframes fok{50%{background:#2ecc71}}@keyframes fko{25%,75%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
