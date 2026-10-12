@@ -428,6 +428,7 @@ function menuExtra(a, r) {
     for (const [v, t] of [['recreado', 'Recreado (voz de Adrián Vega)'], ['original', 'Original del vídeo' + (hay ? '' : ' (cárgalo en Opciones)')]]) fila.appendChild(boton(t, b => { localStorage.setItem('ac_promo_audio', v); fila.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b)); }, PROMO_AUDIO() === v));
     r.appendChild(fila);
     const f2 = document.createElement('div'); f2.className = 'mrow'; f2.append(boton(estrenoPendiente() ? '🎬 El Gran estreno sale en el próximo programa' : '🔁 Ver el Gran estreno en el próximo programa', b => { localStorage.removeItem('ac_estreno_visto'); b.innerHTML = '🎬 El Gran estreno sale en el próximo programa'; })); r.appendChild(f2);
+    promosV115(r);
     r.appendChild(Ia('main')); return;
   }
   if (a === 'casting') {
