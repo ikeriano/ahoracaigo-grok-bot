@@ -22461,7 +22461,7 @@ class sy {
     var r, l;
     const { eng: e, hud: t, s: n } = this.c;
     const ET = etapa(), ND = ET.duelos || 8; this.vidas = ET.comodines ?? 2, this.cifrasT = cifrasTrampillas(), mec("etapa " + ETAPA + " · " + ND + " duelos · moneda " + ET.moneda + " · final " + ET.final), clasicaPremiosEnPlato(e, ET.moneda === "fija"), ET.moneda === "fija" && (PANT.actualiza({ usadas: [], comodines: this.vidas, placar: 0, bote: ET.bote || 0, quedan: ND }), PANT.mostrar("bote"));
-    e.resetPositions(), e.opps.forEach((c) => c.root.visible = true), (r = e.lights) == null || r.event("intro"), (it.cabecera === "cab3d" ? !window.__noCab3d && (estrenoPendiente() ? await promoEstreno(t, n) : await cab3D(t, n, e.theme)) : To.video && RC.videoUrl() && !window.__noCabVideo && await oA(t, n)) || await nA(e, t, n, !!e.theme.festivo), t.hashtag(e.theme.hashtag || "#AhoraCaigo"), F.musicTime(ps) >= 0 && F.stopMusic(F.musicTime(ps) < 26.5 ? 0.8 : 2);
+    e.resetPositions(), e.opps.forEach((c) => c.root.visible = true), (r = e.lights) == null || r.event("intro"), (await aperturaPrograma(t, n, e.theme)) || (it.cabecera === "cab3d" ? !window.__noCab3d && (estrenoPendiente() ? await promoEstreno(t, n) : await cab3D(t, n, e.theme)) : To.video && RC.videoUrl() && !window.__noCabVideo && await oA(t, n)) || await nA(e, t, n, !!e.theme.festivo), t.hashtag(e.theme.hashtag || "#AhoraCaigo"), F.musicTime(ps) >= 0 && F.stopMusic(F.musicTime(ps) < 26.5 ? 0.8 : 2);
     {
       const c = e.host.root.position;
       e.cut($t(c.x + 0.9, Ae + 1.7, c.z + 3.2), $t(c.x, Ae + 1.3, c.z)), e.face(e.host, $t(c.x + 1.2, 0, c.z + 6));
@@ -22525,6 +22525,7 @@ class sy {
     var h, d;
     const { eng: t, hud: n, st: i, panel: s, s: o } = this.c, r = t.opps[e - 1];
     t.studio.setHoleColor(e, t.theme.accent), Ot.opp(t, e), He(r, "saluda", 1.4);
+    this.rodadas > 1 && await coproPausa(this.c, 0.5);
     await coproMomento(this.c, "duelo", { n: this.rodadas, rival: me.rival(e) });
     {
       const f = _h("elegidoT", e);
@@ -22601,6 +22602,7 @@ class sy {
     return e.show(o, 2, { z: 47, fade: 330 }), await t.w(1100), ["Painel", "BotãoMenu3", "BotãoMenu4"].forEach((r) => e.hide(r, 330)), s;
   }
   async juegoFinal() {
+    await coproAntesFinal(this.c);
     await coproMomento(this.c, "final");
     var h, d;
     const { eng: e, hud: t, st: n, panel: i, s } = this.c;
@@ -23371,7 +23373,7 @@ function Lt(a = "main") {
     const b = document.createElement("button");
     b.className = "tbtn" + (document.fullscreenElement ? " sel" : ""), b.textContent = document.fullscreenElement ? "Salir" : "Activar", b.onclick = async (_) => {
       _.stopPropagation(), await YA(), setTimeout(() => Lt("options"), 300);
-    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), ZA(), HA(() => Lt("gallina")));
+    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), filaApertura(), ZA(), HA(() => Lt("gallina")));
     const A = document.createElement("p");
     A.className = "mtext", A.textContent = `Rendimiento actual: ${Math.round(Xe.fps)} fps. Si el juego va lento en tu móvil, elige calidad «Baja».`, r.append(g, x, A, Ia("main"));
   } else if (a === "monologos") {

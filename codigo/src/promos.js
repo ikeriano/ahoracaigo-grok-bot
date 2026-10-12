@@ -114,6 +114,7 @@ async function promoCorre(def, hud, sess) {
     ease: x => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x), lerp: (a, b, k) => a + (b - a) * k, rebote: x => x <= 0 ? 0 : x >= 1 ? 1 : 1 - Math.pow(2, -9 * x) * Math.cos(x * 13),
     render(sc, cm = cam, vp) { if (vp) { const w = c2.width / pr, h = c2.height / pr; ren.setScissorTest(true); ren.setViewport(vp[0] * w, vp[1] * h, vp[2] * w, vp[3] * h); ren.setScissor(vp[0] * w, vp[1] * h, vp[2] * w, vp[3] * h); const a0 = cm.aspect; cm.aspect = vp[2] * w / (vp[3] * h); cm.updateProjectionMatrix(); ren.render(sc, cm); cm.aspect = a0; cm.updateProjectionMatrix(); ren.setScissorTest(false); ren.setViewport(0, 0, w, h); } else ren.render(sc, cm); },
   };
+  C.def = def;
   // rótulos 3D: C.rotulo(texto, tamaño, opciones) -> grupo; C.anima(grupo, t, t0, t1, modo)
   C.rotulo = (s, size = 0.8, op = {}) => { const G = cabFrase(s, size * 1.35, { cara: op.cara || 'rotulo', capas: 8, fondo: 0.25 }); G.visible = false; G.position.set(op.x || 0, (op.y || 0) * 1.3, 0); G.userData.y0 = (op.y || 0) * 1.3; txt.add(G); return G; };
   C.anima = (G, t, t0, t1, modo = 'vuela') => {
@@ -420,8 +421,8 @@ function menuExtra(a, r) {
   if (a === 'promos') {
     r.appendChild(Pa('Promos'));
     r.appendChild(caja('Promos de ¡Ahora caigo! en 3D, en tiempo real, con nuestro presentador virtual <b>Adrián Vega</b> (personajes virtuales, sin personas reales).'));
-    const lista = [['cabecera', '🎬', 'Cabecera del programa', '26 s · la cabecera de cada programa'], ['cabnueva', '🌀', 'Cabecera de estreno (nueva)', '17 s · cabecera animada: huellas, trampillas y logo']].concat(['estreno', 'proximamente', 'casting', 'anuncio', 'estanoche', 'huella'].map(k => [k, PROMOS[k].emoji, PROMOS[k].nombre, Math.round(PROMOS[k].dur) + ' s · ' + PROMOS[k].sub]));
-    for (const [k, em, n, s] of lista) r.appendChild(ei(em + ' ' + n, s, k === 'estreno' ? 'gold' : '', () => k === 'cabecera' ? cab3D(null, null, xf(Ms)) : k === 'cabnueva' ? promoCabNueva() : promoCorre(PROMOS[k])));
+    const lista = [['cabecera', '🎬', 'Cabecera del programa', '26 s · la cabecera de cada programa'], ['cab3dv', '🌀', 'Cabecera 3D', '7 s · túnel de neón, trampilla y logo'], ['apertura', '🎬', 'Apertura del programa', '33 s · plató, público, Adrián, concursantes y pregunta de selección'], ['donarturo', '🎩', 'Sketch: El regreso de Don Arturo', '2-3 min · un presentador legendario vuelve al plató']].concat(['estreno', 'proximamente', 'casting', 'anuncio', 'estanoche', 'huella'].map(k => [k, PROMOS[k].emoji, PROMOS[k].nombre, Math.round(PROMOS[k].dur) + ' s · ' + PROMOS[k].sub]));
+    for (const [k, em, n, s] of lista) r.appendChild(ei(em + ' ' + n, s, k === 'estreno' ? 'gold' : '', () => k === 'cabecera' ? cab3D(null, null, xf(Ms)) : k === 'cab3dv' ? promoCab3Dv(xf(Ms)) : k === 'apertura' ? promoApertura({ tema: xf(Ms) }) : k === 'donarturo' ? promoArturo() : promoCorre(PROMOS[k])));
     const fila = document.createElement('div'); fila.className = 'orow orow-wrap'; const lb = document.createElement('label'); lb.textContent = '🔊 Audio de las promos'; fila.appendChild(lb);
     const hay = ['estreno', 'promo_proximamente', 'promo_anuncio', 'promo_estanoche', 'promo_huella'].some(n => RC.audioExtra && RC.audioExtra(n));
     for (const [v, t] of [['recreado', 'Recreado (voz de Adrián Vega)'], ['original', 'Original del vídeo' + (hay ? '' : ' (cárgalo en Opciones)')]]) fila.appendChild(boton(t, b => { localStorage.setItem('ac_promo_audio', v); fila.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b)); }, PROMO_AUDIO() === v));

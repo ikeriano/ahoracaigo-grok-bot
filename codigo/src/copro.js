@@ -108,7 +108,7 @@ async function coproEntra(c) {
   coproQuita();
   if (window.__coproForce === false || (!window.__coproForce && !coproOn())) return false;
   const { eng: e, hud: i, s } = c, h = e.host;
-  let g = exAzar(COPRO_DATOS); if (typeof window.__coproForce === 'string') g = COPRO_DATOS.find(x => x.id === window.__coproForce) || g;
+  let g = (typeof COPRO_APERTURA !== 'undefined' && COPRO_APERTURA) || exAzar(COPRO_DATOS); COPRO_APERTURA = null; if (typeof window.__coproForce === 'string') g = COPRO_DATOS.find(x => x.id === window.__coproForce) || g;
   COPRO.g = g; COPRO.dicho = {}; mec('presentador sorpresa ' + g.id);
   const fig = Rm({ shirt: g.shirt }); e.scene.add(fig.root); COPRO.fig = fig;
   const origen = new P(g.quien === 'pub' ? -2.6 : 3.2, 0, 10.5); fig.root.position.copy(origen);
@@ -122,7 +122,7 @@ async function coproEntra(c) {
     if (!s.alive || !COPRO.fig) return coproQuita();
     const p = h.root.position; if (fig.root.position.distanceTo(p) > 0.3) fig.root.position.set(p.x + off.x, p.y, p.z + off.z);
   }, 250);
-  for (const t of g.intro) await coproHabla(c, t, 'saluda');
+  COPRO.pausa = 0; if (!(await coproBienvenida(c))) for (const t of g.intro) await coproHabla(c, t, 'saluda');
   He(h, 'aplaude', 2); ze.aplauso(2.5, 0.6);
   return true;
 }
