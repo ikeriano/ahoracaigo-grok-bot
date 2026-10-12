@@ -129,14 +129,14 @@ async function promoCorre(def, hud, sess) {
   // audio
   const vol = To.mute ? 0 : Math.max(0, Math.min(1, To.vol));
   let audio = null, synth = null, voces = [], reloj0 = performance.now();
-  const orig = def.audio && RC.audioExtra && RC.audioExtra(def.audio);
+  const orig = def.audioUrl || (def.audio && RC.audioExtra && RC.audioExtra(def.audio));
   const usarOrig = orig && (def.soloMusica || PROMO_AUDIO() === 'original');
   if (usarOrig) { audio = new Audio(orig); audio.volume = vol; try { await audio.play(); } catch (e) { audio = null; } }
   if (!audio) { try { F.ctx.state === 'suspended' && await F.ctx.resume(); const gm = F.ctx.createGain(); gm.gain.value = vol * 0.45; gm.connect(F.ctx.destination); synth = promoSynth(F.ctx, gm, def.dur, def.musica || {}); synth.gain = gm; } catch (e) { synth = null; } }
   const ahora = () => window.__promoT != null ? window.__promoT : audio && !audio.paused && audio.currentTime > 0 ? audio.currentTime : synth ? Math.max(0, F.ctx.currentTime - synth.t0) : (performance.now() - reloj0) / 1000;
   const vozOn = !usarOrig && !To.mute && it.voz !== false; const vPend = vozOn ? (def.voces || []).map(v => ({ ...v })) : [];
   st.estado = 'reproduciendo'; st.audio = usarOrig ? 'original' : synth ? 'sintetizada' : 'sin';
-  const frame = def.montar(C);
+  C.audioOrig = !!audio; const frame = def.montar(C);
   let fin = null; const termina = new Promise(r => fin = r); let hecho = false; const acaba = e => { if (!hecho) { hecho = true; st.estado = e; fin(); } };
   div.addEventListener('pointerdown', ev => { ev.preventDefault(); ev.stopPropagation(); acaba('saltado'); }); hud && hud.skip && hud.skip(() => acaba('saltado'));
   const vigila = setInterval(() => { if (sess && sess.alive === false) acaba('abort'); }, 100);

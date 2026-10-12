@@ -24,7 +24,7 @@ function capBrazosArriba(f, t, ph = 0) { f.armL.rotation.z = -2.6 + Math.sin(t *
 
 // ---------------------------------------------- A) CABECERA 3D ----------------------------------------------
 PROMOS.cab3dv = { id: 'cab3dv', nombre: 'Cabecera 3D', dur: 7.6, emoji: '🌀', sub: 'Túnel de neón, trampilla con huellas y logo sobre la tarima', soloMusica: true,
-  musica: { bpm: 128, golpes: [1.6, 4.0, 6.6], fin: 7.4 },
+  musica: { bpm: 128, golpes: [1.84, 3.86, 7.48], fin: 7.55 },
   montar(C) {
     const T = C.T, cfg = C.cfg, [sub1, sub2] = capSubtitulos(cfg);
     // --- 1. túnel cilíndrico metálico con anillos de neón azul y rosa/morado
@@ -69,22 +69,22 @@ PROMOS.cab3dv = { id: 'cab3dv', nombre: 'Cabecera 3D', dur: 7.6, emoji: '🌀', 
     return t => {
       if (t < 2) { st.plano = 1; // túnel
         const z = -t * 14 - t * t * 4; C.cam.position.set(Math.sin(t * 3) * 0.15, Math.cos(t * 2.5) * 0.1, z); C.cam.lookAt(0, 0, z - 10); C.cam.rotation.z = t * 0.6;
-        const rompe = t >= 1.45; ahora.visible = !rompe; ahora.position.set(0, 0, C.lerp(z - 30, z - 3.2, C.ease(t / 1.45))); ahora.rotation.y = Math.sin(t * 2) * 0.15;
-        S1.background.setHex(rompe && t < 1.75 ? 0x5a0a1a : 0x02030a); S1.fog.color.copy(S1.background);
-        frag.forEach(m => { m.visible = rompe; if (rompe) { const d = t - 1.45, u = m.userData; m.position.set(u.p0.x + u.v.x * d, u.p0.y + u.v.y * d, z - 3.2 + u.v.z * d); m.rotation.set(u.r.x * d, u.r.y * d, 0); } });
+        const rompe = t >= 1.84; ahora.visible = !rompe; ahora.position.set(0, 0, C.lerp(z - 30, z - 3.2, C.ease(t / 1.84))); ahora.rotation.y = Math.sin(t * 2) * 0.15;
+        S1.background.setHex(rompe ? 0x5a0a1a : 0x02030a); S1.fog.color.copy(S1.background);
+        frag.forEach(m => { m.visible = rompe; if (rompe) { const d = t - 1.84, u = m.userData; m.position.set(u.p0.x + u.v.x * d, u.p0.y + u.v.y * d, z - 3.2 + u.v.z * d); m.rotation.set(u.r.x * d, u.r.y * d, 0); } });
         anillos.forEach((m, i) => m.material.color.setHex((i + Math.floor(t * 8)) % 2 ? 0xd04aff : 0x3ab8ff));
-        C.render(S1); flash(rompe ? (1.6 - t) * 2 : 0, '120,10,30'); flash((t - 1.85) * 7);
-      } else if (t < 4) { st.plano = 2; const d = t - 2; // cenital
+        C.render(S1); flash(rompe ? (2.0 - t) * 4 : 0, '120,10,30'); flash((t - 1.9) * 10);
+      } else if (t < 3.86) { st.plano = 2; const d = t - 2; // cenital
         const y = C.lerp(9, 3.8, C.ease(d / 1.4)); C.cam.position.set(0, y, 0.001); C.cam.up.set(Math.sin(d * 0.9), 0, -Math.cos(d * 0.9)); C.cam.lookAt(0, -1, 0);
-        const k = C.ease((d - 0.7) / 0.35); hojas.forEach(([b, sx]) => b.rotation.z = sx * k * 1.7);
-        cayendo.root.visible = d > 0.55; const caida = Math.max(0, d - 0.95); cayendo.root.position.set(0, 0.05 - caida * caida * 7, 0); cayendo.root.rotation.y = d * 3; capBrazosArriba(cayendo, t);
+        const k = C.ease((d - 1.06) / 0.3); hojas.forEach(([b, sx]) => b.rotation.z = sx * k * 1.7);
+        cayendo.root.visible = d > 0.55; const caida = Math.max(0, d - 1.2); cayendo.root.position.set(0, 0.05 - caida * caida * 7, 0); cayendo.root.rotation.y = d * 3; capBrazosArriba(cayendo, t);
         C.render(S2); flash(1 - d * 5);
-      } else { st.plano = 3; const d = t - 4; C.cam.up.set(0, 1, 0); // revelado del logo
+      } else { st.plano = 3; const d = t - 3.86; C.cam.up.set(0, 1, 0); // revelado del logo
         const k = C.ease(d / 2.2); C.cam.position.set(Math.sin(d * 0.25) * 2, C.lerp(9.5, 4.4, k), C.lerp(4, 13, k)); C.cam.lookAt(0, C.lerp(2.2, 3.4, k), 0);
         conos.forEach((m, i) => { m.rotation.z = Math.sin(t * 1.8 + i) * 0.6; m.rotation.x = Math.cos(t * 1.3 + i) * 0.3; }); aros.forEach((m, i) => m.rotation.z = t * (0.3 + i * 0.15));
-        const golpe = 2.6; logo.lookAt(C.cam.position.x * 0.2, C.cam.position.y * 0.3 + 2.5, C.cam.position.z);
+        const golpe = 3.62; logo.lookAt(C.cam.position.x * 0.2, C.cam.position.y * 0.3 + 2.5, C.cam.position.z);
         const e1 = C.rebote((d - 0.2) / 0.7), e2 = C.rebote((d - 0.45) / 0.7); l1.scale.setScalar(Math.max(0.01, e1)); l2.scale.setScalar(Math.max(0.01, e2));
-        st1.scale.set(Math.max(0.01, C.ease((d - 1.0) / 0.4)), 1, 1); st2.material.opacity = C.ease((d - 1.4) / 0.4);
+        st1.scale.set(Math.max(0.01, C.ease((d - 2.0) / 0.3)), 1, 1); st2.material.opacity = C.ease((d - 2.4) / 0.3);
         const h = d >= golpe ? 1 + (1 - C.rebote((d - golpe) / 0.45)) * 0.35 : 1; logo.scale.setScalar(h); if (d >= golpe && d < golpe + 0.25) C.cam.position.x += Math.sin(d * 140) * 0.08;
         C.render(S3); flash(d >= golpe ? 0.6 - (d - golpe) * 3 : 0);
       }
@@ -130,8 +130,12 @@ function relojScratch(g, d, w, ySuelo, op = {}) {
 const APERTURA_PREGUNTAS = [['¿Cuál es el planeta más grande del sistema solar?', 'JÚPITER'], ['¿Qué animal es conocido como el rey de la selva?', 'LEÓN'], ['¿Cuál es el océano más grande del mundo?', 'PACÍFICO'], ['¿Qué instrumento tiene teclas blancas y negras?', 'PIANO'], ['¿En qué estación del año caen las hojas?', 'OTOÑO']];
 const APERTURA_NOMBRES = ['Rocío', 'Fermín', 'Lidia', 'Paco', 'Inés', 'Ramón', 'Sara', 'Toño', 'Elena', 'Julio'];
 const APERTURA_COLORES = [0xe8102a, 0x2a8aff, 0x2fbf4a, 0xffb02e, 0x9a3ae0, 0x1ac0c0, 0xff5fb0, 0x8a5a2a, 0xffd23a, 0x4a4ae0];
-PROMOS.apertura = { id: 'apertura', nombre: 'Apertura del programa', dur: 33, emoji: '🎬', sub: 'Presentación del programa: plató, público, Adrián, concursantes y pregunta de selección',
-  musica: { bpm: 120, golpes: [4, 12, 21, 23.5, 29], fin: 32.5 },
+// tramos de la apertura: [inicio original, fin original, duración real] — sincronizados con apertura/apertura.mp3
+// (intro 15 s, concursantes 6 s, selección 6 s, cortinilla 4 s, presentación central 8 s, grúa 6 s = 45 s)
+const APERTURA_TRAMOS = [[0, 12.4, 15], [12.4, 16, 6], [16, 21, 6], [21, 23.5, 4], [23.5, 29, 8], [29, 33, 6]];
+const aperturaRemap = t => { let b = 0; for (const [a0, a1, d] of APERTURA_TRAMOS) { if (t < b + d) return a0 + (t - b) / d * (a1 - a0); b += d; } return 33 + (t - b); };
+PROMOS.apertura = { id: 'apertura', nombre: 'Apertura del programa', dur: 45, audioUrl: './apertura/apertura.mp3', soloMusica: true, emoji: '🎬', sub: 'Presentación del programa: plató, público, Adrián, concursantes y pregunta de selección',
+  musica: { bpm: 120, golpes: [4, 15, 27, 31, 39], fin: 44.5 },
   montar(C) {
     const T = C.T, cfg = C.cfg, def = C.def || {}, W = () => C.c2.width, H = () => C.c2.height, g = C.g2;
     const E = cabEstudio(cfg, { id: 'normal' }, { sinObjetos: true }); const S = E.scene;
@@ -184,7 +188,8 @@ PROMOS.apertura = { id: 'apertura', nombre: 'Apertura del programa', dur: 33, em
       g.restore(); };
     relojPrecarga(); let aviso5 = false;
     const st = window.__apertura = { plano: '' };
-    return t => {
+    const conAudio = C.audioOrig; // con el audio de la grabación no se muestran bocadillos ni se usa voz sintética
+    return tReal => { const t = aperturaRemap(tReal);
       E.update(t); esLed.forEach(m => m.material.color.setHex((m.userData.i + Math.floor(t * 6)) % 2 ? 0x3ab8ff : 0xd04aff));
       // --- personajes
       // Adrián: baja la escalera 6.5-9, va al borde de la tarima y presenta
@@ -210,9 +215,9 @@ PROMOS.apertura = { id: 'apertura', nombre: 'Apertura del programa', dur: 33, em
       if (plano === 'cortinilla') { const d = t - 21; bp.abre(C.ease((d - 0.2) / 0.5)); vort.rotation.z = -t * 6; vort.visible = d < 1.4; bp.G.visible = d < 1.4; blogo.visible = d >= 1.2; if (blogo.visible) { const k = C.rebote((d - 1.2) / 0.6); blogo.scale.setScalar(Math.max(0.01, 2.6 - k * 1.6)); blogo.position.z = (1 - k) * 2; }
         C.render(bump, bcam); if (d >= 1.2 && d < 1.45) { g.fillStyle = `rgba(255,255,255,${1 - (d - 1.2) * 4})`; g.fillRect(0, 0, W(), H()); } }
       else C.render(S);
-      if (plano === 'seleccion') { seleccion(t - 16); if (!aviso5 && t - 16 >= 1.15 && window.__promoT == null && !To.mute) { aviso5 = true; try { const a = new Audio('./sb3/snd/419ca907843416e034fb72fd6a79bed3.mp3'); a.volume = Math.min(1, To.vol); a.play().catch(() => { }); } catch (e) { } } }
+      if (plano === 'seleccion') { seleccion(t - 16); if (!aviso5 && !conAudio && t - 16 >= 1.15 && window.__promoT == null && !To.mute) { aviso5 = true; try { const a = new Audio('./sb3/snd/419ca907843416e034fb72fd6a79bed3.mp3'); a.volume = Math.min(1, To.vol); a.play().catch(() => { }); } catch (e) { } } }
       if (plano === 'centro' && t > 24.6) rotulo(nombreCentro.toUpperCase(), 'Concursante del centro', t - 24.6);
-      for (const l of lineas) if (t >= l[0] && t < l[1]) { bocadillo(l[2], l[3], t - l[0]); if (!dichas.has(l)) { dichas.add(l); decir(l[3]); } }
+      if (!conAudio) for (const l of lineas) if (t >= l[0] && t < l[1]) { bocadillo(l[2], l[3], t - l[0]); if (!dichas.has(l)) { dichas.add(l); decir(l[3]); } }
       g.fillStyle = 'rgba(0,0,0,0.01)'; g.fillRect(0, 0, 2, 2); // fuerza a presentar el lienzo 2D aunque quede vacío
       if (t > 32.4) { g.fillStyle = `rgba(0,0,0,${(t - 32.4) / 0.6})`; g.fillRect(0, 0, W(), H()); }
     };
