@@ -12,7 +12,7 @@ async function abre(q, pre = () => { }, arg) {
 const bocadillo = p => p.evaluate(() => { const b = document.getElementById('bubble'); return b && !b.classList.contains('hidden') ? [b.querySelector('b').textContent, b.querySelector('span').textContent] : null; });
 // 1) Programa completo con presentador sorpresa (etapa 2021: duelo, moneda, decisión, final, despedida)
 const r1 = {};
-for (const [id, etapa] of [[process.env.COPRO || 'lola', '2021']]) {
+for (const [id, etapa] of (process.env.SOLO_SECCIONES ? [] : [[process.env.COPRO || 'lola', '2021']])) {
   const p = await abre('mode=programa', (id, et) => { window.__coproForce = id; localStorage.setItem('ac_etapa', et); window.__testRodadas = 6; window.__botForce = 'fail'; window.__pruebaForce = 'clasico'; window.__decisionAuto = 'seguir'; }, id, etapa);
   // driver: salta cabecera, responde el panel, pulsa botones del escenario (como tools/test_extras.mjs)
   await p.evaluate(() => setInterval(() => { try { const sk = document.getElementById('btnSkip'); if (sk && !sk.classList.contains('hidden')) sk.click(); document.querySelectorAll('#actions button').forEach(x => /Seguir|Ir al centro|Jugar/.test(x.textContent) && x.click()); const pn = window.__panel; if (pn && pn.active && pn.q && !pn.evaluating && pn.input.value === '') { pn.input.value = pn.q.missing.join(''); pn.onInput(); } const st = window.__st; if (st && st.els) for (const [k, el] of st.els) if (el.style.display !== 'none' && el.style.pointerEvents === 'auto' && k !== 'BotãoMenu3') { el.click(); break; } if (window.__e3 && window.__e3.turn === 'me' && window.__e3.q) window.__e3.choose(window.__e3.q[2] ?? 0); } catch (e) { } }, 450));
@@ -38,7 +38,7 @@ for (const [id, etapa] of [[process.env.COPRO || 'lola', '2021']]) {
 }
 // 2) Secciones: lista del menú + una escena nueva de cada sección
 const r2 = {};
-for (const [modo, sub] of [['oculta', 'loro'], ['tomas', 'mosca'], ['fuera', 'cafetera']]) {
+for (const [modo, sub] of (process.env.ESCENAS ? JSON.parse(process.env.ESCENAS) : [['oculta', 'loro'], ['tomas', 'mosca'], ['fuera', 'cafetera']])) {
   const p = await abre('mode=' + modo + '&sub=' + sub);
   const datos = await p.evaluate(m => window.__extras.datos[m].length, modo); r2[modo] = datos;
   await espera(9000); await p.screenshot({ path: `${out}-${modo}-escena.png` });
