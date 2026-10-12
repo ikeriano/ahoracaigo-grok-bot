@@ -21233,7 +21233,7 @@ class Z2 {
     this.cur = null, e == null || e.stop();
   }
 }
-const Zt = new Z2(), Ym = "1.12", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
+const Zt = new Z2(), Ym = "1.13", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
 function Hv() {
   const a = [["Presentado por", [Vv()]], ...Jr.final], e = [];
   return me.central && e.push(["Concursante central", [me.central + (me.profesion ? " · " + me.profesion : "")]]), e.push(["Oponentes", jn.map((t, n) => `${n + 1}. ${me.rival(n + 1)} · ${t.job}`)]), a.splice(1, 0, ...e), a;
@@ -22468,6 +22468,7 @@ class sy {
     }
     He(e.host, "saluda", 2.2), ze.aplauso(3.2, 0.75), await n.w(900), He(e.host, "habla", 2.5), await this.talk(e.theme.saludo, 3e3), (l = e.theme.extra) != null && l.length || ze.aplauso(2.2, 0.55);
     for (const c of e.theme.extra || []) He(e.host, "habla", 2.5), await this.talk(c, 3e3), ze.vitores(3);
+    if (await coproEntra(this.c)) this.copreHecho = true; // v1.13 presentador sorpresa
     e.theme.festivo && (ea(e.studio, $t(-2, Ae + 2, 1)), ea(e.studio, $t(2, Ae + 2, 1)), ze.vitores(3.5)), qv.on && !window.__noMono && (await n.w(500), await jv(this.c, $v(e.theme.id), n), Ot.wide(e)), CE(), me.presentaciones && (await n.w(400), await hA(this.c)), this.plan = Zv(this.bank.gallina5()), mec("plan " + this.plan.join(",")), me.eleccion && etapa().eleccion && !window.__noEleccion && !(window.__botForce && !window.__conEleccion) && (await n.w(300), await ny(this.c)), F.play("TemaCurto"), await this.joke("intro"), await n.w(600), await this.subirAlCentro(), F.playMusic("TrilhaCurta@Stage"), Ot.wide(e), e.opps.forEach((c, u) => setTimeout(() => He(c, "saluda", 1.2), u * 150)), ze.aplauso(3.5, 0.7), t.say(ND === 8 ? Nt.equipo : `¡Aquí están nuestros diez oponentes! Tienes que tirarlos a los ${ND} para llevarte el bote.`, 3800), e.glide($t(0, 5.2, 9.5), $t(0, 1.2, -3), 3.6), await n.w(2e3), F.play("AcerteOuCaia SuspEdit", 0.8, "susp");
     const i = window.__testRodadas;
     if (i) {
@@ -22479,7 +22480,7 @@ class sy {
       await CA(this.c, this.rodadas, ND), F.stopTag("susp"), Pn(-1, false), this.acertos = 0, this.rodadas++, Ot.wide(e, 1), He(e.host, "senala", 1.8), this.rodadas > 1 && (t.say(Ua(Nt.elige), 2e3, e.host.head), await n.w(1900), t.hideBubble());
       const c = await iy(this.c, this.used);
       if (this.used.add(c), await this.duelo(c) === "lose") return ET.relevo && (mec("relevo"), He(e.opps[c - 1], "arriba", 2), await t.say(`${me.rival(c)} ocupa tu sitio en el centro y se queda con tu dinero${this.vidas > 0 ? " y tu comodín" : ""}.`, 3500)), this.fin("perdido");
-      if (await ay(this.c, c, this), F.playMusic("SuspenseDuelo", true), await Wd(this.c), await n.w(1500), ET.moneda === "fija" ? (PANT.actualiza({ placar: this.placar, comodines: Math.max(0, this.vidas) }), await PANT.tarjeta("premios", n, 3500)) : await PA(this.c, this.moedas, this.placar, !!e.theme.festivo), this.rodadas === ND) break;
+      if (await ay(this.c, c, this), F.playMusic("SuspenseDuelo", true), await Wd(this.c), await n.w(1500), await coproMomento(this.c, "moneda", {}, 0.6), ET.moneda === "fija" ? (PANT.actualiza({ placar: this.placar, comodines: Math.max(0, this.vidas) }), await PANT.tarjeta("premios", n, 3500)) : await PA(this.c, this.moedas, this.placar, !!e.theme.festivo), this.rodadas === ND) break;
       if (ET.plantarse && await this.plantarseOSeguir(ND) === "plantarse") return mec("plantado"), F.stopAll(), F.playMusic("Trilha"), Ot.player(e, 1.5), t.say(`¡Te plantas! Te llevas ${Uo(this.placar)} €.`, 3e3), ze.aplauso(3.5, 0.75), await n.w(1500), await uu(this.c, this.placar, 4e3, true), this.fin("plantado");
       await n.w(600), this.jokeDone || (Ot.wide(e, 1), await this.joke("entre"));
       if (!this.copreHecho && this.rodadas >= 2 && this.rodadas < ND && await copresentador(this.c, n, { ctx: "programa" })) this.copreHecho = true;
@@ -22495,6 +22496,7 @@ class sy {
   /** 2011-2021: tras cada duelo ganado, plantarse con lo ganado o seguir */
   async plantarseOSeguir(ND) {
     const { eng: e, hud: t, s: n } = this.c;
+    await coproMomento(this.c, "decision", {}, 0.5);
     Ot.player(e, 1.2), He(e.host, "habla", 2), t.say(`Llevas ${Uo(this.placar)} €. Quedan ${ND - this.rodadas} oponentes. ¿Te plantas o sigues?`, 3500);
     let d = window.__decisionAuto || null;
     t.actions([{ label: `🛑 Plantarse (${Uo(this.placar)} €)`, fn: () => { d = d || "plantarse"; } }, { label: "▶ Seguir jugando", fn: () => { d = d || "seguir"; } }]);
@@ -22523,6 +22525,7 @@ class sy {
     var h, d;
     const { eng: t, hud: n, st: i, panel: s, s: o } = this.c, r = t.opps[e - 1];
     t.studio.setHoleColor(e, t.theme.accent), Ot.opp(t, e), He(r, "saluda", 1.4);
+    await coproMomento(this.c, "duelo", { n: this.rodadas, rival: me.rival(e) });
     {
       const f = _h("elegidoT", e);
       let p = false;
@@ -22531,7 +22534,7 @@ class sy {
       }), me.presentaciones ? (await o.until(() => p), await dA(this.c, e)) : await o.until(() => p);
     }
     const l = window, c = l.__pruebaForce || (l.__botForce || l.__botClock ? "clasico" : this.plan[this.rodadas - 1] || "clasico");
-    return l.__pruebaActual = c, await Jv(this.c, c), t.face(t.player, r.root.position), t.face(r, t.player.root.position), F.playMusic("TrilhaCurta@MenuEscolha2"), await o.w(1e3), F.play("AhoraCaigo - ComeceDuelo.mp3"), n.subs("AhoraCaigo - ComeceDuelo.mp3", false), i.show("MenuEscolha2", 1, { z: 35, fade: 170 }), Ot.duel(t, e, 1.6), (h = t.lights) == null || h.event("duelo"), await o.w(2e3), F.playMusic("SuspenseDuelo", true), await o.w(1e3), i.hide("MenuEscolha2", 330), await o.w(1e3), await Kv(this, e, c) === "win" ? (this.acertos++, (d = t.lights) == null || d.event("acierto"), await o.w(800), s.hideAll(500), Pn(-1, false), await o.w(500), F.playMusic("TrilhaCurta@Gcpgt1"), He(t.host, "senala", 2), n.say(Ua(Nt.ok), 2e3), Ot.opp(t, e, 1.2), await o.w(3e3), F.stopMusic(), F.play("AcerteOuCaia SuspEdit", 1, "susp"), await o.w(3e3), await this.caida(e, r), F.stopTag("susp"), await o.w(500), F.playMusic("TrilhaCurta@Stage"), He(t.player, "arriba", 2), Ot.player(t, 1.2), ze.vitores(3.5), t.theme.festivo && ea(t.studio, $t(0, Ae + 2, 0)), await o.w(1500), Math.random() < 0.5 ? (this.jokeDone = true, await this.joke("caida")) : this.jokeDone = false, await o.w(1200), "win") : this.perder();
+    return l.__pruebaActual = c, await Jv(this.c, c), t.face(t.player, r.root.position), t.face(r, t.player.root.position), F.playMusic("TrilhaCurta@MenuEscolha2"), await o.w(1e3), F.play("AhoraCaigo - ComeceDuelo.mp3"), n.subs("AhoraCaigo - ComeceDuelo.mp3", false), i.show("MenuEscolha2", 1, { z: 35, fade: 170 }), Ot.duel(t, e, 1.6), (h = t.lights) == null || h.event("duelo"), await o.w(2e3), F.playMusic("SuspenseDuelo", true), await o.w(1e3), i.hide("MenuEscolha2", 330), await o.w(1e3), await Kv(this, e, c) === "win" ? (this.acertos++, (d = t.lights) == null || d.event("acierto"), await o.w(800), s.hideAll(500), Pn(-1, false), await o.w(500), F.playMusic("TrilhaCurta@Gcpgt1"), He(t.host, "senala", 2), n.say(Ua(Nt.ok), 2e3), Ot.opp(t, e, 1.2), await o.w(3e3), F.stopMusic(), F.play("AcerteOuCaia SuspEdit", 1, "susp"), await o.w(3e3), await this.caida(e, r), F.stopTag("susp"), await o.w(500), await coproMomento(this.c, "caida", { n: this.rodadas }), F.playMusic("TrilhaCurta@Stage"), He(t.player, "arriba", 2), Ot.player(t, 1.2), ze.vitores(3.5), t.theme.festivo && ea(t.studio, $t(0, Ae + 2, 0)), await o.w(1500), Math.random() < 0.5 ? (this.jokeDone = true, await this.joke("caida")) : this.jokeDone = false, await o.w(1200), "win") : this.perder();
   }
   async pregunta(e, t, n, i, s) {
     const { panel: o, s: r, hud: l } = this.c;
@@ -22585,6 +22588,7 @@ class sy {
     return F.stopMusic(), F.play("AcerteOuCaia Susp.mp3", 1, "susp"), t.say(Ua(Nt.tiempo), 3e3), He(e.host, "lamenta", 2.5), (s = e.lights) == null || s.event("fallo"), await i.w(4e3), n.hideAll(500), Pn(-1, false), await i.w(1e3), this.placar = 0, F.stopTag("susp"), await this.caida(0, e.player), await i.w(900), ze.aplauso(2.6, 0.45), await i.w(1100), await s0(this.c, "GcPerdeu", 2500), "lose";
   }
   async decision() {
+    await coproMomento(this.c, "decision");
     const { st: e, s: t, hud: n, eng: i } = this.c;
     F.stopMusic(), await F.playMusic("AhoraCaigo - Decisão.mp3"), Ot.player(i, 1.2), n.subs("AhoraCaigo - Decisão.mp3", true), e.show("Painel", "DesafioFinal", { z: 46, fade: 330 }), await t.w(500);
     let s = null;
@@ -22597,6 +22601,7 @@ class sy {
     return e.show(o, 2, { z: 47, fade: 330 }), await t.w(1100), ["Painel", "BotãoMenu3", "BotãoMenu4"].forEach((r) => e.hide(r, 330)), s;
   }
   async juegoFinal() {
+    await coproMomento(this.c, "final");
     var h, d;
     const { eng: e, hud: t, st: n, panel: i, s } = this.c;
     this.acertos = 0, F.stopAll();
@@ -22637,6 +22642,7 @@ class sy {
     const { eng: t, hud: n, s: i, panel: s } = this.c;
     try { PANT.mostrar(null); } catch (x) { }
     s.hideAll(), Pn(-1, false);
+    try { await coproDespide(this.c, e); } catch (x) { if (x === _o) throw x; }
     const o = e === "ganado" ? `¡Has ganado ${Uo(this.placar)} puntos!` : e === "plantado" ? `Te has plantado con ${Uo(this.placar)} puntos` : "Esta vez has caído… ¡a la próxima!";
     return t.setGoldSet(false), (r = t.lights) == null || r.event("outro"), await aA(t, n, i, o), F.stopAll(), { res: e, placar: this.placar, rodadas: this.rodadas, line: o };
   }
@@ -23365,7 +23371,7 @@ function Lt(a = "main") {
     const b = document.createElement("button");
     b.className = "tbtn" + (document.fullscreenElement ? " sel" : ""), b.textContent = document.fullscreenElement ? "Salir" : "Activar", b.onclick = async (_) => {
       _.stopPropagation(), await YA(), setTimeout(() => Lt("options"), 300);
-    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), ZA(), HA(() => Lt("gallina")));
+    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), ZA(), HA(() => Lt("gallina")));
     const A = document.createElement("p");
     A.className = "mtext", A.textContent = `Rendimiento actual: ${Math.round(Xe.fps)} fps. Si el juego va lento en tu móvil, elige calidad «Baja».`, r.append(g, x, A, Ia("main"));
   } else if (a === "monologos") {

@@ -420,8 +420,8 @@ function menuExtra(a, r) {
   if (a === 'promos') {
     r.appendChild(Pa('Promos'));
     r.appendChild(caja('Promos de ¡Ahora caigo! en 3D, en tiempo real, con nuestro presentador virtual <b>Adrián Vega</b> (personajes virtuales, sin personas reales).'));
-    const lista = [['cabecera', '🎬', 'Cabecera del programa', '26 s · la cabecera de cada programa']].concat(['estreno', 'proximamente', 'casting', 'anuncio', 'estanoche', 'huella'].map(k => [k, PROMOS[k].emoji, PROMOS[k].nombre, Math.round(PROMOS[k].dur) + ' s · ' + PROMOS[k].sub]));
-    for (const [k, em, n, s] of lista) r.appendChild(ei(em + ' ' + n, s, k === 'estreno' ? 'gold' : '', () => k === 'cabecera' ? cab3D(null, null, xf(Ms)) : promoCorre(PROMOS[k])));
+    const lista = [['cabecera', '🎬', 'Cabecera del programa', '26 s · la cabecera de cada programa'], ['cabnueva', '🌀', 'Cabecera de estreno (nueva)', '17 s · cabecera animada: huellas, trampillas y logo']].concat(['estreno', 'proximamente', 'casting', 'anuncio', 'estanoche', 'huella'].map(k => [k, PROMOS[k].emoji, PROMOS[k].nombre, Math.round(PROMOS[k].dur) + ' s · ' + PROMOS[k].sub]));
+    for (const [k, em, n, s] of lista) r.appendChild(ei(em + ' ' + n, s, k === 'estreno' ? 'gold' : '', () => k === 'cabecera' ? cab3D(null, null, xf(Ms)) : k === 'cabnueva' ? promoCabNueva() : promoCorre(PROMOS[k])));
     const fila = document.createElement('div'); fila.className = 'orow orow-wrap'; const lb = document.createElement('label'); lb.textContent = '🔊 Audio de las promos'; fila.appendChild(lb);
     const hay = ['estreno', 'promo_proximamente', 'promo_anuncio', 'promo_estanoche', 'promo_huella'].some(n => RC.audioExtra && RC.audioExtra(n));
     for (const [v, t] of [['recreado', 'Recreado (voz de Adrián Vega)'], ['original', 'Original del vídeo' + (hay ? '' : ' (cárgalo en Opciones)')]]) fila.appendChild(boton(t, b => { localStorage.setItem('ac_promo_audio', v); fila.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b)); }, PROMO_AUDIO() === v));
