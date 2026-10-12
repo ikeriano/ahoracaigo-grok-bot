@@ -5,6 +5,11 @@ de la cabecera 3D y de las promos (extraídos de los vídeos) y el minijuego cl�
 - `codigo/`: código fuente (src/) y herramientas de construcción (tools/build.sh, tools/empaquetar.sh).
 - La web pública (sin audios con derechos) está en ikeriano/ahoracaigo-web.
 
+## ¡Ahora caigo! 1.15.1 (versionCode 22)
+- **Voz de Lola (directora) regrabada:** es_ES-sharvard, voz 1, 0 semitonos, -16 LUFS. Tasa de error (WER, Whisper) del 30 % al 12 %; Lola como copresentadora, 10 %.
+- **Roblox 1.15.1:** el módulo de escenas y el menú se comparten con Millonario y El Cazador. Cambios en Roblox: claves de voz y filas de opciones con índice.
+- **Sin cambios** en la caída del concursante central: el programa sigue con un bot.
+
 ## ¡Ahora caigo! 1.15 (versionCode 21)
 - **Cámara libre** (menú principal y Opciones): vuelo libre por el plató con joystick táctil, arrastrar para mirar, pellizco para zoom, botones subir/bajar; WASD/QE, ratón y rueda en PC. Velocidad y FOV, ocultar interfaz, luces/LEDs/logo/público/música, puntos clave con recorrido suave de grúa y GRABAR (vídeo con audio): guardar en el dispositivo, usar como vídeo de la cabecera 3D o guardar para el Creador de promos. Incluye **panel de control de luces** (modo, Pan, Tilt, Velocidad, Color).
 - **Creador de promos**: fondo (vídeo propio, toma de Cámara libre, Cabecera 1/2/3 y vídeos propios, o toma del plató 3D), título, líneas, día y hora, logo (actual, título propio o especial), música del juego, transición (fundido, barrido, zoom) y **voz en off con Piper dentro de la app, sin conexión** (sherpa-onnx WebAssembly, es_ES-davefx-medium; si el móvil no puede, se juntan palabras pregrabadas del presentador). Sin voz del navegador. Lista con ver/editar/borrar/exportar a vídeo. Las promos propias salen en PROMOS, en las pausas de publicidad y al azar (menú en reposo y entre secciones).
