@@ -38,7 +38,7 @@ for (const [id, etapa] of [[process.env.COPRO || 'lola', '2021']]) {
 }
 // 2) Secciones: lista del menú + una escena nueva de cada sección
 const r2 = {};
-for (const [modo, sub] of [['oculta', 'trampilla_parlante'], ['tomas', 'moneda_rodando'], ['fuera', 'repaso_preguntas']]) {
+for (const [modo, sub] of [['oculta', 'loro'], ['tomas', 'mosca'], ['fuera', 'cafetera']]) {
   const p = await abre('mode=' + modo + '&sub=' + sub);
   const datos = await p.evaluate(m => window.__extras.datos[m].length, modo); r2[modo] = datos;
   await espera(9000); await p.screenshot({ path: `${out}-${modo}-escena.png` });

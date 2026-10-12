@@ -12,14 +12,6 @@ EX_DATOS.oculta.push(
  ["adrian", "¿Y cómo sé a quién le hago las preguntas? ¡Me voy a liar con los marcadores!", "host", "encoge", "risas"],
  ["dir", "¡Inocente, inocente! ¡Los hemos vestido iguales para despistarte!", "wide", "", "inocente"],
  ["adrian", "¡Pues lo habéis conseguido! Ya no sé ni cuál es mi trampilla.", "host", "aplaude", "risas"]]},
-{ id: "aplausometro", titulo: "El aplausómetro roto", pasos: [
- ["adrian", "¡Vamos a medir el aplauso del público! ¡Fuerte!", "wide", "arriba", "aplauso"],
- ["tec", "Adrián, el aplausómetro marca... cero. Cero coma uno.", "wide", "", "ooh"],
- ["adrian", "¿Cero? ¡Pero si me han dejado sordo! ¡Otra vez, más fuerte!", "host", "senala", "aplauso"],
- ["tec", "Ahora marca menos tres. Creo que el público está aplaudiendo hacia dentro.", "wide", "", "risas"],
- ["adrian", "Aplaudir hacia dentro... Rober, ¿eso se puede hacer?", "host", "encoge", ""],
- ["reg", "¡Inocente, inocente! ¡El aplausómetro lo maneja Rober con un mando!", "wide", "", "inocente"],
- ["adrian", "¡Rober, eres un artista! Pero la próxima vez ponme un diez, por favor.", "host", "aplaude", "risas"]]},
 { id: "presentador_doble", titulo: "El doble de Adrián", pasos: [
  ["adrian", "¡Buenas tardes! Vamos a... Un momento. ¿Quién es ese señor vestido como yo?", "host", "senala", "ooh"],
  ["reg", "Es el presentador de repuesto, Adrián. Por si te caes por una trampilla.", "wide", "", "risas"],
@@ -42,14 +34,6 @@ EX_DATOS.oculta.push(
  ["tec", "Es una huella nueva, Adrián. Modelo deportivo. Corre que se las pela.", "wide", "", "risas"],
  ["dir", "¡Inocente, inocente! ¡Las mueve Toni desde abajo con un imán!", "wide", "", "inocente"],
  ["adrian", "¡Toni, sal de debajo del plató ahora mismo!", "host", "aplaude", "risas"]]},
-{ id: "pregunta_imposible", titulo: "La pregunta imposible", pasos: [
- ["adrian", "Pregunta para el número seis: ¿cuántos granos de arena hay en la playa de la Concha?", "opp6", "senala", "ooh"],
- ["conc", "¿Contando los que se lleva la gente en las chanclas?", "opp6", "", "risas"],
- ["adrian", "Eso pone aquí, contando las chanclas. ¿Quién escribe estas preguntas?", "host", "encoge", ""],
- ["reg", "Las ha escrito el jefe. Dice que hoy no quiere que gane nadie.", "wide", "", "risas"],
- ["adrian", "¡Pues que venga él a contar arena! ¡Yo me niego!", "host", "lamenta", ""],
- ["dir", "¡Inocente, inocente! ¡Esa tarjeta era de broma!", "wide", "", "inocente"],
- ["adrian", "Menos mal. Ya me veía yo con un cubo y una pala hasta Navidad.", "host", "aplaude", "risas"]]},
 { id: "lluvia", titulo: "Llueve en el plató", pasos: [
  ["adrian", "¡Bienvenidos a ¡Ahora caigo!... ¿Me ha caído una gota en la cabeza?", "host", "saluda", ""],
  ["tec", "Será el aire acondicionado, Adrián. Hoy está muy emocionado.", "wide", "", "risas"],
@@ -88,21 +72,9 @@ EX_DATOS.oculta.push(
  ["adrian", "Muy bonito... Muy... alto. ¿Alguien puede bajar el volumen?", "host", "lamenta", "risas"],
  ["dir", "¡Inocente, inocente! ¡El jefe no ha cantado en su vida!", "wide", "", "inocente"],
  ["jefe", "Y no pienso volver a hacerlo. Pero la cara que has puesto, Adrián, no tiene precio.", "wide", "", "risas"],
- ["adrian", "¡Pues tiene usted futuro en el karaoke, jefe!", "host", "aplaude", "risas"]]},
-{ id: "trampilla_parlante", titulo: "La trampilla que habla", pasos: [
- ["adrian", "¡Y el número cinco... ahora cae!", "hole5", "senala", "trampillaNo:5"],
- ["tec", "(voz grave) No pienso abrirme. Hoy estoy de mal humor.", "hole5", "", "ooh"],
- ["adrian", "¿La trampilla... habla? ¡Trampilla, ábrete, por favor!", "host", "lamenta", "risas"],
- ["tec", "(voz grave) Solo me abro si me dices algo bonito.", "hole5", "", "risas"],
- ["adrian", "Eres la trampilla más bonita de todo el plató. Y la más redonda.", "host", "habla", "risas"],
- ["reg", "¡Inocente, inocente! ¡Era Rober con el micrófono escondido!", "wide", "", "inocente"],
- ["adrian", "¡Rober! ¡Ya me había enamorado de la trampilla!", "host", "aplaude", "risas"]]}
+ ["adrian", "¡Pues tiene usted futuro en el karaoke, jefe!", "host", "aplaude", "risas"]]}
 );
 EX_DATOS.tomas.push(
-{ id: "bote_comido", titulo: "El bote de caramelos", pasos: [
- ["adrian", "¡Hoy el bote es de cien mil caramelos! Digo... euros. ¡Euros!", "host", "habla", "claqueta:2"],
- ["adrian", "Es que he desayunado poco. ¿Repetimos?", "host", "encoge", "tomafalsa"],
- ["dir", "¡Corten! Que alguien le traiga una magdalena a Adrián.", "wide", "", "corten"]]},
 { id: "camara_equivocada", titulo: "La cámara equivocada", pasos: [
  ["adrian", "¡Buenas tardes a todos los que nos veis desde casa!", "wide", "saluda", "claqueta:1"],
  ["reg", "Adrián, esa es la cámara de la cafetería. La buena es la otra.", "wide", "", "tomafalsa"],
@@ -113,40 +85,15 @@ EX_DATOS.tomas.push(
  ["adrian", "Un momento, que la trampilla ha hecho eco: «cae, cae, cae...».", "host", "encoge", "tomafalsa"],
  ["tec", "Es que dentro está el micrófono de repuesto. Perdón.", "wide", "", "risas"],
  ["dir", "¡Corten! Sacad el micro de la trampilla, que se nos cae el sonido.", "wide", "", "corten"]]},
-{ id: "risa_contagiosa", titulo: "La risa contagiosa", pasos: [
- ["conc", "Adrián, perdona, es que me da la risa cuando me pongo nervioso. ¡Ji ji ji!", "opp6", "", "claqueta:4"],
- ["adrian", "No pasa nada, no pasa... ¡Ja, ja, ja! ¡Ya me la ha pegado!", "host", "encoge", "risas"],
- ["adrian", "¡Que no puedo parar! ¡Que alguien abra la trampilla, que me caigo de risa!", "host", "lamenta", "tomafalsa"],
- ["dir", "¡Corten! Diez minutos de descanso hasta que se os pase.", "wide", "", "corten"]]},
 { id: "telefono", titulo: "El móvil sonando", pasos: [
  ["adrian", "Silencio en el plató... Momento de máxima tensión...", "host", "habla", "claqueta:2"],
  ["adrian", "¿De quién es ese móvil con la canción del verano?", "wide", "senala", "ooh"],
  ["adrian", "¡Uy, es el mío! Es mi madre. Dice que me ha visto mal peinado.", "host", "encoge", "tomafalsa"],
  ["dir", "¡Corten! Adrián, los móviles se dejan en el camerino. Y saluda a tu madre.", "wide", "", "corten"]]},
-{ id: "nombres_cambiados", titulo: "Los nombres cambiados", pasos: [
- ["adrian", "¡Vamos con el duelo contra Manolo!", "opp4", "senala", "claqueta:3"],
- ["conc", "Adrián, que yo soy Conchi. Manolo es el del bigote.", "opp4", "", "risas"],
- ["adrian", "Perdona, Conchi. Es que el cartel pone Manolo. ¿Quién ha puesto los carteles?", "host", "encoge", "tomafalsa"],
- ["dir", "¡Corten! Toni, cambia los carteles, que nos los has puesto al revés.", "wide", "", "corten"]]},
 { id: "pregunta_al_reves", titulo: "La tarjeta al revés", pasos: [
  ["adrian", "Pregunta: ¿ojerep lebrá ed sepat sanauc?", "host", "habla", "claqueta:5"],
  ["adrian", "¡Ah, que tengo la tarjeta del revés! Ya decía yo que sonaba a idioma raro.", "host", "encoge", "tomafalsa"],
  ["dir", "¡Corten! Dale la vuelta a la tarjeta. Y a la cabeza, de paso.", "wide", "", "corten"]]},
-{ id: "caida_adelantada", titulo: "La trampilla impaciente", pasos: [
- ["adrian", "Recordad: la trampilla solo se abre cuando yo digo...", "host", "habla", "claqueta:1"],
- ["adrian", "¡Pero si todavía no he dicho nada! ¡Se ha caído el número uno él solito!", "hole1", "lamenta", "cae:1"],
- ["tec", "Perdón, Adrián. Se me ha escapado el dedo.", "wide", "", "tomafalsa"],
- ["dir", "¡Corten! Subid al número uno y le damos una toalla.", "wide", "", "corten"]]},
-{ id: "hipo", titulo: "El hipo", pasos: [
- ["adrian", "¡Bienvenidos a... ¡hip!... ¡Ahora... ¡hip!... caigo!", "host", "saluda", "claqueta:3"],
- ["adrian", "¡Hip! Creo que no me voy a... ¡hip!... caer de esta.", "host", "encoge", "tomafalsa"],
- ["reg", "Te traigo un vaso de agua, Adrián. Bebe al revés.", "wide", "", "risas"],
- ["dir", "¡Corten! Toma seis. Y nada de bebidas con gas antes de grabar.", "wide", "", "corten"]]},
-{ id: "silla", titulo: "La silla fantasma", pasos: [
- ["adrian", "Me siento un momento mientras pensáis... ¡Aaay!", "host", "lamenta", "claqueta:2"],
- ["adrian", "¡Que no había silla! ¡Que me la habéis quitado!", "host", "encoge", "ooh"],
- ["reg", "En este plató no hay sillas, Adrián. Hay trampillas.", "wide", "", "tomafalsa"],
- ["dir", "¡Corten! ¿Estás bien? Pues otra vez, pero sin sentarte.", "wide", "", "corten"]]},
 { id: "despedida_temprana", titulo: "La despedida a destiempo", pasos: [
  ["adrian", "¡Muchas gracias por acompañarnos y hasta mañana!", "host", "saluda", "claqueta:1"],
  ["reg", "Adrián, que el programa acaba de empezar. Ni hemos hecho el primer duelo.", "wide", "", "tomafalsa"],
@@ -157,15 +104,6 @@ EX_DATOS.tomas.push(
  ["adrian", "¡Se ha ido rodando por el plató! ¡Que alguien la pare!", "wide", "senala", "ooh"],
  ["reg", "¡Se ha metido por la trampilla siete! Voy a por ella.", "hole7", "", "abreVacia:7"],
  ["dir", "¡Corten! La próxima la lanzas más flojito, Adrián.", "wide", "", "corten"]]},
-{ id: "estornudo_publico", titulo: "El estornudo del público", pasos: [
- ["adrian", "Silencio absoluto... la respuesta es...", "host", "habla", "claqueta:2"],
- ["adrian", "¡Jesús! Qué estornudo más grande. ¿Ha sido en la grada?", "wide", "senala", "risas"],
- ["reg", "Ha sido el señor de la tercera fila. Dice que es alérgico a la tensión.", "wide", "", "tomafalsa"],
- ["dir", "¡Corten! Pañuelos para la grada, por favor.", "wide", "", "corten"]]},
-{ id: "guion_mojado", titulo: "El guion mojado", pasos: [
- ["adrian", "Y nuestro siguiente concursante es... ¿«Pepe Agua»? Aquí pone «Pepe Agua».", "host", "habla", "claqueta:3"],
- ["adrian", "¡Ah, no! Que se me ha caído el vaso en el guion. Esto está todo borroso.", "host", "lamenta", "tomafalsa"],
- ["dir", "¡Corten! Que alguien imprima otro guion. Y un vaso con tapa para Adrián.", "wide", "", "corten"]]},
 { id: "baile", titulo: "El baile improvisado", pasos: [
  ["adrian", "¡Música, maestro! ¡Vamos a celebrarlo!", "host", "arriba", "claqueta:5"],
  ["adrian", "Un pasito para aquí, un pasito para allá... ¡Ay, que me he pisado yo solo!", "host", "lamenta", "risas"],
@@ -211,33 +149,17 @@ EX_DATOS.fuera.push(
  ["reg", "Y recordad: cuando levante el cartel, aplausos. Cuando lo baje, silencio.", "wide", "", ""],
  ["pub", "¿Y si nos da la risa?", "wide", "", ""],
  ["reg", "Entonces os reís. Pero con ganas, que se oiga en casa.", "wide", "", ""]]},
-{ id: "prueba_trampillas", titulo: "La revisión de las trampillas", lugar: "plato", pasos: [
- ["tec", "Revisión diaria de trampillas. Empezamos por la número tres.", "hole3", "", "abreVacia:3"],
- ["reg", "La tres funciona. ¿Y los colchones de abajo?", "wide", "", ""],
- ["tec", "Recién mullidos. Están tan blanditos que el otro día me quedé dormido ahí abajo.", "wide", "", ""],
- ["tec", "Ahora la ocho. Tres, dos, uno...", "hole8", "", "abreVacia:8"],
- ["reg", "Perfecta. Todo listo para que hoy caigan muchos.", "wide", "", ""]]},
 { id: "camerino", titulo: "En el camerino de Adrián", lugar: "maquillaje", pasos: [
  ["maq", "Adrián, ¿cuántas chaquetas iguales tienes en el camerino?", "cerca", "", ""],
  ["adrian", "Catorce. Una para cada día de la semana, y siete de repuesto.", "cerca", "encoge", ""],
  ["maq", "¿De repuesto para qué?", "cerca", "", ""],
  ["adrian", "Por si me caigo por una trampilla. Uno nunca sabe.", "cerca", "habla", ""]]},
-{ id: "ensayo_moneda", titulo: "Ensayando la moneda", lugar: "plato", pasos: [
- ["reg", "Ensayamos la moneda. Adrián, la lanzas y miras a la cámara dos.", "wide", "", ""],
- ["adrian", "Lanzo... miro a la dos... ¿Dónde ha caído la moneda?", "host", "arriba", ""],
- ["reg", "Encima de la cámara dos. Bueno, por lo menos has mirado al sitio correcto.", "wide", "", ""],
- ["adrian", "Pues en directo la lanzo más bajito. Prometido.", "host", "encoge", ""]]},
 { id: "jefe_visita", titulo: "Visita del jefe", lugar: "control", pasos: [
  ["jefe", "Lola, ¿qué tal la audiencia de ayer?", "cerca", "", ""],
  ["dir", "Muy bien, jefe. Subimos dos puntos cuando Adrián se tropezó.", "cerca", "", ""],
  ["jefe", "Pues que se tropiece más. Pero sin hacerse daño, ¿eh?", "cerca", "", ""],
  ["adrian", "¡Que os estoy oyendo! Yo no me tropiezo a propósito.", "cerca", "lamenta", ""],
  ["jefe", "Lo sabemos, Adrián. Por eso funciona.", "cerca", "", ""]]},
-{ id: "concursantes_nervios", titulo: "Los nervios de los concursantes", lugar: "plato", pasos: [
- ["conc", "Adrián, ¿de verdad abajo hay colchones? ¿Lo has probado tú?", "opp3", "", ""],
- ["adrian", "Yo no, pero Rober duerme ahí la siesta. Dice que es lo más cómodo del edificio.", "host", "habla", ""],
- ["conc", "Me quedo más tranquila. ¿Y si me sé todas las respuestas?", "opp3", "", ""],
- ["adrian", "Entonces el que se pone nervioso soy yo. ¡Suerte!", "host", "aplaude", ""]]},
 { id: "minuto_final", titulo: "Un minuto para el directo", lugar: "control", pasos: [
  ["dir", "¡Un minuto para el directo! Todo el mundo a sus puestos.", "cerca", "", ""],
  ["adrian", "Lola, ¿estoy bien de pelo? ¿Y la corbata?", "cerca", "encoge", ""],
@@ -248,11 +170,102 @@ EX_DATOS.fuera.push(
  ["reg", "¡Y estamos fuera! Buen programa, equipo.", "wide", "", ""],
  ["adrian", "¡Gracias a todos! Hoy han caído un montón. Los colchones van a pedir vacaciones.", "host", "aplaude", ""],
  ["tec", "Yo apago las luces. ¿Alguien se ha dejado algo en el plató?", "wide", "", ""],
- ["adrian", "Mi dignidad, en la trampilla cuatro. Pero ya la recojo mañana.", "host", "encoge", ""]]},
-{ id: "sonido", titulo: "La cabina de sonido", lugar: "control", pasos: [
- ["tec", "Adrián, di algo para probar el micro.", "cerca", "", ""],
- ["adrian", "Algo. Algo, algo. ¿Ya?", "cerca", "habla", ""],
- ["tec", "Perfecto. Y ahora el efecto de la trampilla: ¡fiuuu!", "cerca", "", ""],
- ["adrian", "¿Ese ruido lo haces tú con la boca?", "cerca", "encoge", ""],
- ["tec", "Las tardes que falla el ordenador, sí. Nadie lo ha notado nunca.", "cerca", "", ""]]}
+ ["adrian", "Mi dignidad, en la trampilla cuatro. Pero ya la recojo mañana.", "host", "encoge", ""]]}
 );
+
+// escenas añadidas tras revisar duplicados (cada una con situación y gag propios)
+const NUEVAS = {
+oculta: [
+{ id: "loro", titulo: "El loro de la grada", pasos: [
+ ["adrian", "Silencio, que viene el momento clave. Ha fallado el número seis, así que...", "opp6", "senala", ""],
+ ["pub", "¡Ahora cae! ¡Ahora cae! ¡Crrr!", "wide", "", "ooh"],
+ ["adrian", "¿Quién ha dicho eso? ¡Que esa frase es mía! ¿Es un loro?", "host", "lamenta", "risas"],
+ ["reg", "Es Paquito, el loro de una señora de la segunda fila. Viene todas las semanas.", "wide", "", "risas"],
+ ["adrian", "Pues que no me pise las frases. Paquito, a la de tres la digo yo: una, dos...", "host", "habla", ""],
+ ["pub", "¡Crrr! ¡Que te calles, Adrián! ¡Crrr!", "wide", "", "risas"],
+ ["dir", "¡Inocente, inocente! ¡El loro era Toni con una grabadora debajo del asiento!", "wide", "", "inocente"],
+ ["adrian", "¡Toni! ¡Te voy a dar alpiste para merendar!", "host", "aplaude", "risas"]]},
+{ id: "confeti", titulo: "El confeti que no para", pasos: [
+ ["adrian", "¡Has ganado! ¡Que caiga el confeti!", "host", "arriba", "aplauso"],
+ ["adrian", "Muy bonito... ya está... ya vale... ¿Por qué sigue cayendo confeti?", "host", "encoge", "ooh"],
+ ["tec", "Adrián, el cañón se ha quedado enganchado. Lleva ya tres sacos.", "wide", "", "risas"],
+ ["adrian", "¡Que me llega por las rodillas! ¡Que no veo las trampillas! ¡Socorro!", "host", "lamenta", "risas"],
+ ["reg", "¡Inocente, inocente! ¡Era confeti de broma y teníamos cuarenta sacos!", "wide", "", "inocente"],
+ ["adrian", "¡Pues lo barro yo mismo! Pero que conste que me lo llevo a casa para Nochevieja.", "host", "aplaude", "risas"]]},
+{ id: "mago", titulo: "El concursante mago", pasos: [
+ ["adrian", "Pregunta para el número diez... ¿Dónde están mis tarjetas? ¡Las tenía en la mano!", "host", "lamenta", "ooh"],
+ ["conc", "¿Buscabas esto, Adrián? Elige una tarjeta, la que quieras.", "opp10", "", "risas"],
+ ["adrian", "¿Cómo las ha cogido desde la trampilla? ¡Está a cinco metros!", "host", "senala", ""],
+ ["conc", "Y ahora mira en el bolsillo de tu chaqueta.", "opp10", "", "ooh"],
+ ["adrian", "¡Mi reloj! ¡Y una moneda! ¡Y un conejo de peluche! ¿Esto qué es?", "host", "encoge", "risas"],
+ ["dir", "¡Inocente, inocente! ¡Es un mago profesional! ¡Cámara oculta!", "wide", "", "inocente"],
+ ["adrian", "¡Pues que haga desaparecer las preguntas difíciles, que me vendría genial!", "host", "aplaude", "risas"]]}
+],
+tomas: [
+{ id: "micro_abierto", titulo: "El micrófono abierto", pasos: [
+ ["adrian", "Uf, por fin publicidad. Lola, ¿hoy hay lentejas en el comedor? Es que tengo un hambre...", "host", "encoge", "claqueta:2"],
+ ["tec", "Adrián, no estamos en publicidad. Te está oyendo toda España.", "wide", "", "tomafalsa"],
+ ["adrian", "¡Hola, España! Sí, hay lentejas. Os lo confirmo.", "host", "saluda", "risas"],
+ ["dir", "¡Corten! Rober, ese micrófono se cierra antes de hablar de comida.", "wide", "", "corten"]]},
+{ id: "lentilla", titulo: "La lentilla perdida", pasos: [
+ ["adrian", "Leo la pregunta... ¡Ay! ¡Se me ha caído una lentilla!", "host", "lamenta", "claqueta:3"],
+ ["adrian", "¡Que nadie se mueva! Está por el suelo, cerca de la trampilla dos.", "hole2", "senala", "ooh"],
+ ["reg", "¡La tengo! Ah, no, es un trocito de confeti.", "wide", "", "tomafalsa"],
+ ["dir", "¡Corten! Diez minutos para buscar la lentilla. Y alguien que le traiga las gafas.", "wide", "", "corten"]]},
+{ id: "zapato", titulo: "El zapato volador", pasos: [
+ ["adrian", "¡Y el número nueve... ahora cae!", "hole9", "senala", "claqueta:4"],
+ ["adrian", "¡Mi zapato! ¡He dado una patada al aire y se ha ido detrás de él!", "host", "lamenta", "cae:9"],
+ ["conc", "¡Adrián, aquí abajo tengo tu zapato! ¡Te lo subo!", "opp9", "", "tomafalsa"],
+ ["dir", "¡Corten! Que alguien baje a por el zapato. Y nada de patadas, Adrián.", "wide", "", "corten"]]},
+{ id: "teleprompter", titulo: "El teleprompter literal", pasos: [
+ ["adrian", "Bienvenidos a ¡Ahora caigo! Paréntesis, sonreír a cámara, cierro paréntesis.", "host", "saluda", "claqueta:1"],
+ ["adrian", "Pausa dramática. Tres puntos suspensivos. Mirar al público con cariño.", "host", "habla", "risas"],
+ ["adrian", "Uy, que eso no se lee en voz alta, ¿verdad?", "host", "encoge", "tomafalsa"],
+ ["dir", "¡Corten! Adrián, lo de los paréntesis es para hacerlo, no para decirlo.", "wide", "", "corten"]]},
+{ id: "corbata", titulo: "La corbata atrapada", pasos: [
+ ["adrian", "Me acerco a saludar al número uno... ¡Uy! ¡No puedo moverme!", "opp1", "saluda", "claqueta:2"],
+ ["adrian", "¡Se me ha enganchado la corbata en el atril! ¡Estoy atado al plató!", "host", "lamenta", "ooh"],
+ ["reg", "Quieto, Adrián, que voy con las tijeras. ¿Te importa quedarte con media corbata?", "wide", "", "tomafalsa"],
+ ["dir", "¡Corten! Hoy presentas sin corbata. Queda moderno.", "wide", "", "corten"]]},
+{ id: "mosca", titulo: "La mosca del suspense", pasos: [
+ ["adrian", "Momento de máxima tensión. Nadie se mueve. Nadie respira...", "host", "habla", "claqueta:5"],
+ ["adrian", "Ni la mosca que se me ha puesto en la nariz. ¡Fuera, fuera, bicho!", "host", "lamenta", "risas"],
+ ["adrian", "¡Se ha ido a la trampilla tres! Bueno, si cae, que sea ella.", "hole3", "senala", "tomafalsa"],
+ ["dir", "¡Corten! Que alguien abra una ventana. Y que la mosca firme el contrato.", "wide", "", "corten"]]},
+{ id: "ventilador", titulo: "El ventilador gigante", pasos: [
+ ["tec", "Encendemos el ventilador para dar ambiente. Al mínimo.", "wide", "", "claqueta:3"],
+ ["adrian", "¡Eso no es el mínimo! ¡Se me vuelan las tarjetas! ¡Y el peinado!", "host", "lamenta", "ooh"],
+ ["adrian", "¡La pregunta tres se ha ido volando hasta la grada!", "wide", "senala", "tomafalsa"],
+ ["dir", "¡Corten! Rober, apaga eso, que parece que presentamos desde un helicóptero.", "wide", "", "corten"]]},
+{ id: "atril", titulo: "El atril que baja", pasos: [
+ ["adrian", "Apoyo las tarjetas en el atril y leemos la siguiente pregunta...", "host", "habla", "claqueta:1"],
+ ["adrian", "¿El atril está bajando? ¡Está bajando! ¡Ya me llega por las rodillas!", "host", "lamenta", "ooh"],
+ ["tec", "Perdón, he pulsado el botón de la plataforma. Lo subo.", "wide", "", "tomafalsa"],
+ ["dir", "¡Corten! Rober, el atril se queda quieto. Adrián, tú también.", "wide", "", "corten"]]}
+],
+fuera: [
+{ id: "vestuario", titulo: "En vestuario", lugar: "maquillaje", pasos: [
+ ["dir", "Adrián, para hoy tienes dos chaquetas: la azul o la azul.", "cerca", "", ""],
+ ["adrian", "Mmm... difícil. ¿La azul tiene bolsillos?", "cerca", "encoge", ""],
+ ["dir", "Las dos tienen bolsillos. Una es azul y la otra también.", "cerca", "", ""],
+ ["adrian", "Pues la azul. Siempre me ha quedado mejor la azul.", "cerca", "aplaude", ""]]},
+{ id: "seguridad", titulo: "La charla de seguridad", lugar: "plato", pasos: [
+ ["reg", "Concursantes, charla de seguridad. Si se abre la trampilla: brazos cruzados y piernas juntas.", "wide", "", ""],
+ ["conc", "¿Y gritar está permitido?", "opp7", "", ""],
+ ["reg", "Gritar es obligatorio. Queda muy bien en la tele.", "wide", "", ""],
+ ["conc", "¿Y si me da tiempo, puedo saludar a mi familia mientras caigo?", "opp2", "", ""],
+ ["reg", "Si te da tiempo, sí. Pero suele dar tiempo a decir «ho...» y poco más.", "wide", "", ""]]},
+{ id: "cartas", titulo: "Las cartas de los fans", lugar: "plato", pasos: [
+ ["reg", "Adrián, ha llegado el saco de cartas de la semana. Te leo una.", "wide", "", ""],
+ ["reg", "«Querido Adrián: te he tejido una bufanda con trampillas. Firmado, Encarna, de Albacete».", "wide", "", ""],
+ ["adrian", "¡Qué detalle! Encarna, si nos ves, me la pongo en invierno. Con las trampillas hacia fuera.", "host", "aplaude", ""],
+ ["reg", "Y esta es de un niño: «¿Adrián, tú te has caído alguna vez?».", "wide", "", ""],
+ ["adrian", "Muchas. Pero siempre por las escaleras, nunca por una trampilla.", "host", "encoge", ""]]},
+{ id: "cafetera", titulo: "La cafetera estropeada", lugar: "control", pasos: [
+ ["dir", "Atención todo el mundo: la cafetera se ha estropeado.", "cerca", "", ""],
+ ["adrian", "¿Cómo que estropeado? ¡Si sin café no sé ni cómo se llama el programa!", "cerca", "lamenta", ""],
+ ["tec", "Tranquilos, que la arreglo con un cable de micrófono y un poco de cinta.", "cerca", "", ""],
+ ["dir", "Rober, ahora el café sale por el altavoz del plató.", "cerca", "", ""],
+ ["adrian", "Mientras salga caliente, a mí me vale.", "cerca", "aplaude", ""]]}
+]};
+EX_DATOS.oculta.push(...NUEVAS.oculta); EX_DATOS.tomas.push(...NUEVAS.tomas); EX_DATOS.fuera.push(...NUEVAS.fuera);
