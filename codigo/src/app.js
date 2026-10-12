@@ -17984,11 +17984,11 @@ function fv(a, e, t, n, i, s, o) {
       a.strokeStyle = c, a.shadowColor = c, a.shadowBlur = n * 0.15, a.beginPath(), a.arc(e, t, n * 0.94, u / l * 6.2832, (u + 1) / l * 6.2832 + 0.02), a.stroke();
     });
   } else a.strokeStyle = i.ring, a.shadowColor = i.ring, a.shadowBlur = n * 0.2, a.beginPath(), a.arc(e, t, n * 0.94, 0, 7), a.stroke();
-  a.shadowBlur = 0, a.fillStyle = "rgba(0,0,0,.6)", a.fillRect(e - 2, t - n, 4, n * 2), Kg(a, e, t - n * 0.05, n * 1.6, i.feet), FE(a, i, s, o, e, t, n), i.deco === "nieve" && (a.fillStyle = "#ffffff", a.beginPath(), a.ellipse(e, t - n * 1.08, n * 0.75, n * 0.12, 0, Math.PI, 0), a.fill()), i.deco === "300" && kE(a, e + n * 1.12, t - n * 0.78, n * 0.5), a.restore();
+  a.shadowBlur = 0, a.fillStyle = "rgba(0,0,0,.6)", a.fillRect(e - 2, t - n, 4, n * 2), (i.deco === "play" ? acPlay(a, e, t - n * 0.05, n * 1.15) : Kg(a, e, t - n * 0.05, n * 1.6, i.feet)), FE(a, i, s, o, e, t, n), i.deco === "nieve" && (a.fillStyle = "#ffffff", a.beginPath(), a.ellipse(e, t - n * 1.08, n * 0.75, n * 0.12, 0, Math.PI, 0), a.fill()), i.deco === "300" && kE(a, e + n * 1.12, t - n * 0.78, n * 0.5), a.restore();
 }
 const zE = (a) => hv(a);
 function pv(a, e, t, n = {}) {
-  if (LOGO_IMG && LOGO_IMG.naturalWidth && n.circle !== false && n.text !== false) {
+  if (LOGO_IMG && LOGO_IMG.naturalWidth && !acLogoPropio() && n.circle !== false && n.text !== false) {
     const k = Math.min(e / LOGO_IMG.naturalWidth, t / LOGO_IMG.naturalHeight), w = LOGO_IMG.naturalWidth * k, h = LOGO_IMG.naturalHeight * k;
     a.drawImage(LOGO_IMG, (e - w) / 2, (t - h) / 2, w, h);
     return;
@@ -18010,7 +18010,7 @@ function vv(a, e, t, n, i, s) {
   const o = (_) => `900 ${_}px "Arial Black", Arial, Roboto, sans-serif`;
   let r = i / 2.1, l = r / 0.72;
   a.save(), a.font = o(l);
-  const c = a.measureText("AHORA").width, u = a.measureText("CAIGO").width;
+  const [T1, T2, TM] = tituloAC(); const c = a.measureText(T1).width, u = a.measureText(T2 || T1).width;
   let h = Math.max(c, u), d = l * 0.36, f = l * 0.07;
   const p = h + 2 * (d + f);
   if (p > n) {
@@ -18018,7 +18018,7 @@ function vv(a, e, t, n, i, s) {
     l *= _, r *= _, h *= _, d *= _, f *= _;
   }
   a.font = o(l), a.textBaseline = "alphabetic", a.textAlign = "left";
-  const v = r * 2.1, g = [["AHORA", t + r], ["CAIGO", t + v]], m = [["¡", e - h / 2 - f - d / 2, -0.03], ["!", e + h / 2 + f + d / 2, 0.09]];
+  const v = r * 2.1, g = T2 ? [[T1, t + r], [T2, t + v]] : [[T1, t + (r + v) / 2]], m = TM ? [["¡", e - h / 2 - f - d / 2, -0.03], ["!", e + h / 2 + f + d / 2, 0.09]] : [];
   let x = 0;
   const y = (_, E, R, w, M) => {
     x = 0;
@@ -21233,7 +21233,7 @@ class Z2 {
     this.cur = null, e == null || e.stop();
   }
 }
-const Zt = new Z2(), Ym = "1.13", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
+const Zt = new Z2(), Ym = "1.14", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
 function Hv() {
   const a = [["Presentado por", [Vv()]], ...Jr.final], e = [];
   return me.central && e.push(["Concursante central", [me.central + (me.profesion ? " · " + me.profesion : "")]]), e.push(["Oponentes", jn.map((t, n) => `${n + 1}. ${me.rival(n + 1)} · ${t.job}`)]), a.splice(1, 0, ...e), a;
@@ -21361,8 +21361,8 @@ function iA(a) {
     mv(oe, k, j / 2, 14, ce - 28, 62), Q ? (oe.lineJoin = "round", oe.lineWidth = 9, oe.strokeStyle = h.stroke, oe.stroke(), oe.fillStyle = d(oe, 14, ce - 14, k === "¡" ? 0 : 99)) : oe.fillStyle = h.extrude || "#5d6880", oe.fill();
   }), g = 0.92, m = g * 128 / 160, x = m / 128, y = [], b = Ae + g / 2 + 0.04, A = b + g * 0.86, _ = document.createElement("canvas").getContext("2d");
   _.font = '900 136px "Arial Black", Arial, Roboto, sans-serif';
-  const E = (k) => [...k].reduce((Q, oe) => Q + _.measureText(oe).width * x, 0), R = Math.max(E("AHORA"), E("CAIGO")), w = [];
-  for (const [k, Q] of [["AHORA", A], ["CAIGO", b]]) {
+  const E = (k) => [...k].reduce((Q, oe) => Q + _.measureText(oe).width * x, 0), TT = tituloAC(), R = Math.max(E(TT[0]), E(TT[1])), w = [];
+  for (const [k, Q] of [[TT[0], A], [TT[1], b]]) {
     const oe = Math.min(1.12, R / E(k));
     let j = -E(k) * oe / 2;
     for (const ce of k) {
@@ -22461,14 +22461,15 @@ class sy {
     var r, l;
     const { eng: e, hud: t, s: n } = this.c;
     const ET = etapa(), ND = ET.duelos || 8; this.vidas = ET.comodines ?? 2, this.cifrasT = cifrasTrampillas(), mec("etapa " + ETAPA + " · " + ND + " duelos · moneda " + ET.moneda + " · final " + ET.final), clasicaPremiosEnPlato(e, ET.moneda === "fija"), ET.moneda === "fija" && (PANT.actualiza({ usadas: [], comodines: this.vidas, placar: 0, bote: ET.bote || 0, quedan: ND }), PANT.mostrar("bote"));
-    e.resetPositions(), e.opps.forEach((c) => c.root.visible = true), (r = e.lights) == null || r.event("intro"), (await aperturaPrograma(t, n, e.theme)) || (it.cabecera === "cab3d" ? !window.__noCab3d && (estrenoPendiente() ? await promoEstreno(t, n) : await cab3D(t, n, e.theme)) : To.video && RC.videoUrl() && !window.__noCabVideo && await oA(t, n)) || await nA(e, t, n, !!e.theme.festivo), t.hashtag(e.theme.hashtag || "#AhoraCaigo"), F.musicTime(ps) >= 0 && F.stopMusic(F.musicTime(ps) < 26.5 ? 0.8 : 2);
+    e.resetPositions(), e.opps.forEach((c) => c.root.visible = true), (r = e.lights) == null || r.event("intro"), (espSting(e.theme && e.theme.id), await cabVideoPrograma(t, n, e.theme)) || (await aperturaPrograma(t, n, e.theme)) || (it.cabecera === "cab3d" ? !window.__noCab3d && (estrenoPendiente() ? await promoEstreno(t, n) : await cab3D(t, n, e.theme)) : To.video && RC.videoUrl() && !window.__noCabVideo && await oA(t, n)) || await nA(e, t, n, !!e.theme.festivo), t.hashtag(e.theme.hashtag || "#AhoraCaigo"), F.musicTime(ps) >= 0 && F.stopMusic(F.musicTime(ps) < 26.5 ? 0.8 : 2);
     {
       const c = e.host.root.position;
       e.cut($t(c.x + 0.9, Ae + 1.7, c.z + 3.2), $t(c.x, Ae + 1.3, c.z)), e.face(e.host, $t(c.x + 1.2, 0, c.z + 6));
     }
-    He(e.host, "saluda", 2.2), ze.aplauso(3.2, 0.75), await n.w(900), He(e.host, "habla", 2.5), await this.talk(e.theme.saludo, 3e3), (l = e.theme.extra) != null && l.length || ze.aplauso(2.2, 0.55);
+    await regidorMomento(this.c, "aire"), He(e.host, "saluda", 2.2), ze.aplauso(3.2, 0.75), await n.w(900), He(e.host, "habla", 2.5), await this.talk(e.theme.saludo, 3e3), (l = e.theme.extra) != null && l.length || ze.aplauso(2.2, 0.55);
     for (const c of e.theme.extra || []) He(e.host, "habla", 2.5), await this.talk(c, 3e3), ze.vitores(3);
     if (await coproEntra(this.c)) this.copreHecho = true; // v1.13 presentador sorpresa
+    await regidorMomento(this.c, "aplausos");
     e.theme.festivo && (ea(e.studio, $t(-2, Ae + 2, 1)), ea(e.studio, $t(2, Ae + 2, 1)), ze.vitores(3.5)), qv.on && !window.__noMono && (await n.w(500), await jv(this.c, $v(e.theme.id), n), Ot.wide(e)), CE(), me.presentaciones && (await n.w(400), await hA(this.c)), this.plan = Zv(this.bank.gallina5()), mec("plan " + this.plan.join(",")), me.eleccion && etapa().eleccion && !window.__noEleccion && !(window.__botForce && !window.__conEleccion) && (await n.w(300), await ny(this.c)), F.play("TemaCurto"), await this.joke("intro"), await n.w(600), await this.subirAlCentro(), F.playMusic("TrilhaCurta@Stage"), Ot.wide(e), e.opps.forEach((c, u) => setTimeout(() => He(c, "saluda", 1.2), u * 150)), ze.aplauso(3.5, 0.7), t.say(ND === 8 ? Nt.equipo : `¡Aquí están nuestros diez oponentes! Tienes que tirarlos a los ${ND} para llevarte el bote.`, 3800), e.glide($t(0, 5.2, 9.5), $t(0, 1.2, -3), 3.6), await n.w(2e3), F.play("AcerteOuCaia SuspEdit", 0.8, "susp");
     const i = window.__testRodadas;
     if (i) {
@@ -22482,9 +22483,9 @@ class sy {
       if (this.used.add(c), await this.duelo(c) === "lose") return ET.relevo && (mec("relevo"), He(e.opps[c - 1], "arriba", 2), await t.say(`${me.rival(c)} ocupa tu sitio en el centro y se queda con tu dinero${this.vidas > 0 ? " y tu comodín" : ""}.`, 3500)), this.fin("perdido");
       if (await ay(this.c, c, this), F.playMusic("SuspenseDuelo", true), await Wd(this.c), await n.w(1500), await coproMomento(this.c, "moneda", {}, 0.6), ET.moneda === "fija" ? (PANT.actualiza({ placar: this.placar, comodines: Math.max(0, this.vidas) }), await PANT.tarjeta("premios", n, 3500)) : await PA(this.c, this.moedas, this.placar, !!e.theme.festivo), this.rodadas === ND) break;
       if (ET.plantarse && await this.plantarseOSeguir(ND) === "plantarse") return mec("plantado"), F.stopAll(), F.playMusic("Trilha"), Ot.player(e, 1.5), t.say(`¡Te plantas! Te llevas ${Uo(this.placar)} €.`, 3e3), ze.aplauso(3.5, 0.75), await n.w(1500), await uu(this.c, this.placar, 4e3, true), this.fin("plantado");
-      await n.w(600), this.jokeDone || (Ot.wide(e, 1), await this.joke("entre"));
+      await n.w(600), this.jokeDone || (Ot.wide(e, 1), await this.joke("entre")); await regidorMomento(this.c, "entre", {}, 0.55);
       if (!this.copreHecho && this.rodadas >= 2 && this.rodadas < ND && await copresentador(this.c, n, { ctx: "programa" })) this.copreHecho = true;
-      if (pubEnPrograma() && !this.pubHecha && this.rodadas === Math.floor(ND / 2)) { this.pubHecha = true; mec("publicidad"); Ot.wide(e, 1); He(e.host, "saluda", 2); await t.say(ST_DATOS.frases[0], 3e3); F.stopAll(); await stCorre("pausa", n); F.playMusic("SuspenseDuelo", true); Ot.wide(e, 1); He(e.host, "aplaude", 2); await t.say(ST_DATOS.frases[1], 2500); }
+      if (pubEnPrograma() && !this.pubHecha && this.rodadas === Math.floor(ND / 2)) { this.pubHecha = true; mec("publicidad"); Ot.wide(e, 1); He(e.host, "saluda", 2); await regidorMomento(this.c, "pub"); await t.say(ST_DATOS.frases[0], 3e3); F.stopAll(); await stCorre("pausa", n); await regidorMomento(this.c, "vuelta"); F.playMusic("SuspenseDuelo", true); Ot.wide(e, 1); He(e.host, "aplaude", 2); await t.say(ST_DATOS.frases[1], 2500); }
     }
     if (ET.final === "bote") return mec("bote"), this.placar += ET.bote || 0, F.stopAll(), F.playMusic("TrilhaCurta@Stage"), (r = e.lights) == null || r.event("ganador"), ea(e.studio, $t(0, Ae + 1, 0)), ea(e.studio, $t(-3, 2, -3)), ea(e.studio, $t(3, 2, -3)), He(e.player, "arriba", 3), He(e.host, "aplaude", 3), Ot.player(e, 1.2), ze.ovacion(8), await t.say(`¡Has tirado a los ${ND} oponentes! Te llevas el bote: ${Uo(ET.bote || 0)} €. En total, ${Uo(this.placar)} €.`, 4500), await uu(this.c, this.placar, 5e3, true), this.fin("ganado");
     if (this.placar === 0) return F.stopMusic(), await t.say(Nt.cero, 3500), this.fin("perdido");
@@ -22526,6 +22527,7 @@ class sy {
     const { eng: t, hud: n, st: i, panel: s, s: o } = this.c, r = t.opps[e - 1];
     t.studio.setHoleColor(e, t.theme.accent), Ot.opp(t, e), He(r, "saluda", 1.4);
     this.rodadas > 1 && await coproPausa(this.c, 0.5);
+    await regidorMomento(this.c, "silencio", { n: this.rodadas }, 0.85);
     await coproMomento(this.c, "duelo", { n: this.rodadas, rival: me.rival(e) });
     {
       const f = _h("elegidoT", e);
@@ -22581,7 +22583,7 @@ class sy {
     const { eng: n, hud: i, s } = this.c, o = n.studio.holes[e];
     Ot.hole(n, e);
     for (let l = 0; l < 3; l++) n.studio.setHoleColor(e, 16719904), await s.w(330), n.studio.setHoleColor(e, 16777215), await s.w(330);
-    F.play("AhoraCaigo - Queda.mp3"), i.subs("AhoraCaigo - Queda.mp3", false), await s.w(500), F.play("DropM.mp3"), n.shake = 0.5, (r = n.lights) == null || r.event("caida", o.pos.clone()), ze.ooh(1), await n.fall(t, e), n.studio.setHoleColor(e, 2236962), o.target = 0;
+    F.play("AhoraCaigo - Queda.mp3"), i.subs("AhoraCaigo - Queda.mp3", false), await s.w(500), F.play("DropM.mp3"), n.shake = 0.5, (r = n.lights) == null || r.event("caida", o.pos.clone()), ze.ooh(1), await n.fall(t, e), n.studio.setHoleColor(e, 2236962), o.target = 0; t !== n.player && e > 0 && await regidorMomento(this.c, "caida", { rival: me.rival(e) }, 0.6);
   }
   async perder() {
     var s;
@@ -22589,6 +22591,7 @@ class sy {
     return F.stopMusic(), F.play("AcerteOuCaia Susp.mp3", 1, "susp"), t.say(Ua(Nt.tiempo), 3e3), He(e.host, "lamenta", 2.5), (s = e.lights) == null || s.event("fallo"), await i.w(4e3), n.hideAll(500), Pn(-1, false), await i.w(1e3), this.placar = 0, F.stopTag("susp"), await this.caida(0, e.player), await i.w(900), ze.aplauso(2.6, 0.45), await i.w(1100), await s0(this.c, "GcPerdeu", 2500), "lose";
   }
   async decision() {
+    await regidorMomento(this.c, "decision", {}, 0.8);
     await coproMomento(this.c, "decision");
     const { st: e, s: t, hud: n, eng: i } = this.c;
     F.stopMusic(), await F.playMusic("AhoraCaigo - Decisão.mp3"), Ot.player(i, 1.2), n.subs("AhoraCaigo - Decisão.mp3", true), e.show("Painel", "DesafioFinal", { z: 46, fade: 330 }), await t.w(500);
@@ -22603,6 +22606,7 @@ class sy {
   }
   async juegoFinal() {
     await coproAntesFinal(this.c);
+    await regidorMomento(this.c, "final");
     await coproMomento(this.c, "final");
     var h, d;
     const { eng: e, hud: t, st: n, panel: i, s } = this.c;
@@ -22645,6 +22649,7 @@ class sy {
     try { PANT.mostrar(null); } catch (x) { }
     s.hideAll(), Pn(-1, false);
     try { await coproDespide(this.c, e); } catch (x) { if (x === _o) throw x; }
+    try { await regidorMomento(this.c, "fin"); } catch (x) { if (x === _o) throw x; } regidorQuita();
     const o = e === "ganado" ? `¡Has ganado ${Uo(this.placar)} puntos!` : e === "plantado" ? `Te has plantado con ${Uo(this.placar)} puntos` : "Esta vez has caído… ¡a la próxima!";
     return t.setGoldSet(false), (r = t.lights) == null || r.event("outro"), await aA(t, n, i, o), F.stopAll(), { res: e, placar: this.placar, rodadas: this.rodadas, line: o };
   }
@@ -23373,7 +23378,7 @@ function Lt(a = "main") {
     const b = document.createElement("button");
     b.className = "tbtn" + (document.fullscreenElement ? " sel" : ""), b.textContent = document.fullscreenElement ? "Salir" : "Activar", b.onclick = async (_) => {
       _.stopPropagation(), await YA(), setTimeout(() => Lt("options"), 300);
-    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), filaApertura(), ZA(), HA(() => Lt("gallina")));
+    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), filaRegidor(), filaApertura(), filaTitulo(), filaVideoCab(), ZA(), HA(() => Lt("gallina")));
     const A = document.createElement("p");
     A.className = "mtext", A.textContent = `Rendimiento actual: ${Math.round(Xe.fps)} fps. Si el juego va lento en tu móvil, elige calidad «Baja».`, r.append(g, x, A, Ia("main"));
   } else if (a === "monologos") {

@@ -142,7 +142,7 @@ async function coproDespide(c, res) {
     await coproHabla(c, coproLinea('adios'), 'saluda'); ze.aplauso(3, 0.7);
   } finally { coproQuita(); }
 }
-function coproQuita() { clearInterval(COPRO.iv); COPRO.iv = null; try { COPRO.fig && Xe.scene.remove(COPRO.fig.root); } catch (x) { } COPRO.fig = null; }
+function coproQuita() { try { regidorQuita(); } catch (x) { } clearInterval(COPRO.iv); COPRO.iv = null; try { COPRO.fig && Xe.scene.remove(COPRO.fig.root); } catch (x) { } COPRO.fig = null; }
 function filaCopro() {
   const row = document.createElement('div'); row.className = 'orow'; row.id = 'rowCopro';
   const lb = document.createElement('label'); lb.textContent = '🎙️ Presentador sorpresa (todo el programa)'; row.appendChild(lb);

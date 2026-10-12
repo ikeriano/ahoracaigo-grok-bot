@@ -35,7 +35,7 @@ PROMOS.cab3dv = { id: 'cab3dv', nombre: 'Cabecera 3D', dur: 7.6, emoji: '🌀', 
     const tubo = new T.Mesh(new T.CylinderGeometry(3, 3, 120, 48, 1, true), new T.MeshPhongMaterial({ map: metal, side: T.BackSide, specular: 0xffffff, shininess: 90 })); tubo.rotation.x = Math.PI / 2; tubo.position.z = -55; S1.add(tubo);
     const anillos = []; for (let i = 0; i < 30; i++) { const m = new T.Mesh(new T.TorusGeometry(2.85, 0.07, 8, 64), new T.MeshBasicMaterial({ color: i % 2 ? 0xd04aff : 0x3ab8ff })); m.position.z = 2 - i * 3.6; S1.add(m); anillos.push(m);
       const h = new T.Mesh(new T.TorusGeometry(2.85, 0.25, 6, 48), new T.MeshBasicMaterial({ color: i % 2 ? 0xd04aff : 0x3ab8ff, transparent: true, opacity: 0.18, blending: T.AdditiveBlending, depthWrite: false })); h.position.z = m.position.z; S1.add(h); }
-    const ahora = cabFrase('AHORA', 1.3, { cara: 'blanco', capas: 10, fondo: 0.35 }); ahora.position.z = -30; S1.add(ahora);
+    const ahora = cabFrase(tituloAC()[0], 1.3, { cara: 'blanco', capas: 10, fondo: 0.35 }); ahora.position.z = -30; S1.add(ahora);
     // fragmentos angulosos en los que se rompe la palabra
     const frag = []; const fm = new T.MeshLambertMaterial({ color: 0xffffff, emissive: 0x404040 }); for (let i = 0; i < 70; i++) { const m = new T.Mesh(new T.TetrahedronGeometry(0.12 + Math.random() * 0.22), fm); m.visible = false; m.userData = { v: new T.Vector3((Math.random() - 0.5) * 9, (Math.random() - 0.5) * 6, 4 + Math.random() * 8), r: new T.Vector3(Math.random() * 9, Math.random() * 9, 0), p0: new T.Vector3((Math.random() - 0.5) * 3.6, (Math.random() - 0.5) * 1.2, 0) }; S1.add(m); frag.push(m); }
     // --- 2. plano cenital: trampilla negra con huellas amarillas que se parte y deja caer una figura al vacío
@@ -60,7 +60,7 @@ PROMOS.cab3dv = { id: 'cab3dv', nombre: 'Cabecera 3D', dur: 7.6, emoji: '🌀', 
     const aros = []; for (let i = 0; i < 3; i++) { const m = new T.Mesh(new T.TorusGeometry(7 + i * 2.3, 0.08, 8, 128), new T.MeshBasicMaterial({ color: 0xffd21a })); m.rotation.x = Math.PI / 2; m.position.y = 6 + i * 1.4; S3.add(m); aros.push(m); }
     const conoGeo = new T.ConeGeometry(1.5, 14, 24, 1, true); conoGeo.translate(0, -7, 0); const conos = []; for (let i = 0; i < 6; i++) { const m = new T.Mesh(conoGeo, new T.MeshBasicMaterial({ color: i % 2 ? 0x6ab8ff : 0xffffff, transparent: true, opacity: 0.13, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide })); m.position.set(-10 + i * 4, 12, -6); S3.add(m); conos.push(m); }
     const logo = new T.Group(); logo.position.set(0, 3.6, 0); S3.add(logo);
-    const l1 = cabFrase('¡AHORA', 1.0, { cara: 'blanco', capas: 10, fondo: 0.3 }), l2 = cabFrase('CAIGO!', 1.35, { cara: 'blanco', capas: 10, fondo: 0.3 }); l1.position.set(-0.5, 1.15, 0); l2.position.set(0.2, 0, 0); logo.add(l1, l2);
+    const l1 = cabFrase(tituloL1(), 1.0, { cara: 'blanco', capas: 10, fondo: 0.3 }), l2 = cabFrase(tituloL2(), 1.35, { cara: 'blanco', capas: 10, fondo: 0.3 }); l1.position.set(-0.5, 1.15, 0); l2.position.set(0.2, 0, 0); logo.add(l1, l2);
     const st1 = new T.Mesh(new T.PlaneGeometry(4.6, 0.72), new T.MeshBasicMaterial({ map: capTxtTex(sub1, { color: '#ff5ad8', borde: '#3a0a5a', px: 116 }), transparent: true })); st1.position.set(0.2, -1.05, 0.05);
     const st2 = new T.Mesh(new T.PlaneGeometry(3.2, 0.4), new T.MeshBasicMaterial({ map: capTxtTex(sub2, { color: '#ffffff', borde: '#0a1a5a', px: 100 }), transparent: true })); st2.position.set(0.6, -1.6, 0.05); logo.add(st1, st2);
     C.escenas = [S1, S2, S3];

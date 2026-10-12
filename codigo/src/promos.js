@@ -253,8 +253,8 @@ const PROMOS = {
       const ch = cabChevrons(cabTema({ id: 'normal' })); ch.repeat.set(-3, 1); const fh = new T.Mesh(new T.PlaneGeometry(9, 2.2), new T.MeshBasicMaterial({ map: ch })); fh.position.set(0, 1.4, -2.5); H.add(fh);
       const A = promoAdrian(); H.add(A.root); const hc = new T.PerspectiveCamera(30, 1, 0.1, 50); hc.position.set(0, 1.25, 3.1); hc.lookAt(0, 1.2, 0);
       C.escenas = [E.scene, F2, H];
-      const tit = cabFrase('¡AHORA', 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }), tit2 = cabFrase('CAIGO!', 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }); tit.position.set(0, 2.6, 0.6); tit2.position.set(0, 1.55, 0.6); E.scene.add(tit, tit2);
-      const R = [[C.rotulo('¡LA PRÓXIMA SEMANA!', 0.85), 4, 5, 'golpe'], [C.rotulo('NO TE PIERDAS EN', 0.75, { y: 0.5 }), 5, 8, 'vuela'], [C.rotulo('SHOWTIME TV ESPAÑA', 0.75, { y: -0.5 }), 5.3, 8, 'vuela'], [C.rotulo('UN GRAN ANUNCIO', 0.9, { y: 0.5 }), 8, 11, 'golpe'], [C.rotulo('QUE MARCARÁ UN ANTES Y UN DESPUÉS', 0.42, { y: -0.45 }), 8.5, 11, 'sube'], [C.rotulo('PARA LOS CONCURSANTES DE', 0.45, { y: 1.5 }), 11, 13, 'sube'], [C.rotulo('¡AHORA', 1.2, { y: 0.35, cara: 'blanco' }), 11.3, 13, 'cae'], [C.rotulo('CAIGO!', 1.2, { y: -0.95, cara: 'blanco' }), 11.4, 13, 'cae']];
+      const tit = cabFrase(tituloL1(), 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }), tit2 = cabFrase(tituloL2(), 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }); tit.position.set(0, 2.6, 0.6); tit2.position.set(0, 1.55, 0.6); E.scene.add(tit, tit2);
+      const R = [[C.rotulo('¡LA PRÓXIMA SEMANA!', 0.85), 4, 5, 'golpe'], [C.rotulo('NO TE PIERDAS EN', 0.75, { y: 0.5 }), 5, 8, 'vuela'], [C.rotulo('SHOWTIME TV ESPAÑA', 0.75, { y: -0.5 }), 5.3, 8, 'vuela'], [C.rotulo('UN GRAN ANUNCIO', 0.9, { y: 0.5 }), 8, 11, 'golpe'], [C.rotulo('QUE MARCARÁ UN ANTES Y UN DESPUÉS', 0.42, { y: -0.45 }), 8.5, 11, 'sube'], [C.rotulo('PARA LOS CONCURSANTES DE', 0.45, { y: 1.5 }), 11, 13, 'sube'], [C.rotulo(tituloL1(), 1.2, { y: 0.35, cara: 'blanco' }), 11.3, 13, 'cae'], [C.rotulo(tituloL2(), 1.2, { y: -0.95, cara: 'blanco' }), 11.4, 13, 'cae']];
       return t => {
         if (t < 3) { E.update(t); const d = t; [tit, tit2].forEach((G, gi) => G.userData.letras.forEach((L, i) => { const D = L.userData.dest, k = C.rebote((d - 0.1 - (gi * 6 + i) * 0.03) / 0.55); L.position.set(D.x, D.y + (1 - k) * 6, D.z); }));
           const caida = t > 2.3 ? (t - 2.3) / 0.7 : 0; P.abre(C.ease((t - 1.6) / 0.6)); [tit, tit2].forEach(G => G.visible = t < 1.9);
@@ -277,7 +277,7 @@ const PROMOS = {
       const H = new T.Scene(); H.add(new T.HemisphereLight(0xffffff, 0x303050, 1.8)); const bgC = document.createElement('canvas'); bgC.width = 1024; bgC.height = 576; const bgT = new T.CanvasTexture(bgC); bgT.colorSpace = T.SRGBColorSpace; const Bs = new T.Scene(); Bs.background = bgT; { const l = new T.DirectionalLight(0xffffff, 1); l.position.set(2, 3, 4); H.add(l); }
       const A = promoAdrian(); H.add(A.root); const hc = new T.PerspectiveCamera(30, 1, 0.1, 50); hc.position.set(0, 1.2, 3.4); hc.lookAt(0, 1.15, 0);
       C.escenas = [E.scene, H, Bs];
-      const tit = cabFrase('¡AHORA', 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }), tit2 = cabFrase('CAIGO!', 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }); tit.position.set(0, 2.6, 0.6); tit2.position.set(0, 1.55, 0.6); E.scene.add(tit, tit2); [tit, tit2].forEach(G => G.visible = false);
+      const tit = cabFrase(tituloL1(), 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }), tit2 = cabFrase(tituloL2(), 1.1, { cara: 'blanco', capas: 10, fondo: 0.3 }); tit.position.set(0, 2.6, 0.6); tit2.position.set(0, 1.55, 0.6); E.scene.add(tit, tit2); [tit, tit2].forEach(G => G.visible = false);
       const fondoCurvas = t => { curvas(bgC.getContext('2d'), 1024, 576, t); bgT.needsUpdate = true; C.render(Bs); };
       const R = [[C.rotulo('10 OPONENTES', 1.0, { cara: 'amarillo' }), 1.0, 2.2, 'golpe'], [C.rotulo('1 CONCURSANTE CENTRAL', 0.62, { cara: 'amarillo' }), 2.2, 3.2, 'vuela'], [C.rotulo('8 FASES', 1.9, { cara: 'amarillo' }), 3.2, 4.0, 'golpe'], [C.rotulo('6 JUEGOS DIFERENTES', 0.7, { cara: 'amarillo' }), 4.0, 7.0, 'vuela'], [C.rotulo('600.000', 1.5, { cara: 'blanco' }), 9.0, 10.2, 'golpe']];
       const huellas = cabHuellas('#ff8a1a'); const disco = new T.Mesh(new T.CircleGeometry(2.2, 64), new T.MeshBasicMaterial({ map: huellas, transparent: true })); disco.position.z = -2; C.txt.add(disco); disco.visible = false;
@@ -301,7 +301,7 @@ const PROMOS = {
           const bx = vert ? w * 0.06 : w * 0.05, by = vert ? h * 0.62 : h * 0.34, B = vert ? w * 0.88 : w * 0.38, uh = vert ? w * 0.1 : h * 0.08;
           const e = k0 => C.ease((t - 13 - k0) / 0.45);
           caja(g, bx - (1 - e(0)) * w, by, B * 0.75, uh, '#0a1a7a', 'GRAN ESTRENO', uh * 0.55);
-          caja(g, bx - (1 - e(0.25)) * w, by + uh * 1.2, B, uh * 1.6, '#ff7a10', '¡AHORA CAIGO!', uh * 0.95);
+          caja(g, bx - (1 - e(0.25)) * w, by + uh * 1.2, B, uh * 1.6, '#ff7a10', tituloTexto(), uh * 0.95);
           if (t > 14.2) caja(g, bx - (1 - e(1.2)) * w, by + uh * 3.0, B * 0.75, uh, '#0a1a7a', 'PRÓXIMAMENTE', uh * 0.55);
           promoMarcas(g, w, h, {}); }
         R.forEach(([G, a, b, m]) => C.anima(G, t, a, b, m));
@@ -360,7 +360,7 @@ const PROMOS = {
       C.escenas = [S.scene, U.scene, E.scene];
       const A = promoAdrian(); S.scene.add(A.root); const A2 = promoAdrian(); U.scene.add(A2.root);
       const hueco = new T.Mesh(new T.PlaneGeometry(1.6, 1.6), new T.MeshBasicMaterial({ color: 0x000000 })); hueco.rotation.x = -Math.PI / 2; hueco.position.set(0, 0.015, -8); hueco.scale.set(1, 0.01, 1); U.scene.add(hueco);
-      const tit = cabFrase('¡AHORA', 1.2, { cara: 'blanco', capas: 10, fondo: 0.3 }), tit2 = cabFrase('CAIGO!', 1.2, { cara: 'blanco', capas: 10, fondo: 0.3 }); tit.position.set(0, 2.2, 0); tit2.position.set(0, 1.05, 0); E.scene.add(tit, tit2);
+      const tit = cabFrase(tituloL1(), 1.2, { cara: 'blanco', capas: 10, fondo: 0.3 }), tit2 = cabFrase(tituloL2(), 1.2, { cara: 'blanco', capas: 10, fondo: 0.3 }); tit.position.set(0, 2.2, 0); tit2.position.set(0, 1.05, 0); E.scene.add(tit, tit2);
       const lista = [['La Hora Del Quiz', '2020'], ['Cifras y Letras', '2021'], ['Jeopardy España', '2023'], ['Wipeout España', '2024'], ['¿QQSM?', '2021-2025']];
       const g = S.pantC.getContext('2d');
       return t => {
@@ -421,8 +421,8 @@ function menuExtra(a, r) {
   if (a === 'promos') {
     r.appendChild(Pa('Promos'));
     r.appendChild(caja('Promos de ¡Ahora caigo! en 3D, en tiempo real, con nuestro presentador virtual <b>Adrián Vega</b> (personajes virtuales, sin personas reales).'));
-    const lista = [['cabecera', '🎬', 'Cabecera del programa', '26 s · la cabecera de cada programa'], ['cab3dv', '🌀', 'Cabecera 3D', '7 s · túnel de neón, trampilla y logo'], ['apertura', '🎬', 'Apertura del programa', '33 s · plató, público, Adrián, concursantes y pregunta de selección'], ['donarturo', '🎩', 'Sketch: El regreso de Don Arturo', '2-3 min · un presentador legendario vuelve al plató']].concat(['estreno', 'proximamente', 'casting', 'anuncio', 'estanoche', 'huella'].map(k => [k, PROMOS[k].emoji, PROMOS[k].nombre, Math.round(PROMOS[k].dur) + ' s · ' + PROMOS[k].sub]));
-    for (const [k, em, n, s] of lista) r.appendChild(ei(em + ' ' + n, s, k === 'estreno' ? 'gold' : '', () => k === 'cabecera' ? cab3D(null, null, xf(Ms)) : k === 'cab3dv' ? promoCab3Dv(xf(Ms)) : k === 'apertura' ? promoApertura({ tema: xf(Ms) }) : k === 'donarturo' ? promoArturo() : promoCorre(PROMOS[k])));
+    const lista = [['cabecera', '🎬', 'Cabecera del programa', '26 s · la cabecera de cada programa'], ['cab3dv', '🌀', 'Cabecera 3D', '7 s · túnel de neón, trampilla y logo'], ['apertura', '🎬', 'Apertura del programa', '33 s · plató, público, Adrián, concursantes y pregunta de selección'], ['donarturo', '🎩', 'Sketch: El regreso de Don Arturo', '2-3 min · un presentador legendario vuelve al plató'], ['videocab', '🎥', 'Cabecera 3D con tu vídeo', VCAB.nombre ? 'tu vídeo: ' + VCAB.nombre : 'elige el vídeo en Opciones › ELEGIR VÍDEO PARA LA CABECERA 3D']].concat(['estreno', 'proximamente', 'casting', 'anuncio', 'estanoche', 'huella'].map(k => [k, PROMOS[k].emoji, PROMOS[k].nombre, Math.round(PROMOS[k].dur) + ' s · ' + PROMOS[k].sub]));
+    for (const [k, em, n, s] of lista) r.appendChild(ei(em + ' ' + n, s, k === 'estreno' ? 'gold' : '', () => k === 'cabecera' ? cab3D(null, null, xf(Ms)) : k === 'cab3dv' ? promoCab3Dv(xf(Ms)) : k === 'apertura' ? promoApertura({ tema: xf(Ms) }) : k === 'donarturo' ? promoArturo() : k === 'videocab' ? cabVideo(null, null, xf(Ms)).then(ok => ok || Lt('options')) : promoCorre(PROMOS[k])));
     const fila = document.createElement('div'); fila.className = 'orow orow-wrap'; const lb = document.createElement('label'); lb.textContent = '🔊 Audio de las promos'; fila.appendChild(lb);
     const hay = ['estreno', 'promo_proximamente', 'promo_anuncio', 'promo_estanoche', 'promo_huella'].some(n => RC.audioExtra && RC.audioExtra(n));
     for (const [v, t] of [['recreado', 'Recreado (voz de Adrián Vega)'], ['original', 'Original del vídeo' + (hay ? '' : ' (cárgalo en Opciones)')]]) fila.appendChild(boton(t, b => { localStorage.setItem('ac_promo_audio', v); fila.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b)); }, PROMO_AUDIO() === v));
