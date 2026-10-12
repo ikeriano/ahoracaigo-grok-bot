@@ -19,7 +19,7 @@ for v, t in L:
     if k in idx[carp] and os.path.exists(dst): continue
     if v not in cache: cache[v] = PiperVoice.load('/workspace/piper/%s.onnx' % MOD[v])
     with wave.open('/tmp/gvr.wav', 'wb') as w: cache[v].synthesize_wav(t, w, syn_config=SynthesisConfig(length_scale=0.95))
-    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', '/tmp/gvr.wav', '-af', 'volume=1.2', '-ac', '1', '-b:a', '64k', dst], check=True)
+    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', '/tmp/gvr.wav', '-af', 'volume=1.2', '-ac', '1', '-b:a', os.environ.get('BR','64k'), dst], check=True)
     dur = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', dst], capture_output=True, text=True).stdout)
     idx[carp][k] = round(dur, 2); n += 1
 for c in idx: json.dump(idx[c], open(os.path.join(RAIZ, c, 'index.json'), 'w'), ensure_ascii=False, separators=(',', ':'))

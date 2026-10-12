@@ -69,10 +69,10 @@ function exUtileria(e, lugar) {
 }
 // ---------------- el guion de cada sketch ----------------
 async function exCorre(modo, id, n, t) {
-  const { eng: e, hud: i } = n, h = e.host, L = EX_DATOS[modo], d = L.find(x => x.id === id) || L[0];
+  const { eng: e, hud: i } = n, h = e.host, L = EX_DATOS[modo], d = escEsGen(id) ? escGen(modo, id) : (L.find(x => x.id === id) || L[0]);
   mec(modo + ' ' + d.id); e.resetPositions(); e.opps.forEach(o => o.root.visible = true);
   const capa = exCapa(modo); capa.titulo = { oculta: 'CÁMARA OCULTA', tomas: 'TOMAS FALSAS', fuera: 'FUERA DE CÁMARAS' }[modo] + ' · ' + d.titulo;
-  const ut = modo === 'fuera' && d.lugar && d.lugar !== 'plato' ? exUtileria(e, d.lugar) : null;
+  const lugX = d.gen ? d.lugarAC : d.lugar, ut = modo === 'fuera' && lugX && lugX !== 'plato' ? exUtileria(e, lugX) : null;
   if (modo === 'oculta') F.playMusic('TrilhaCurta@Stage', true, 0.25);
   try {
     await Af(t, i, async v => {
@@ -206,14 +206,15 @@ function menuExtras2(a, r) {
   const [em, tit, sub] = EX_MENU[a]; r.appendChild(Pa(em + ' ' + tit));
   const d = document.createElement('div'); d.style.cssText = 'background:#0a1a5acc;border:2px solid #3a6aff;border-radius:16px;padding:10px 12px;margin:4px 0;color:#fff;font:14px system-ui'; d.innerHTML = sub + '. Personajes virtuales inventados (voces sintéticas).'; r.appendChild(d);
   r.appendChild(ei('▶ Ver todas seguidas', EX_DATOS[a].length + ' escenas', 'gold', () => ii(a, 'todas')));
+  menuEscGen(a, r);
   for (const s of EX_DATOS[a]) r.appendChild(ei(s.titulo, s.pasos.length + ' frases', '', () => ii(a, s.id)));
   r.appendChild(Ia('main'));
 }
 async function modoExtras(a, e, n, t) {
   if (a === 'paseo') return modoPaseo(n, t);
-  const L = EX_DATOS[a], ids = e === 'todas' ? L.map(x => x.id) : [e && L.find(x => x.id === e) ? e : L[0].id];
+  const L = EX_DATOS[a], ids = e === 'todas' ? L.map(x => x.id) : [escEsGen(e) || (e && L.find(x => x.id === e)) ? e : L[0].id];
   let d; for (const id of ids) d = await exCorre(a, id, n, t);
-  const sig = L[(L.indexOf(d) + 1) % L.length];
+  const sig = d.gen ? { id: 'g' + (d.n % ESC_GEN.total + 1) } : L[(L.indexOf(d) + 1) % L.length];
   yn.score(`${EX_MENU[a][0]} «${d.titulo}»`, true); yn.actions([{ label: 'Siguiente ▶', cls: 'gold', fn: () => ii(a, sig.id) }, { label: 'Repetir', fn: () => ii(a, d.id) }, { label: 'Lista', fn: () => { jt && (jt.alive = false), jt = null, Mi = false, Lt(a); } }]);
   Xe.startOrbit(new P(0, 0, 0), 10.8, 5, 0, 0.08, 1); await t.until(() => false);
 }

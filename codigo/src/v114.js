@@ -54,11 +54,33 @@ Pv.youtube = [
 Pv.aniversario = (Pv.especial300 || Pv.primetime || []).slice();
 // ---- vídeo de la cabecera 3D (IndexedDB) ----
 const vcabDB = () => new Promise((res, rej) => { const r = indexedDB.open('ac_videocab', 1); r.onupgradeneeded = () => r.result.createObjectStore('v'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
-async function vcabGuarda(f) { const db = await vcabDB(); await new Promise((res, rej) => { const tx = db.transaction('v', 'readwrite'); f ? tx.objectStore('v').put(f, 'video') : tx.objectStore('v').delete('video'); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); VCAB.url && URL.revokeObjectURL(VCAB.url); VCAB.url = null; VCAB.hay = !!f; VCAB.nombre = f ? f.name : ''; try { localStorage.setItem('ac_vcab_nombre', VCAB.nombre); } catch (e) { } }
-async function vcabLee() { try { const db = await vcabDB(); return await new Promise(res => { const q = db.transaction('v').objectStore('v').get('video'); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); }); } catch (e) { return null; } }
-const VCAB = { url: null, hay: null, nombre: (() => { try { return localStorage.getItem('ac_vcab_nombre') || ''; } catch (e) { return ''; } })() };
+async function vcabGuarda(f, clave) { const db = await vcabDB(); const k = clave || (f ? 'u' + Date.now() : vcabSel()); await new Promise((res, rej) => { const tx = db.transaction('v', 'readwrite'); f ? tx.objectStore('v').put(f, k) : tx.objectStore('v').delete(k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); if (f) vcabElige(k); else if (k === vcabSel()) vcabElige(''); VCAB.url = null; VCAB.lista = null; return k; }
+async function vcabLee(k) { try { const db = await vcabDB(); return await new Promise(res => { const q = db.transaction('v').objectStore('v').get(k); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); }); } catch (e) { return null; } }
+async function vcabClaves() { try { const db = await vcabDB(); return await new Promise(res => { const q = db.transaction('v').objectStore('v').getAllKeys(); q.onsuccess = () => res(q.result || []); q.onerror = () => res([]); }); } catch (e) { return []; } }
+const VCAB_FIJOS = [['cab1', 'Cabecera 1', 'cabecera/video1.mp4'], ['cab2', 'Cabecera 2', 'cabecera/video2.mp4'], ['cab3', 'Cabecera 3', 'cabecera/video3.mp4']]; // solo en el APK privado
+const VCAB = { url: null, urlDe: null, lista: null, hay: null };
+const vcabSel = () => { try { return localStorage.getItem('ac_vcab_sel') || ''; } catch (e) { return ''; } };
+function vcabElige(k) { try { k ? localStorage.setItem('ac_vcab_sel', k) : localStorage.removeItem('ac_vcab_sel'); } catch (e) { } VCAB.url = null; }
 const vcabOn = () => { try { return localStorage.getItem('ac_vcab_on') !== '0'; } catch (e) { return true; } };
-async function vcabUrl() { if (VCAB.url) return VCAB.url; const b = await vcabLee(); VCAB.hay = !!b; if (!b) return null; VCAB.url = URL.createObjectURL(b); return VCAB.url; }
+const vcabModo = () => { try { return localStorage.getItem('ac_vcab_modo') || '3d'; } catch (e) { return '3d'; } };
+async function vcabLista() { // [{k, nombre, fijo}]
+  if (VCAB.lista) return VCAB.lista; const out = [];
+  for (const [k, n, u] of VCAB_FIJOS) { try { const r = await fetch(u, { method: 'HEAD' }); if (r.ok) out.push({ k, nombre: n, fijo: u }); } catch (e) { } }
+  let i = 0; for (const k of await vcabClaves()) { const b = await vcabLee(k); if (!b) continue; i++; out.push({ k, nombre: (b.name ? b.name.replace(/\.[^.]+$/, '') : (String(k).startsWith('r') ? 'Grabación ' : 'Mi vídeo ') + i).slice(0, 24) }); }
+  return VCAB.lista = out;
+}
+async function vcabUrl() {
+  const L = await vcabLista(); let e = L.find(x => x.k === vcabSel()) || L.find(x => !x.fijo) || L[0]; VCAB.hay = !!e; if (!e) return null;
+  if (VCAB.url && VCAB.urlDe === e.k) return VCAB.url; if (VCAB.url && VCAB.url.startsWith('blob:')) URL.revokeObjectURL(VCAB.url);
+  VCAB.urlDe = e.k; VCAB.url = e.fijo ? e.fijo : URL.createObjectURL(await vcabLee(e.k)); return VCAB.url;
+}
+async function vcabPantalla(sess) { // el vídeo elegido a pantalla completa como apertura
+  const url = await vcabUrl(); if (!url) return false; const v = document.createElement('video'); v.src = url; v.playsInline = true; v.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:8000';
+  document.body.appendChild(v); try { F.stopMusic && F.stopMusic(); } catch (e) { }
+  try { await v.play(); } catch (e) { v.muted = true; try { await v.play(); } catch (x) { v.remove(); return false; } }
+  await new Promise(r => { v.onended = r; v.onerror = r; v.onclick = r; const k = setInterval(() => { if (sess && (sess.alive === false || sess.skip || sess.saltar)) { clearInterval(k); r(); } }, 150); });
+  v.pause(); v.remove(); return true;
+}
 PROMOS.videocab = { id: 'videocab', nombre: 'Cabecera 3D con tu vídeo', dur: 20, emoji: '🎥', sub: 'tu vídeo en el muro curvo, las pantallas LED y un panel flotante', soloMusica: true,
   montar(C) {
     const T = C.T, E = cabEstudio(C.cfg, C.def.tema || { id: 'normal' }, { sinObjetos: true }); C.escenas = [E.scene]; const v = C.def.video, D = C.def.dur;
@@ -98,7 +120,7 @@ async function cabVideo(hud, sess, theme) {
   const def = { ...PROMOS.videocab, dur, video: v, tema: theme || { id: 'normal' }, audioUrl: url };
   try { return await promoCorre(def, hud, sess); } finally { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) { } }
 }
-async function cabVideoPrograma(hud, sess, theme) { if (!vcabOn()) return false; const u = await vcabUrl(); if (!u) return false; mec('cabecera con vídeo propio'); return await cabVideo(hud, sess, theme); }
+async function cabVideoPrograma(hud, sess, theme) { if (!vcabOn()) return false; const u = await vcabUrl(); if (!u) return false; mec('cabecera con vídeo propio'); return vcabModo() === 'pantalla' ? await vcabPantalla(sess) : await cabVideo(hud, sess, theme); }
 // sintonía corta propia de cada especial (al empezar el programa)
 const STING = { navidad: [784, 988, 1175, 1568], halloween: [220, 262, 311, 233], sanvalentin: [659, 784, 988, 1319], verano: [523, 659, 784, 1047], carnaval: [587, 740, 880, 1175], findeano: [523, 784, 1047, 1568], ninos: [659, 880, 659, 1047], famosos: [392, 523, 659, 784], aniversario: [523, 659, 784, 1047, 1319], youtube: [880, 1175, 880, 1760], primetime: [392, 494, 587, 784] };
 function espSting(id) {
@@ -125,16 +147,20 @@ function filaTitulo() {
 }
 function filaVideoCab() {
   const w = document.createElement('div'); w.className = 'orow orow-wrap'; w.id = 'rowVideoCab';
-  const lb = document.createElement('label'); lb.textContent = '🎥 ELEGIR VÍDEO PARA LA CABECERA 3D'; w.appendChild(lb);
+  const lb = document.createElement('label'); lb.textContent = '🎥 ELEGIR VÍDEO PARA LA CABECERA 3D'; lb.style.width = '100%'; w.appendChild(lb);
+  const bt = (t, fn, sel) => { const b = document.createElement('button'); b.className = 'tbtn' + (sel ? ' sel' : ''); b.textContent = t; b.onclick = e => { e.stopPropagation(); fn(); }; return b; };
+  const lista = document.createElement('div'); lista.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;width:100%'; w.appendChild(lista);
+  vcabLista().then(async L => { const u = await vcabUrl(); const sel = VCAB.urlDe; if (!L.length) lista.textContent = 'Aún no hay vídeos: elige uno del móvil o graba uno con la Cámara libre.';
+    for (const e of L) lista.appendChild(bt((e.fijo ? '🎬 ' : '🎞 ') + e.nombre, () => { vcabElige(e.k); Lt('options'); }, e.k === sel)); });
   const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'video/*'; inp.style.display = 'none';
   inp.onchange = async () => { const f = inp.files && inp.files[0]; if (f) { await vcabGuarda(f); try { yn.toast('🎥 Vídeo guardado: ' + f.name, 2500); } catch (e) { } Lt('options'); } };
-  const b = document.createElement('button'); b.className = 'tbtn'; b.textContent = VCAB.nombre ? '🎞 ' + VCAB.nombre.slice(0, 22) : 'Elegir vídeo…'; b.onclick = e => { e.stopPropagation(); inp.click(); };
-  const ver = document.createElement('button'); ver.className = 'tbtn'; ver.textContent = '▶ Probar'; ver.onclick = e => { e.stopPropagation(); cabVideo(null, null, xf(Ms)); };
-  const q = document.createElement('button'); q.className = 'tbtn'; q.textContent = 'Quitar'; q.onclick = async e => { e.stopPropagation(); await vcabGuarda(null); Lt('options'); };
-  const on = document.createElement('button'); on.className = 'tbtn' + (vcabOn() ? ' sel' : ''); on.textContent = vcabOn() ? 'Usar en el programa: Sí' : 'Usar en el programa: No'; on.onclick = e => { e.stopPropagation(); localStorage.setItem('ac_vcab_on', vcabOn() ? '0' : '1'); Lt('options'); };
-  w.append(inp, b, ver, q, on); return w;
+  w.append(inp, bt('➕ Elegir vídeo…', () => inp.click()), bt('▶ Probar', async () => { const m = document.getElementById('menu'); m && m.classList.add('hidden'); try { vcabModo() === 'pantalla' ? await vcabPantalla(null) : await cabVideo(null, null, xf(Ms)); } finally { Lt('options'); } }),
+    bt('🗑 Quitar el elegido', async () => { const k = VCAB.urlDe; if (!k || k.startsWith('cab')) return yn.toast('Las cabeceras incluidas no se pueden quitar', 2500); await vcabGuarda(null, k); Lt('options'); }),
+    bt('Ver: ' + (vcabModo() === 'pantalla' ? 'Pantalla completa' : 'En el plató 3D'), () => { localStorage.setItem('ac_vcab_modo', vcabModo() === 'pantalla' ? '3d' : 'pantalla'); Lt('options'); }),
+    bt(vcabOn() ? 'Usar en el programa: Sí' : 'Usar en el programa: No', () => { localStorage.setItem('ac_vcab_on', vcabOn() ? '0' : '1'); Lt('options'); }, vcabOn()));
+  return w;
 }
-window.__v114 = { tituloAC, tituloTexto, cabVideo, vcabGuarda, YT_RIVALES };
+window.__v114 = { tituloAC, tituloTexto, cabVideo, vcabGuarda, vcabLista, vcabPantalla, YT_RIVALES };
 
 function tituloL1() { const t = tituloAC(); return (t[2] ? '¡' : '') + t[0] + (t[1] ? '' : (t[2] ? '!' : '')); }
 function tituloL2() { const t = tituloAC(); return t[1] ? t[1] + (t[2] ? '!' : '') : ' '; }
