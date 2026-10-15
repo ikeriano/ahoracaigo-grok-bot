@@ -17611,8 +17611,8 @@ function IE() {
     n.push({ who: "central", bubble: me.presentadorPropio ? `¡Hola, ${me.presentador}! ${i.replace(/^¡Hola! /, "")}` : i, audio: [i], tts: true });
     const s = _s("cch", cv);
     n.push(ia(`¿${PE(e.replace(/[.!¡¿?]+$/g, ""))}? ${s}`, [s], "risas"));
-  } else n.push(ia(uh, [uh], "risas"));
-  return Math.random() < 0.4 && n.push(ia(dh, [dh], "aplauso")), n;
+  } else n.push(ia(arTx("uh", uh), [arTx("uh", uh)], "risas"));
+  return Math.random() < 0.4 && n.push(ia(arTx("dh", dh), [arTx("dh", dh)], "aplauso")), n;
 }
 function LE() {
   const a = [], e = (t) => a.push({ t });
@@ -19167,6 +19167,7 @@ function Da(a, e, t) {
   return i.position.y = -e / 2 - a * 0.5, n.add(i), n;
 }
 function Rm(a = {}) {
+  if (p3dOn()) return p3dRm(a);
   const e = new Ct({ color: a.color ?? 15265528, emissive: 1713216 }), t = a.shirt != null ? new Ct({ color: a.shirt, emissive: 1118481 }) : e, n = new ft(), i = new ft();
   n.add(i);
   const s = Da(0.085, 0.62, e);
@@ -19187,6 +19188,7 @@ function Rm(a = {}) {
   return d.position.y = 1.5, i.add(d), { root: n, body: i, legL: s, legR: o, armL: l, armR: c, head: u, walkPhase: 0, gesture: 0, gestureType: "", t: Math.random() * 10 };
 }
 function e2(a) {
+  if (p3dOn()) return p3dHost(a);
   const e = new Ct({ color: 15910560, emissive: 2757640 }), t = new Ct({ color: a.suit, emissive: 329487 }), n = new Ct({ color: a.shirt }), i = new Ct({ color: a.tie, emissive: 2232576 }), s = new Ct({ color: 1118481 }), o = new Ct({ color: 3810324 }), r = new ft(), l = new ft();
   r.add(l);
   const c = Da(0.09, 0.62, t);
@@ -19514,7 +19516,7 @@ function s2() {
     for (const Ce of ce) for (let $e = 0; $e < 6; $e++) ge.push(j[Ce * 6 + $e]);
     oe.setIndex(ge), oe.clearGroups(), oe.addGroup(0, 30, 0), oe.addGroup(30, 6, 1);
   }
-  return { torso: e, head: i, arm: r, legsSit: u, legsStand: d, seat: v, sign: oe, acc: { hair: g, hairL: m, cone: x, witch: A, santa: _, trim: w, elf: L, top: D, straw: W, cap: re, mask: de, stem: Be, horns: k, ears: Q } };
+  return { torso: e, head: p3dOn() ? p3dApi().cabezaPublico(t.clone()) : i, arm: r, legsSit: u, legsStand: d, seat: v, sign: oe, acc: { hair: p3dOn() ? p3dPubHair(false) : g, hairL: p3dOn() ? p3dPubHairL(m) : m, cone: x, witch: A, santa: _, trim: w, elf: L, top: D, straw: W, cap: re, mask: de, stem: Be, horns: k, ears: Q } };
 }
 const o2 = [16177080, 15647904, 14724224, 13012062, 10906949, 8212016, 5912098, 15978416], r2 = [1708560, 3021842, 4860952, 8014372, 13146704, 14729344, 9079434, 11026474, 1708560, 3021842], Pi = (a, e) => e[Math.floor(a() * e.length)];
 function Wn(a, e, t = 0.85) {
@@ -19694,6 +19696,7 @@ class v2 {
       this.halves.push(g);
     }
     this.pose(0, true);
+    p3dOn() && p3dPubMontar(this);
   }
   react(e, t = 3, n) {
     if (e === "idle") {
@@ -19768,7 +19771,7 @@ class v2 {
         i && d.join && n >= i.t0 + d.delay && n < i.t1 + d.delay * 0.6 && (p = i.kind), p !== d.kind ? (d.w = Math.max(0, d.w - e * 5), (d.w <= 0.02 || d.kind === "idle") && (d.kind = p)) : d.kind !== "idle" ? d.w = Math.min(1, d.w + e * 5) : d.w = Math.max(0, d.w - e * 5);
         const v = this.idlePose(d, n, this.P1);
         d.kind !== "idle" && d.w > 0 && f2(v, this.reactPose(d, d.kind, n, this.P2), d.w), d.stand += (v.stand - d.stand) * Math.min(1, e * 4.5), t && (d.stand = v.stand), d.lookT -= e, d.lookT < 0 && (d.lookT = 2 + Math.random() * 5, d.hyT = Math.random() < 0.6 ? 0 : (Math.random() - 0.5) * 0.9), d.hy += ((d.kind === "idle" ? d.hyT : 0) - d.hy) * Math.min(1, e * 2.5);
-        const g = d.stand * Dm + v.bob;
+        const g = d.stand * Dm + v.bob; d._v = [v.rxL, v.rzL, v.rxR, v.rzR, v.bob, v.lean];
         co.copy(d.base).multiply(ui.makeTranslation(0, g + Mr, 0)).multiply(os.makeRotationX(v.lean)).multiply(ui.makeTranslation(0, -Mr, 0)), l.setMatrixAt(f, co), Od.copy(co).multiply(ui.makeTranslation(0, a2, 0)).multiply(os.makeRotationFromEuler(ac.set(v.hx, d.hy, 0, "YXZ"))), c.setMatrixAt(f, Od), r.setMatrixAt(f * 2, os.copy(co).multiply(ui.makeTranslation(-Nm, Lm, 0)).multiply(ui.makeRotationFromEuler(ac.set(v.rxL, 0, v.rzL, "XYZ")))), r.setMatrixAt(f * 2 + 1, os.copy(co).multiply(ui.makeTranslation(Nm, Lm, 0)).multiply(ui.makeRotationFromEuler(ac.set(v.rxR, 0, v.rzR, "XYZ"))));
         const m = d.stand > 0.5;
         u.setMatrixAt(f, m ? Um : d.base), h.setMatrixAt(f, m ? os.copy(d.base).multiply(ui.makeTranslation(0, (d.stand - 1) * Dm, 0)) : Um);
@@ -19804,9 +19807,10 @@ class v2 {
   update(e, t, n, i = false) {
     this.t += e, this.frame++, this.cur && this.t > this.cur.t1 + 1.2 && (this.cur = null), Bm.multiplyMatrices(n.projectionMatrix, n.matrixWorldInverse), Om.setFromProjectionMatrix(Bm);
     for (const s of this.halves) s.visible = i || Om.intersectsSphere(s.sphere), s.root.visible = s.visible;
-    this.light(t), !(this.quality === "baja" && this.frame % 2) && this.pose(this.quality === "baja" ? e * 2 : e);
+    this.light(t), !(this.quality === "baja" && this.frame % 2) && (this.pose(this.quality === "baja" ? e * 2 : e), p3dPubPose(this));
   }
   dispose() {
+    this.disposed = true;
     this.root.traverse((e) => {
       var n, i;
       (i = (n = e.geometry) == null ? void 0 : n.dispose) == null || i.call(n);
@@ -19841,9 +19845,9 @@ class y2 {
   setTheme(e) {
     this.gold = false, this.studio && (this.scene.remove(this.studio.root), Fm(this.studio.root));
     for (const t of this.opps) this.scene.remove(t.root);
-    this.player && this.scene.remove(this.player.root), this.host && this.scene.remove(this.host.root), this.theme = e, aplicarPlato(e), this.studio = new Em(e, this.logoUrl, fs), this.scene.add(this.studio.root), this.applyLook(), this.scene.background = new xe(e.bg), this.scene.fog = new Io(e.fog, this.fogDensity()), this.player = Rm({ shirt: 15970842 }), this.scene.add(this.player.root), this.buildLights(), this.buildAudience(), this.host = e2(e.host), this.scene.add(this.host.root), this.opps = [];
+    this.player && this.scene.remove(this.player.root), this.host && this.scene.remove(this.host.root), this.theme = e, aplicarPlato(e), this.studio = new Em(e, this.logoUrl, fs), this.scene.add(this.studio.root), this.applyLook(), this.scene.background = new xe(e.bg), this.scene.fog = new Io(e.fog, this.fogDensity()), this.player = Rm({ shirt: 15970842, p3d: { seed: 'jugador', g: 'm' } }), this.scene.add(this.player.root), this.buildLights(), this.buildAudience(), this.host = e2(e.host), this.scene.add(this.host.root), this.opps = [];
     for (let t = 1; t <= 10; t++) {
-      const n = Rm(castingAspecto(t));
+      const n = Rm({ ...castingAspecto(t), p3d: { seed: (castingNombre(t) || 'rival') + t, g: castingDe(t) ? undefined : (jn[t - 1] || {}).g } });
       this.opps.push(n), this.scene.add(n.root);
     }
     this.resetPositions();
@@ -21233,7 +21237,7 @@ class Z2 {
     this.cur = null, e == null || e.stop();
   }
 }
-const Zt = new Z2(), Ym = "1.15.1", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
+const Zt = new Z2(), Ym = "1.24", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
 function Hv() {
   const a = [["Presentado por", [Vv()]], ...Jr.final], e = [];
   return me.central && e.push(["Concursante central", [me.central + (me.profesion ? " · " + me.profesion : "")]]), e.push(["Oponentes", jn.map((t, n) => `${n + 1}. ${me.rival(n + 1)} · ${t.job}`)]), a.splice(1, 0, ...e), a;
@@ -21798,6 +21802,7 @@ function Zv(a) {
   return planEtapa(a);
 }
 function Zv0(a) {
+  if (typeof planTodas === "function") return Ke.__AR ? planArgentina(a) : planTodas(a);
   for (let e = 0; e < 50; e++) {
     const n = mA(["clasico", "clasico", "entretres", "adivina", "dameletra", "sino", "vayalio", ["clasico", "entretres", "adivina", "dameletra", "sino", "vayalio"][Math.floor(Math.random() * 6)]]);
     if (a) {
@@ -22461,7 +22466,7 @@ class sy {
     var r, l;
     const { eng: e, hud: t, s: n } = this.c;
     const ET = etapa(), ND = ET.duelos || 8; this.vidas = ET.comodines ?? 2, this.cifrasT = cifrasTrampillas(), mec("etapa " + ETAPA + " · " + ND + " duelos · moneda " + ET.moneda + " · final " + ET.final), clasicaPremiosEnPlato(e, ET.moneda === "fija"), ET.moneda === "fija" && (PANT.actualiza({ usadas: [], comodines: this.vidas, placar: 0, bote: ET.bote || 0, quedan: ND }), PANT.mostrar("bote"));
-    e.resetPositions(), e.opps.forEach((c) => c.root.visible = true), (r = e.lights) == null || r.event("intro"), (espSting(e.theme && e.theme.id), await cabVideoPrograma(t, n, e.theme)) || (await aperturaPrograma(t, n, e.theme)) || (it.cabecera === "cab3d" ? !window.__noCab3d && (estrenoPendiente() ? await promoEstreno(t, n) : await cab3D(t, n, e.theme)) : To.video && RC.videoUrl() && !window.__noCabVideo && await oA(t, n)) || await nA(e, t, n, !!e.theme.festivo), t.hashtag(e.theme.hashtag || "#AhoraCaigo"), F.musicTime(ps) >= 0 && F.stopMusic(F.musicTime(ps) < 26.5 ? 0.8 : 2);
+    e.resetPositions(), e.opps.forEach((c) => c.root.visible = true), (r = e.lights) == null || r.event("intro"), (espSting(e.theme && e.theme.id), (window.MC3D && await MC3D.introPrograma({ eng: e, hud: t, sess: n })) || await cabVideoPrograma(t, n, e.theme)) || (await aperturaPrograma(t, n, e.theme)) || (it.cabecera === "cab3d" ? !window.__noCab3d && (estrenoPendiente() ? await promoEstreno(t, n) : await cab3D(t, n, e.theme)) : To.video && RC.videoUrl() && !window.__noCabVideo && await oA(t, n)) || await nA(e, t, n, !!e.theme.festivo), t.hashtag(e.theme.hashtag || "#AhoraCaigo"), F.musicTime(ps) >= 0 && F.stopMusic(F.musicTime(ps) < 26.5 ? 0.8 : 2);
     {
       const c = e.host.root.position;
       e.cut($t(c.x + 0.9, Ae + 1.7, c.z + 3.2), $t(c.x, Ae + 1.3, c.z)), e.face(e.host, $t(c.x + 1.2, 0, c.z + 6));
@@ -22536,7 +22541,7 @@ class sy {
         p = true;
       }), me.presentaciones ? (await o.until(() => p), await dA(this.c, e)) : await o.until(() => p);
     }
-    const l = window, c = l.__pruebaForce || (l.__botForce || l.__botClock ? "clasico" : this.plan[this.rodadas - 1] || "clasico");
+    const l = window, c = l.__pruebaForce || ((l.__botForce || l.__botClock) && !l.__planReal ? "clasico" : this.plan[this.rodadas - 1] || "clasico");
     return l.__pruebaActual = c, await Jv(this.c, c), t.face(t.player, r.root.position), t.face(r, t.player.root.position), F.playMusic("TrilhaCurta@MenuEscolha2"), await o.w(1e3), F.play("AhoraCaigo - ComeceDuelo.mp3"), n.subs("AhoraCaigo - ComeceDuelo.mp3", false), i.show("MenuEscolha2", 1, { z: 35, fade: 170 }), Ot.duel(t, e, 1.6), (h = t.lights) == null || h.event("duelo"), await o.w(2e3), F.playMusic("SuspenseDuelo", true), await o.w(1e3), i.hide("MenuEscolha2", 330), await o.w(1e3), await Kv(this, e, c) === "win" ? (this.acertos++, (d = t.lights) == null || d.event("acierto"), await o.w(800), s.hideAll(500), Pn(-1, false), await o.w(500), F.playMusic("TrilhaCurta@Gcpgt1"), He(t.host, "senala", 2), n.say(Ua(Nt.ok), 2e3), Ot.opp(t, e, 1.2), await o.w(3e3), F.stopMusic(), F.play("AcerteOuCaia SuspEdit", 1, "susp"), await o.w(3e3), await this.caida(e, r), F.stopTag("susp"), await o.w(500), await coproMomento(this.c, "caida", { n: this.rodadas }), F.playMusic("TrilhaCurta@Stage"), He(t.player, "arriba", 2), Ot.player(t, 1.2), ze.vitores(3.5), t.theme.festivo && ea(t.studio, $t(0, Ae + 2, 0)), await o.w(1500), Math.random() < 0.5 ? (this.jokeDone = true, await this.joke("caida")) : this.jokeDone = false, await o.w(1200), "win") : this.perder();
   }
   async pregunta(e, t, n, i, s) {
@@ -22667,7 +22672,7 @@ async function LA(a, e, t) {
   const h = () => i.score(`✔ ${l} &nbsp; ✘ ${c} &nbsp; ⏭ ${u}`);
   if (e === "huellas") return NA(a);
   if (e === "duelo") return o0(a, r);
-  if (e === "entretres" || e === "adivina" || e === "dameletra" || e === "sino" || e === "vayalio") return o0(a, r, e);
+  if (e === "entretres" || e === "adivina" || e === "dameletra" || e === "sino" || e === "vayalio" || (typeof AR_IDS !== "undefined" && AR_IDS.includes(e))) return o0(a, r, e);
   if (e === "eleccion") {
     n.player.root.position.set(0.4, 0, 6.6), n.face(n.player, n.host.root.position);
     const d = await ny(a);
@@ -23222,7 +23227,7 @@ async function WA() {
   for (let s = 1; s <= 10; s++) (i = ma.sprites["MenuEscolhaop" + s]) == null || i.c.forEach((o) => e.push(xr(o.f)));
   wE(e.slice(0, 200)), ["SomPalavra", "TrilhaCurta", "Trilha", "Moeda", "DropM.mp3", "AhoraCaigo - Queda.mp3", "QuemFicaEmPé-Acerto", "Erro", "saltar", "fairydust"].forEach((s) => F.preload([s])), en("loading").classList.add("hidden");
   const t = ds.get("mode");
-  t ? ii(t, ds.get("sub")) : Lt(ds.get("screen") || "title"), "serviceWorker" in navigator && location.protocol.startsWith("http") && !ds.has("nosw") && !Th && navigator.serviceWorker.register("sw.js").catch(() => {
+  t ? (t === "argentina" ? modoArgentina() : ii(t, ds.get("sub"))) : Lt(ds.get("screen") || "title"), "serviceWorker" in navigator && location.protocol.startsWith("http") && !ds.has("nosw") && !Th && navigator.serviceWorker.register("sw.js").catch(() => {
   });
 }
 const u0 = (a) => a.replace(/[&<>"]/g, (e) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[e]);
@@ -23255,6 +23260,8 @@ function XA() {
 }
 function Lt(a = "main") {
   var c;
+  if (Ke.__AR) { a === "play" && (a = "ar"); a === "train" && (a = "artrain"); }
+  Ke.__AR && !/^ar/.test(a) && typeof arSalir === "function" && arSalir();
   Gr = a, XA(), en("topbar").classList.add("hidden"), EXAC && (EXAC.bugOcultar(), EXAC.ocioMenu(a === "main")), LUCES115.modo !== "charla" && (LUCES115.hasta = 0, acLucesModo("charla"));
   const e = en("menu");
   e.classList.remove("hidden"), e.innerHTML = "", e.style.background = "transparent";
@@ -23282,8 +23289,9 @@ function Lt(a = "main") {
   s.className = "mlogo", i.appendChild(s);
   const o = document.createElement("div");
   o.className = "mtag", o.textContent = t.id === "normal" ? "EL JUEGO · 3D" : t.emoji + " " + (t.banner || "Especial " + t.name), i.appendChild(o);
+  if (/^ar/.test(a) && typeof arLogo === "function") { arCss(); const im = arLogo().cloneNode(); im.className = "mlogo arBig"; i.replaceChild(im, s); o.textContent = "🇦🇷 ARGENTINA · EL JUEGO 3D"; }
   const r = document.createElement("div");
-  if (r.className = "col ui", a === "main") r.append(ei("Jugar", "Programa completo, entrenamiento, clásico…", "gold", () => Lt("play")), ei("Promos", "Promos 3D con Adrián Vega: casting, gran anuncio, esta noche…", "", () => Lt("promos")), ei("Promos de Adrián", "Adrián Vega presenta ¡Ahora caigo! en el plató: próximo programa, bote, casting, especiales", "", () => Lt("promosadrian")), ei("Publicidad", "Pausa de Show Time TV: anuncios inventados, cortinillas y promos de la cadena", "", () => Lt("publicidad")), ei("Cámara oculta", "Bromas a Adrián en el plató… ¡Inocente, inocente!", "", () => Lt("oculta")), ei("Tomas falsas", "Lapsus, trampillas impacientes y «¡Corten!»", "", () => Lt("tomas")), ei("Fuera de cámaras", "Maquillaje, ensayos, técnicos y la pausa", "", () => Lt("fuera")), ei("Paseo", "Pasea por el plató, sube a la grada y sal a la calle", "", () => ii("paseo")), ei("Casting", "Apúntate y sal como concursante en las partidas", "", () => Lt("casting")), ei("Elige el valor de cada huella", "Coloca los 20 valores de la moneda", "", () => Lt("huellas")), ei("Cámara libre", "Vuela por el plató, graba tu toma y úsala de cabecera o en tus promos", "", () => ii("camlibre")), ei("Opciones", "Sonido, calidad gráfica, pantalla completa", "", () => Lt("options")), ei("La historia de ¡Ahora Caigo!", `${me.presentador} te cuenta la historia del programa`, "hist", () => ii("historia")), ei("Cómo se juega", "Las reglas del concurso", "", () => Lt("help")), ei("Créditos", "", "", () => Lt("credits"))), Th || r.append(ei("Instalar app", "Juega sin conexión desde tu pantalla de inicio", "inst", () => jA()));
+  if (r.className = "col ui", a === "main") r.append(ei("Jugar", "Programa completo, entrenamiento, clásico…", "gold", () => Lt("play")), arBotonMenu(), ei("📱 App clásica", "Tablero con 10 oponentes, duelos con letras que se destapan, sonidos originales, cifra de cada trampilla y decisión de plantarte (Antena 3, 2011-2021)", "gold", () => AppClasica.abrir()), ei("Promos", "Promos 3D con Adrián Vega: casting, gran anuncio, esta noche…", "", () => Lt("promos")), ei("Promos de Adrián", "Adrián Vega presenta ¡Ahora caigo! en el plató: próximo programa, bote, casting, especiales", "", () => Lt("promosadrian")), ei("Publicidad", "Pausa de Show Time TV: anuncios inventados, cortinillas y promos de la cadena", "", () => Lt("publicidad")), ei("Cámara oculta", "Bromas a Adrián en el plató… ¡Inocente, inocente!", "", () => Lt("oculta")), ei("Tomas falsas", "Lapsus, trampillas impacientes y «¡Corten!»", "", () => Lt("tomas")), ei("Fuera de cámaras", "Maquillaje, ensayos, técnicos y la pausa", "", () => Lt("fuera")), ei("Paseo", "Pasea por el plató, sube a la grada y sal a la calle", "", () => ii("paseo")), ei("Casting", "Apúntate y sal como concursante en las partidas", "", () => Lt("casting")), ei("Elige el valor de cada huella", "Coloca los 20 valores de la moneda", "", () => Lt("huellas")), ei("Cámara libre", "Vuela por el plató, graba tu toma y úsala de cabecera o en tus promos", "", () => ii("camlibre")), ei("Opciones", "Sonido, calidad gráfica, pantalla completa", "", () => Lt("options")), ei("La historia de ¡Ahora Caigo!", `${me.presentador} te cuenta la historia del programa`, "hist", () => ii("historia")), ei("Cómo se juega", "Las reglas del concurso", "", () => Lt("help")), ei("Créditos", "", "", () => Lt("credits"))), Th || r.append(ei("Instalar app", "Juega sin conexión desde tu pantalla de inicio", "inst", () => jA()));
   else if (a === "play") {
     r.append(ei("Programa completo", "Cabecera, 8 duelos, moneda, juego final y despedida", "gold", () => ii("programa")), ei("Entrenamiento", "Practica pruebas y la elección de huellas", "", () => Lt("train")), ei("Clásico", "El minijuego original de Scratch", "", () => ii("clasico")), ei("Explorar el plató", "Pasea libremente por el plató 3D", "", () => ii("explorar")), ei("Monólogos del presentador", "Sus números de humor: con el público, al teléfono y las normas", "", () => Lt("monologos"))), r.appendChild(Pa("Programa especial"));
     const u = document.createElement("div");
@@ -23298,7 +23306,7 @@ function Lt(a = "main") {
   } else if (a === "train") {
     r.appendChild(Pa("Entrenamiento (sin caídas)"));
     const u = (p, v, g, m = "") => ei(v, g, m, () => ii("entrenamiento", p));
-    r.append(u("duelo", "Duelo contra un oponente", "Por turnos, cada uno con su reloj, con PASAR", "gold"), u("pruebas", "Pruebas con reloj", "30 segundos por pregunta"), u("sintiempo", "Pruebas sin tiempo", "Tómatelo con calma"), u("gallina", "Palabra gallina", gh() ? "Con tus canciones: completa la letra" : "Las preguntas especiales del duelo 5"), u("entretres", "Entre tres", "Tres respuestas y 5 segundos, contra un oponente"), u("adivina", "Adivina", "Pistas una a una: ¡pulsa «LO SÉ»!"), u("dameletra", "¡Dame letra!", "Pide letras y di la frase entera en 10 segundos"), u("sino", "¿Sí o no?", "Una pregunta cada uno, 5 segundos: ¡SÍ o NO!"), u("vayalio", "¡Vaya lío!", "Letras revueltas: ordena la palabra de la definición"), u("eleccion", "Elección del central", "El más rápido con la tableta"), u("final", "Juego final", "10 preguntas en 2 minutos"), u("huellas", "Huellas y moneda", "Elige huellas y prueba la moneda"));
+    r.append(u("duelo", "Duelo contra un oponente", "Por turnos, cada uno con su reloj, con PASAR", "gold"), u("pruebas", "Pruebas con reloj", "30 segundos por pregunta"), u("sintiempo", "Pruebas sin tiempo", "Tómatelo con calma"), u("gallina", "Palabra gallina", gh() ? "Con tus canciones: completa la letra" : "Las preguntas especiales del duelo 5"), u("entretres", "Entre tres", "Tres respuestas y 5 segundos, contra un oponente"), u("adivina", "Adivina", "Pistas una a una: ¡pulsa «LO SÉ»!"), u("dameletra", "¡Dame letra!", "Pide letras y di la frase entera en 10 segundos"), u("sino", "¿Sí o no?", "Una pregunta cada uno, 5 segundos: ¡SÍ o NO!"), u("vayalio", "¡Vaya lío!", "Letras revueltas: ordena la palabra de la definición"), Pa("🇦🇷 Pruebas de Argentina"), u("abc", "ABC", "Completá la palabra: la primera letra en amarillo"), u("queves", "¿Qué ves?", "Una imagen con su pista: completá la palabra"), u("cantala", "¡Cantala bien!", "Ordená las palabras de la canción"), u("escondida", "La escondida", "La respuesta, con las letras mezcladas"), u("entredos", "Entre dos", "Dos opciones (a veces tres) y 5 segundos"), u("asociadas", "Asociadas", "Palabras flotantes con algo en común"), u("eleccion", "Elección del central", "El más rápido con la tableta"), u("final", "Juego final", "10 preguntas en 2 minutos"), u("huellas", "Huellas y moneda", "Elige huellas y prueba la moneda"));
     const h = document.createElement("div");
     h.className = "mrow";
     const d = document.createElement("button"), f = () => {
@@ -23307,6 +23315,8 @@ function Lt(a = "main") {
     d.onclick = (p) => {
       p.stopPropagation(), mo = !mo, localStorage.setItem("ac_orig", mo ? "1" : "0"), f();
     }, f(), h.append(d, Ia("play")), r.appendChild(h);
+  } else if (a === "ar" || a === "artrain") {
+    menuArgentina(a, r);
   } else if (a === "oculta" || a === "tomas" || a === "fuera") {
     menuExtras2(a, r);
   } else if (a === "publicidad" || a === "promosadrian") {
@@ -23378,7 +23388,7 @@ function Lt(a = "main") {
     const b = document.createElement("button");
     b.className = "tbtn" + (document.fullscreenElement ? " sel" : ""), b.textContent = document.fullscreenElement ? "Salir" : "Activar", b.onclick = async (_) => {
       _.stopPropagation(), await YA(), setTimeout(() => Lt("options"), 300);
-    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), filaRegidor(), filaApertura(), filaTitulo(), filaVideoCab(), ...filasV115(), ZA(), HA(() => Lt("gallina")));
+    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaPersonajes(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), filaRegidor(), filaApertura(), filaTitulo(), filaVideoCab(), ...(window.MC3D ? [MC3D.fila()] : []), ...filasV115(), ZA(), HA(() => Lt("gallina")));
     const A = document.createElement("p");
     A.className = "mtext", A.textContent = `Rendimiento actual: ${Math.round(Xe.fps)} fps. Si el juego va lento en tu móvil, elige calidad «Baja».`, r.append(g, x, A, Ia("main"));
   } else if (a === "monologos") {

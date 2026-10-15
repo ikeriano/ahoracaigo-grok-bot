@@ -395,3 +395,6 @@ function audioDirecto(url, vol, tag, se) {
   const done = new Promise(r => { el.onended = () => { se.playing.delete(stopper); r(); }; el.onerror = () => r(); });
   return el.play().then(() => ({ dur: el.duration || 1, done })).catch(() => ({ dur: -1, done: Promise.resolve() }));
 }
+
+// v1.18-1.19 · Opciones › «Mi cabecera 3D» (mc3d/mc3d.js): tu vídeo convertido entero en 3D con IA, intro del Programa completo
+if (window.MC3D) MC3D.config({ app: 'ahoracaigo', nombre: '¡Ahora Caigo!', titulo: '¡Ahora Caigo!', logo: () => { try { return window.__LOGO_LOCAL || (typeof LOGO_IMG !== 'undefined' && LOGO_IMG && (LOGO_IMG.src || (LOGO_IMG.toDataURL && LOGO_IMG.toDataURL()))) || null; } catch (e) { return null; } } });
