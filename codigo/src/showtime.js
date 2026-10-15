@@ -246,6 +246,7 @@ async function modoShowTime(a, e, n, t) {
     Xe.startOrbit(new P(0, 0, 0), 10.8, 5, 0, 0.08, 1); await t.until(() => false);
   } else {
     await stCorre(e || 'pausa', t);
+    if ((e || 'pausa') === 'pausa') await instalaV115().aleatoriaReproduce(.7);
     yn.actions([{ label: 'Ver otra vez', cls: 'gold', fn: () => ii('publicidad', e) }, { label: 'Publicidad', fn: () => { jt && (jt.alive = false), jt = null, Mi = false, Lt('publicidad'); } }]);
     Xe.startOrbit(new P(0, 0, 0), 10.8, 5, 0, 0.08, 1); await t.until(() => false);
   }
