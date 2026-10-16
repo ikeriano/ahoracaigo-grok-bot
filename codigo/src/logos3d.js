@@ -93,7 +93,7 @@ async function logo3dCard(sess, id = logoSel(), dur = 5200) {
   }
   return true;
 }
-const logoSes = () => ({ alive: true, w: ms => new Promise(r => setTimeout(r, ms)), until(f) { return new Promise(r => { const p = () => f() ? r() : requestAnimationFrame(p); p(); }); } });
+const logoSes = () => ({ alive: true, w: ms => new Promise(r => setTimeout(r, ms)), until(f) { return new Promise(r => { const p = () => f() ? r() : setTimeout(p, 30); p(); }); } });
 { // enganche: tras las cabeceras (cabecera 3D, apertura, vídeo propio) y al salir «al aire» en el Programa completo
   const conLogo = fn => async function (hud, sess, ...r) { const v = await fn.call(this, hud, sess, ...r); if (v !== false && logoSel() !== 'actual') try { await logo3dCard(sess); } catch (x) { if (x === _o) throw x; console.warn('logo3d', x); } return v; };
   cab3D = conLogo(cab3D); aperturaPrograma = conLogo(aperturaPrograma); cabVideoPrograma = conLogo(cabVideoPrograma);
@@ -115,3 +115,60 @@ function filaLogoCab() {
   box.append(row, ver, nota); return box;
 }
 window.__logo3dApi = { card: (id, ms) => logo3dCard(logoSes(), id, ms), lista: LOGO3D };
+// ===================================================================================================
+// v1.27 · LOGOS ORIGINALES ANIMADOS: las 6 imágenes de Iker tal cual (sin redibujar), solo con movimiento:
+// entrada con zoom y rebote, barrido de luz, destello y pulso suave. Todo con CSS (transform/opacity, va fino en
+// móviles modestos). Opciones extra: uno distinto en cada programa (en rotación) o al azar.
+// ===================================================================================================
+const LOGO_ORIG = [['abismo', 'jpg', '¡Acierta o abismo!'], ['ninos', 'jpg', '¡Ahora caigo! Niños'], ['plato', 'jpg', '¡Ahora caigo! (plató)'], ['s300', 'png', '¡Ahora caigo! 300 suscriptores'], ['s300plato', 'png', '¡Ahora caigo! 300 SUSCRIPTORES (placa)'], ['azul', 'jpg', '¡Ahora caigo! (azul y naranja)']];
+function logoOrigCss() {
+  if (document.getElementById('lo127css')) return; const st = document.createElement('style'); st.id = 'lo127css';
+  st.textContent = `#logoOrig{position:fixed;inset:0;z-index:61;background:radial-gradient(ellipse at 50% 55%,#1a2a6a 0%,#04060f 75%);cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#logoOrig .lw{position:relative;width:min(88vw,calc(84vh * var(--ar)));aspect-ratio:var(--ar);border-radius:2vmin;overflow:hidden;box-shadow:0 2vmin 6vmin #000c;animation:loIn 1.1s cubic-bezier(.2,1.5,.4,1) both,loPulse 2.6s ease-in-out 1.2s infinite;will-change:transform}
+#logoOrig img{display:block;width:100%;height:100%}
+#logoOrig .sw{position:absolute;inset:-10% auto -10% 0;width:35%;background:linear-gradient(100deg,#fff0 0%,#ffffff70 50%,#fff0 100%);transform:translateX(-150%) skewX(-18deg);animation:loSweep 2.2s ease-in-out .9s infinite;mix-blend-mode:screen;will-change:transform}
+#logoOrig .fl{position:absolute;width:22vmin;height:22vmin;left:18%;top:20%;background:radial-gradient(circle,#fff 0%,#fff8 12%,#fff0 60%);opacity:0;animation:loFlash 2.6s ease-out 1.3s infinite;mix-blend-mode:screen}
+#logoOrig .fl.b{left:auto;right:12%;top:auto;bottom:22%;animation-delay:2.4s}
+#logoOrig .bri{position:absolute;inset:0;background:#fff;opacity:0;animation:loBri 1.1s ease-out both}
+@keyframes loIn{0%{transform:scale(.15) rotate(-6deg);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes loPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes loSweep{0%{transform:translateX(-150%) skewX(-18deg)}70%,100%{transform:translateX(420%) skewX(-18deg)}}
+@keyframes loFlash{0%{opacity:0;transform:scale(.3)}12%{opacity:1;transform:scale(1)}40%,100%{opacity:0;transform:scale(1.4)}}
+@keyframes loBri{0%{opacity:0}55%{opacity:.55}100%{opacity:0}}`;
+  document.head.appendChild(st);
+}
+function logoOrigElegido(id) {
+  if (id === 'orig_rota') { let k = 0; try { k = (+localStorage.getItem('ac_logo_rota') || 0) % LOGO_ORIG.length; localStorage.setItem('ac_logo_rota', String(k + 1)); } catch (e) { } return LOGO_ORIG[k]; }
+  if (id === 'orig_azar') return LOGO_ORIG[Math.floor(Math.random() * LOGO_ORIG.length)];
+  return LOGO_ORIG.find(x => 'orig_' + x[0] === id);
+}
+async function logoOrigCard(sess, id, dur = 4800) {
+  const L = logoOrigElegido(id); if (!L) return false; LOGO_ULT = performance.now(); mec('logo original animado ' + L[0]); logoOrigCss();
+  const src = 'assets/logos127/' + L[0] + '.' + L[1], img = new Image(); img.src = src;
+  await Promise.race([img.decode().catch(() => { }), new Promise(r => setTimeout(r, 1500))]); if (!img.naturalWidth) return false;
+  const d = document.createElement('div'); d.id = 'logoOrig'; d.style.setProperty('--ar', (img.naturalWidth / img.naturalHeight).toFixed(4));
+  d.innerHTML = '<div class="lw"><div class="sw"></div><div class="fl"></div><div class="fl b"></div><div class="bri"></div></div>'; d.querySelector('.lw').prepend(img);
+  let vivo = true; d.onclick = () => vivo = false; document.body.appendChild(d); const t0 = performance.now(); window.__logoOrig = { id: L[0], t: 0 };
+  try { await sess.until(() => { window.__logoOrig.t = (performance.now() - t0) / 1000; return !vivo || performance.now() - t0 > dur || sess.alive === false; }); }
+  finally { d.remove(); window.__logoOrig = null; }
+  return true;
+}
+{ const c0 = logo3dCard; logo3dCard = function (sess, id = logoSel(), dur) { return String(id).startsWith('orig_') ? logoOrigCard(sess, id, dur) : c0(sess, id, dur); }; }
+{ // Opciones: añade «Original animado» (6), «Uno distinto en cada programa» y «Al azar» al selector de logos
+  const f0 = filaLogoCab;
+  filaLogoCab = function () {
+    const box = f0(), row = box.querySelector('.orow'), ver = box.querySelector('#btnVerLogo3d');
+    const sub = document.createElement('div'); sub.className = 'olabel'; sub.style.marginTop = '8px'; sub.textContent = '🎞️ Originales de Iker, animados (la imagen tal cual)';
+    const r2 = document.createElement('div'); r2.className = 'orow obtns'; r2.style.cssText = 'flex-wrap:wrap;gap:8px';
+    const todos = () => box.querySelectorAll('button[data-logo]');
+    for (const [id, nom, th] of [...LOGO_ORIG.map(x => ['orig_' + x[0], x[2] + ' · original animado', x[0]]), ['orig_rota', '🔁 Uno distinto en cada programa', null], ['orig_azar', '🎲 Original al azar', null]]) {
+      const b = document.createElement('button'); b.className = 'tbtn' + (logoSel() === id ? ' sel' : ''); b.dataset.logo = id; b.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;max-width:150px;font-size:12px';
+      if (th) { const im = document.createElement('img'); im.src = 'assets/logos126/' + th + '.jpg'; im.style.cssText = 'width:120px;height:68px;object-fit:cover;border-radius:6px'; b.appendChild(im); }
+      b.appendChild(document.createTextNode(nom)); r2.appendChild(b);
+    }
+    row.after(sub, r2);
+    todos().forEach(b => { b.onclick = ev => { ev.stopPropagation(); F.play('Tecla'); localStorage.setItem('ac_logo_cab', b.dataset.logo); todos().forEach(x => x.classList.toggle('sel', x === b)); }; });
+    ver.textContent = '👁 Ver el logo elegido'; return box;
+  };
+}
+window.__logoOrigApi = { card: (id, ms) => logoOrigCard(logoSes(), id, ms), lista: LOGO_ORIG };
