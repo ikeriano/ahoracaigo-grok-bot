@@ -11,7 +11,8 @@ def fnv(t):
     return '%08x' % h
 src = open(os.path.join(RAIZ, 'src/voces130.js'), encoding='utf8').read().split('const VOZ130_ON')[0]
 pres_src = re.search(r'const PRES130 = \{.*?\n\};', open(os.path.join(RAIZ, 'src/voces130.js'), encoding='utf8').read(), re.S).group(0)
-D = json.loads(subprocess.run(['node', '-e', src + pres_src + ';process.stdout.write(JSON.stringify({V:VOZ130,F:FR130,P:PRES130}))'], capture_output=True, text=True, check=True).stdout)
+src131 = open(os.path.join(RAIZ, 'src/v131_datos.js'), encoding='utf8').read()
+D = json.loads(subprocess.run(['node', '-e', src131 + src + pres_src + ';process.stdout.write(JSON.stringify({V:VOZ130,F:FR130,P:PRES130,V2:VOZ131,F2:FR131,T:TANO131}))'], capture_output=True, text=True, check=True).stdout)
 ps = open(os.path.join(RAIZ, 'src/presentadores_datos.js'), encoding='utf8').read()
 PV = json.loads(re.sub(r'(\w+):', r'"\1":', re.search(r'const PRES_VOCES = (\{.*?\});', ps).group(1).replace("'", '"')))
 cache = {}
@@ -30,6 +31,13 @@ for k, (ck, nom, mod, spk, ls, pt, eq) in enumerate(D['V']):
     for m in D['F']:
         L = D['F'][m]
         for t in {L[k % len(L)], L[(k + 4) % len(L)]}: trab.append((ck, t, (mod, spk, ls, 0.75, 0.8, ('CONC', pt, eq))))
+for k, (ck, nom, mod, spk, ls, pt, eq) in enumerate(D['V2']):
+    for m in D['F2']:
+        L = D['F2'][m]
+        for t in {L[k % len(L)], L[(k + 4) % len(L)]}: trab.append((ck, t, (mod, spk, ls, 0.75, 0.8, ('CONC', pt, eq))))
+T = D['T']; tm, tspk, tls, tpt, teq = T['cfg']
+for m in ('saluda', 'acierta', 'falla', 'cae', 'gana'):
+    for t in T[m]: trab.append(('tano', t, (tm, tspk, tls, 0.7, 0.8, ('CONC', tpt, teq))))
 for vk, M in D['P'].items():
     mod, spk, ls, ns, nw, filt = PV[vk]
     for m, L in M.items():
@@ -40,7 +48,8 @@ def hace(ck, t, cfg, dst):
     return sint(mod, spk, ls, ns, nw, f, t, dst)
 if '--muestras' in sys.argv:
     out = sys.argv[sys.argv.index('--muestras') + 1]; os.makedirs(out, exist_ok=True)
-    grupos = {'concursantes_rivales': [x for x in trab if x[0] in ('c1', 'c2', 'c3', 'c4', 'c6', 'c9') and x[1] in sum([[D['F'][m][int(x[0][1:]) % 11]] for m in ('saluda', 'cae')], [])],
+    grupos = {'argentina': [x for x in trab if (x[0].startswith('a') and x[0][1:].isdigit() and int(x[0][1:]) in (1, 2, 3, 8) and x[1] in [D['F2'][m][int(x[0][1:]) % 11] for m in ('saluda', 'cae')]) or (x[0] == 'tano' and x[1] in (T['saluda'][0], T['cae'][0]))],
+              'concursantes_rivales': [x for x in trab if x[0] in ('c1', 'c2', 'c3', 'c4', 'c6', 'c9') and x[1] in sum([[D['F'][m][int(x[0][1:]) % 11]] for m in ('saluda', 'cae')], [])],
               'concursante_tu': [x for x in trab if x[0] == 'c0'][:4],
               'presentadores_nuevos': [x for x in trab if x[0].startswith('p_') and x[1] in [D['P'][x[0]][m][0] for m in ('acierta', 'cae')]]}
     for g, L in grupos.items():

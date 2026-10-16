@@ -10,10 +10,10 @@ await p.evaluate(() => setInterval(() => { try { const sk = document.getElementB
 await p.evaluate(() => __ac.menu('train')).catch(() => 0); await W(800); await p.screenshot({ path: `${out}/entrenamiento_menu.png` });
 for (const id of ids.split(',')) {
   await p.evaluate(id => { window.__est128 = ''; window.__fin128 = false; Promise.resolve(window.__ac && __ac.ii ? __ac.ii('entrenamiento', id) : null); }, id).catch(() => 0);
-  const ok = await p.evaluate(id => { const btn = [...document.querySelectorAll('#menu .mbtn')].find(x => x.textContent.toLowerCase().startsWith(({ ordena: 'ordena', vot: 'verdadero', borrosa: 'la foto', cadena: 'cadena', bomba: 'pasa', realidad: 'realidad' })[id])); btn && btn.click(); return !!btn; }, id);
+  const ok = await p.evaluate(id => { const btn = [...document.querySelectorAll('#menu .mbtn')].find(x => x.textContent.toLowerCase().startsWith(({ ordena: 'ordena', vot: 'verdadero', borrosa: 'la foto', cadena: 'cadena', bomba: 'pasa', realidad: 'realidad', rosco: 'el rosco', memoria: 'la memoria', intrusa: 'la intrusa', cuentas: 'cuentas', precio: 'el precio' })[id])); btn && btn.click(); return !!btn; }, id);
   console.log(id, 'boton', ok);
   await p.waitForFunction(() => { const e = document.getElementById('arP'); return e && e.offsetParent && getComputedStyle(e).opacity > 0.5; }, { timeout: 60000, polling: 100 }).catch(() => console.log('sin panel'));
-  await W(2500); await p.screenshot({ path: `${out}/prueba_${id}.png` }); console.log('shot', id);
+  await W(600); await p.screenshot({ path: `${out}/prueba_${id}.png` }); await W(id === 'rosco' ? 2600 : 4000); if (['rosco', 'memoria', 'cuentas'].includes(id)) { await W(0); await p.screenshot({ path: `${out}/prueba_${id}_b.png` }); } console.log('shot', id);
   if (id === 'ordena' || id === 'bomba') { await p.waitForFunction(() => window.__est128 === 'tartazo' || window.__est128 === 'bomba', { timeout: 90000, polling: 50 }).then(async () => { await W(350); await p.screenshot({ path: `${out}/prueba_${id}_${id === 'ordena' ? 'tartazo' : 'explota'}.png` }); console.log('golpe', id); }).catch(() => console.log('sin golpe')); }
   await p.waitForFunction(() => [...document.querySelectorAll('#actions button')].some(x => x.textContent === 'Entrenamiento'), { timeout: 240000, polling: 300 }).catch(() => console.log('sin fin'));
   await p.evaluate(() => { const x = [...document.querySelectorAll('#actions button')].find(x => x.textContent === 'Entrenamiento'); x && x.click(); }); await W(1500);

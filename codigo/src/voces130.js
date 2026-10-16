@@ -21,7 +21,7 @@ const FR130 = { // cada concursante usa 2 frases de cada momento (según su núm
   cae: ['¡Aaaaah!', '¡Nooooo!', '¡Me caigooo!', '¡Socorrooo!', '¡Adiós a todos!', '¡Ahí va!', '¡Que alguien me coja!', '¡Ay, mi madre!', '¡Hasta luegooo!', '¡Esto no estaba en el contrato!', '¡Uaaaah!'],
   gana: ['¡He ganado! ¡No me lo creo!', '¡Gracias, gracias a todos!', '¡Esto va por mi familia!', '¡Soy el campeón!', '¡Qué felicidad!', '¡Lo he conseguido!', '¡Viva, viva y viva!', '¡Esto hay que celebrarlo!', '¡Me quedo el bote!', '¡Increíble!', '¡Gracias, de verdad!'],
 };
-const voz130Frases = (k, m) => { const L = FR130[m]; return [L[k % L.length], L[(k + 4) % L.length]]; };
+const voz130Frases = (k, m, ar = Ke.__AR) => { const L = (ar ? FR131 : FR130)[m]; return [L[k % L.length], L[(k + 4) % L.length]]; };
 const VOZ130_ON = () => { try { return localStorage.getItem('ac_vozconc') !== '0'; } catch (e) { return true; } };
 const V130 = { ult: 0, porFig: new Map(), log: [] };
 function voz130Num(fig) { const e = Xe; if (!e || !fig) return -1; if (fig === e.player) return 0; const i = e.opps ? e.opps.indexOf(fig) : -1; return i >= 0 ? 1 + (i % 10) : -1; }
@@ -33,7 +33,7 @@ async function voz130(fig, m, fuerza) {
   try {
     if (!VOZ130_ON() || !zn.enabled) return; const k = voz130Num(fig); if (k < 0) return;
     const now = performance.now(); if (!fuerza && (now - V130.ult < 2500 || now - (V130.porFig.get(fig) || 0) < 7000)) return;
-    const vv = VOZ130[k], t = voz130Frases(k, m)[Math.random() < 0.5 ? 0 : 1], idx = await stIndice(), h = _f(vv[0] + '|' + t); if (idx[h] == null) return;
+    const vv = (Ke.__AR ? VOZ131 : VOZ130)[k], t = voz130Frases(k, m)[Math.random() < 0.5 ? 0 : 1], idx = await stIndice(), h = _f(vv[0] + '|' + t); if (idx[h] == null) return;
     V130.ult = now; V130.porFig.set(fig, now); V130.log.push(vv[1] + ': ' + t); voz130Rotulo(k ? me.rival(k) : me.tu, t); F.playUrl(`${Us}voz/st/${h}.mp3`, 0.95, 'conc');
   } catch (e) { }
 }
@@ -44,10 +44,12 @@ const PRES130 = {
   p_rita: { acierta: ['Vaya. Hasta lo ha acertado.', 'Correcto. No me lo esperaba.', 'Bien. No te acostumbres.'], falla: ['Sorpresa: has fallado.', 'Qué original, fallar.', 'Ya decía yo.'], cae: ['Bueno, era cuestión de tiempo.', 'Adiós. No te echaremos mucho de menos.', 'Y abajo. Qué pena. Más o menos.'] },
   p_quique: { acierta: ['¡Toma, toma y toma!', '¡Eso es, máquina!', '¡Crack, fiera, fenómeno!'], falla: ['¡Jajaja, pero qué dices!', '¡Uy, eso ha dolido!', '¡Error, error, error!'], cae: ['¡Jajaja, ahí va ese!', '¡Hasta el sótano, colega!', '¡Pum! ¡Directo al agujero!'] },
 };
-function pres130(m) { try { const p = presActivo(); if (!p || !PRES130[p.vk] || !zn.enabled || !VOZ130_ON()) return; const L = PRES130[p.vk][m], t = L[Math.floor(Math.random() * L.length)];
+function pres130(m) { try { if (Ke.__AR) return tano131(m); const p = presActivo(); if (!p || !PRES130[p.vk] || !zn.enabled || !VOZ130_ON()) return; const L = PRES130[p.vk][m], t = L[Math.floor(Math.random() * L.length)];
   stIndice().then(idx => { const h = _f(p.vk + '|' + t); if (idx[h] != null) V130.log.push(p.nombre + ': ' + t), setTimeout(() => F.playUrl(`${Us}voz/st/${h}.mp3`, 1, 'conc'), 1400); }); } catch (e) { } }
+function tano131(m) { try { if (!zn.enabled || !VOZ130_ON() || !TANO131[m]) return; const L = TANO131[m], t = L[Math.floor(Math.random() * L.length)];
+  stIndice().then(idx => { const h = _f('tano|' + t); if (idx[h] != null) V130.log.push('Tano Ferreyra: ' + t), setTimeout(() => F.playUrl(`${Us}voz/st/${h}.mp3`, 1, 'conc'), 1400); }); } catch (e) { } }
 { // momentos clave: los gestos de los concursantes y la caída por la trampilla
-  const he = He; He = function (a, e, t) { const r = he.call(this, a, e, t); const m = e === 'saluda' ? 'saluda' : e === 'lamenta' ? 'falla' : e === 'arriba' ? (t >= 2.4 ? 'gana' : 'acierta') : null; if (m && Math.random() < (m === 'gana' ? 1 : 0.7)) voz130(a, m, m === 'gana'); if ((m === 'acierta' || m === 'falla') && Math.random() < 0.25) pres130(m); return r; };
+  const he = He; He = function (a, e, t) { const r = he.call(this, a, e, t); const m = e === 'saluda' ? 'saluda' : e === 'lamenta' ? 'falla' : e === 'arriba' ? (t >= 2.4 ? 'gana' : 'acierta') : null; if (m && Math.random() < (m === 'gana' ? 1 : 0.7)) voz130(a, m, m === 'gana'); if ((m === 'acierta' || m === 'falla') && Math.random() < 0.25) pres130(m); if (m === 'gana' && Ke.__AR) tano131('gana'); return r; };
   const f0 = y2.prototype.fall; y2.prototype.fall = function (fig, idx) { voz130(fig, 'cae', true); pres130('cae'); return f0.call(this, fig, idx); };
 }
 function filaVoz130() { const r = document.createElement('div'); r.className = 'orow'; r.id = 'rowVoz130'; const l = document.createElement('label'); l.textContent = '🗣️ Voces de los concursantes (saludo, acierto, fallo, caída y victoria)'; r.appendChild(l);

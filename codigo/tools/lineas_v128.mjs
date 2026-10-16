@@ -8,6 +8,8 @@ const r = await p.evaluate(async () => {
   for (const x of [...V.ordena, ...V.cadena]) tq.add(x[0]);
   for (const x of V.borrosa) tq.add('La foto borrosa. Pista: ' + x.l);
   for (const [q] of V.vot) { tq.add(q + '. VERDADERO, o FALSO.'); tq.add(q + '. FALSO, o VERDADERO.'); }
+  for (const x of window.__q128.V131.rosco) tq.add(x[1]);
+  for (let k = 1; k <= 4; k++) tq.add('Memoria. ¿Qué dibujo estaba en la posición ' + k + '?');
   for (const [q] of V.realidad) { tq.add(q + '. REALIDAD, o FICCIÓN.'); tq.add(q + '. FICCIÓN, o REALIDAD.'); }
   const qi = await (await fetch('voz/q/index.json')).json();
   const q = [...tq].map(t => ({ t: Q.Ao(t), h: Q.vc(Q.Ao(t)) })).filter(x => qi[x.h] == null);

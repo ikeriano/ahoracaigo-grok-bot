@@ -128,7 +128,7 @@ Object.assign(cu, {
 });
 AR_IDS.push(...P128); cmdEnvuelve();
 // Entrenamiento: las pruebas nuevas, seleccionables para practicar (debajo de las de siempre)
-{ const lt = Lt; Lt = function (a = 'main', ...r) { const x = lt.call(this, a, ...r); try { if (a === 'train' && !Ke.__AR) { const m = document.getElementById('menu'), back = m && m.querySelector('.tbtn.back'); if (m && back && !m.querySelector('#train128')) { const h = Pa('🆕 Pruebas nuevas'); h.id = 'train128'; const D = { ordena: 'Letras mezcladas · quien falla: tartazo', vot: '¿Verdadero o falso? Cinco segundos', borrosa: 'La foto se aclara con cada letra', cadena: 'Cada respuesta empieza por la última letra', bomba: 'Responde y pasa la bomba antes de que explote', realidad: 'Curiosidades: ¿realidad o ficción?' }; (back.closest('.mrow') || back).before(h, ...P128.map(id => ei(V128.titulos[id].charAt(0) + V128.titulos[id].slice(1).toLowerCase(), D[id], id === 'ordena' ? 'gold' : '', () => ii('entrenamiento', id)))); } } } catch (e) { console.warn('train128', e); } return x; }; }
+{ const lt = Lt; Lt = function (a = 'main', ...r) { const x = lt.call(this, a, ...r); try { if (a === 'train' && !Ke.__AR) { const m = document.getElementById('menu'), back = m && m.querySelector('.tbtn.back'); if (m && back && !m.querySelector('#train128')) { const h = Pa('🆕 Pruebas nuevas'); h.id = 'train128'; const D = { ...V131.desc, ordena: 'Letras mezcladas · quien falla: tartazo', vot: '¿Verdadero o falso? Cinco segundos', borrosa: 'La foto se aclara con cada letra', cadena: 'Cada respuesta empieza por la última letra', bomba: 'Responde y pasa la bomba antes de que explote', realidad: 'Curiosidades: ¿realidad o ficción?' }; (back.closest('.mrow') || back).before(h, ...P128.map(id => ei(V128.titulos[id].charAt(0) + V128.titulos[id].slice(1).toLowerCase(), D[id], id === 'ordena' ? 'gold' : '', () => ii('entrenamiento', id)))); } } } catch (e) { console.warn('train128', e); } return x; }; }
 // ---------------- DUELO POR PAREJAS ----------------
 const PAR = { fig: null, iv: null, d: null, usada: false, btn: null };
 function parQuita() { clearInterval(PAR.iv); PAR.iv = null; try { PAR.fig && Xe.scene.remove(PAR.fig.root); } catch (x) { } PAR.fig = null; PAR.btn && PAR.btn.remove(); PAR.btn = null; }
@@ -192,7 +192,7 @@ function filaV128() {
   const fila = (k, txt, def, extra) => { const r = document.createElement('div'); r.className = 'orow'; const l = document.createElement('label'); l.textContent = txt; r.appendChild(l);
     for (const [v, t] of [['1', 'Sí'], ['0', 'No']]) { const b = document.createElement('button'); b.className = 'tbtn' + ((op128(k, def) ? '1' : '0') === v ? ' sel' : ''); b.textContent = t; b.onclick = ev => { ev.stopPropagation(); F.play('Tecla'); localStorage.setItem(k, v); r.querySelectorAll('button[data-v]').forEach(x => x.classList.toggle('sel', x === b)); }; b.dataset.v = v; r.appendChild(b); }
     if (extra) r.appendChild(extra); box.appendChild(r); };
-  for (const id of P128) { const pr = document.createElement('button'); pr.className = 'tbtn'; pr.textContent = '▶ Probar'; pr.dataset.probar = id; pr.onclick = ev => { ev.stopPropagation(); F.play('Tecla'); ii('entrenamiento', id); }; fila('ac_p128_' + id, ({ ordena: '🥧 ', vot: '✅ ', borrosa: '🌫️ ', cadena: '⛓️ ', bomba: '💣 ', realidad: '🔮 ' }[id]) + V128.titulos[id], true, pr); }
+  for (const id of P128) { const pr = document.createElement('button'); pr.className = 'tbtn'; pr.textContent = '▶ Probar'; pr.dataset.probar = id; pr.onclick = ev => { ev.stopPropagation(); F.play('Tecla'); ii('entrenamiento', id); }; fila('ac_p128_' + id, (({ ordena: '🥧 ', vot: '✅ ', borrosa: '🌫️ ', cadena: '⛓️ ', bomba: '💣 ', realidad: '🔮 ', rosco: '🎡 ', memoria: '🧠 ', intrusa: '🕵️ ', cuentas: '🧮 ', precio: '💶 ' })[id] || '') + V128.titulos[id], true, pr); }
   const l2 = document.createElement('div'); l2.className = 'olabel'; l2.textContent = '🎬 Más opciones del programa'; box.appendChild(l2);
   fila('ac_parejas128', '🤝 Duelo por parejas (juegas con un compañero en la trampilla)', false);
   fila('ac_caidas128', '💥 Caídas espectaculares (temblor, polvo y destello)', true);
@@ -203,4 +203,4 @@ function filaV128() {
 }
 { const fc = filaCopro; filaCopro = function () { const d = fc(); d.prepend(filaV128()); return d; }; }
 window.__v128 = { tartazo, finDeAno, parEntra, P128 };
-window.__q128 = { V128, PAREJAS, Ao, vc };
+window.__q128 = { V128, V131, PAREJAS, Ao, vc };
