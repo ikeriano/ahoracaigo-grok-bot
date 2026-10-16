@@ -14,7 +14,7 @@ const FIESTA = {
   },
 };
 FIESTA.adrian = { hola: ['¡Bienvenidos al Modo Fiesta de Ahora Caigo! Hoy jugamos por euros.'], ronda: { ordena: '¡Ordena la respuesta! Quien falle, tartazo y trampilla.', vot: '¡Verdadero o Trampilla!', borrosa: '¡La foto borrosa! Se aclara poco a poco.', cadena: '¡Cadena rápida! Cada respuesta empieza por la última letra.' }, bien: ['¡Correcto!', '¡Muy bien!'], mal: ['¡Oh, no! Respuesta incorrecta.', '¡Fallo!'], tarta: ['¡Tartazo! ¡Y ahora… trampillazo!'], lento: '¡Se acabó el tiempo!', ultimo: 'Quien tiene menos euros… ¡se cae!', gana: ['¡Enhorabuena! ¡Ganas el Modo Fiesta!'], adios: '¡Gracias por jugar al Modo Fiesta! ¡Hasta la próxima!' };
-const FIESTA_VOZ = { buzz: 'p_buzz', adrian: 'davefx' } // Buzz: voz Piper propia (sharvard, voz 0, rápida y aguda) + bocadillos, FI_COL = ['#2a7aff', '#ff8a1a', '#2ac040', '#ffd21a'], FI_NOM = ['TÚ', 'Rosa', 'Pepe', 'Lola'];
+const FIESTA_VOZ = { buzz: 'p_buzz', adrian: 'davefx' } /* Buzz: voz Piper propia (sharvard, voz 0, rápida y aguda) + bocadillos */, FI_COL = ['#2a7aff', '#ff8a1a', '#2ac040', '#ffd21a'], FI_NOM = ['TÚ', 'Rosa', 'Pepe', 'Lola'];
 const fiHost = () => { try { return localStorage.getItem('ac_fiestaHost') || 'buzz'; } catch (e) { return 'buzz'; } };
 const fiRnd = a => a[Math.floor(Math.random() * a.length)];
 function fiPreg(id) { // 4 preguntas de opciones (o 2 en Verdadero o Trampilla)
