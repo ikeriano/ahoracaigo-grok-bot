@@ -36,8 +36,10 @@ for k, (ck, nom, mod, spk, ls, pt, eq) in enumerate(D['V2']):
         L = D['F2'][m]
         for t in {L[k % len(L)], L[(k + 4) % len(L)]}: trab.append((ck, t, (mod, spk, ls, 0.75, 0.8, ('CONC', pt, eq))))
 T = D['T']; tm, tspk, tls, tpt, teq = T['cfg']
-for m in ('saluda', 'acierta', 'falla', 'cae', 'gana'):
+for m in ('saluda', 'acierta', 'falla', 'cae', 'gana', 'pasa'):
     for t in T[m]: trab.append(('tano', t, (tm, tspk, tls, 0.7, 0.8, ('CONC', tpt, teq))))
+for t in re.search(r"adr: \[(.*?)\]", open(os.path.join(RAIZ, 'src/v131.js'), encoding='utf8').read()).group(1).split("', '"):
+    trab.append(('adr', t.strip("'"), ('es_ES-davefx-medium', None, 0.985, 0.667, 0.8, 'volume=1.0')))
 for vk, M in D['P'].items():
     mod, spk, ls, ns, nw, filt = PV[vk]
     for m, L in M.items():

@@ -103,7 +103,7 @@ Object.assign(cu, {
   cadena: { ar: true, titulo: V128.titulos.cadena, lista: true, dicho: V128.dichos.cadena, jugar: (a, e, t) => { C128.ult = ''; return arDuelo(a, e, t, 'cadena'); } },
 });
 { const pt = planTodas; planTodas = function (g, N) { const n = pt(g, N), on = mA(P128.filter(x => op128('ac_p128_' + x))); if (!on.length) return n; // 2 huecos intermedios pasan a ser pruebas nuevas
-  const huecos = mA(n.map((x, k) => k).filter(k => k > 0 && k < n.length - 1 && x !== 'gallina')).slice(0, Math.min(2, on.length)); huecos.forEach((k, j) => n[k] = on[j]); return n; }; }
+  const huecos = mA(n.map((x, k) => k).filter(k => k > 0 && k < n.length - 1 && n[k] !== 'gallina')).slice(0, Math.min(2, on.length)); huecos.forEach((k, j) => n[k] = on[j]); return n; }; }
 
 // PASA LA BOMBA: duelo con mecha encendida; al que pierde le explota (cara de carbón) y luego trampilla
 AR_GEN.bomba = () => { const L = Math.random() < 0.5 ? V128.ordena : V128.cadena, p = L[Math.floor(Math.random() * L.length)]; return { texto: p[0], etiqueta: '💣 PASA LA BOMBA', celdas: arHuecos(p[1], Math.random() < 0.5 ? 0 : 1), resp: p[1], modo: 'huecos' }; };

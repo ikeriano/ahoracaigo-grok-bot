@@ -35,4 +35,4 @@ const FR131 = {
 };
 // Tano Ferreyra (presentador del modo): voz original es_AR-daniela más grave, con sus reacciones
 const TANO131 = { vk: 'tano', cfg: ['es_AR-daniela-high', null, 0.95, 0.8, 'equalizer=f=140:t=q:w=1:g=5,equalizer=f=2500:t=q:w=1:g=2'],
-  saluda: ['¡Buenas noches! ¡Bienvenidos a Ahora Caigo Argentina!'], acierta: ['¡Muy bien, eh!', '¡Bárbaro, una masa!', '¡Así se juega, che!'], falla: ['¡Uh, no era esa!', '¡Qué lástima, estaba ahí nomás!', '¡Uy, uy, uy!'], cae: ['¡Y se nos fue! ¡Chau, chau!', '¡Abajo! ¡Qué porrazo!', '¡Se abrió la trampilla, che!'], gana: ['¡Tenemos ganador! ¡Felicitaciones!'] };
+  saluda: ['¡Buenas noches! ¡Bienvenidos a Ahora Caigo Argentina!'], acierta: ['¡Muy bien, eh!', '¡Bárbaro, una masa!', '¡Así se juega, che!'], falla: ['¡Uh, no era esa!', '¡Qué lástima, estaba ahí nomás!', '¡Uy, uy, uy!'], cae: ['¡Y se nos fue! ¡Chau, chau!', '¡Abajo! ¡Qué porrazo!', '¡Se abrió la trampilla, che!'], gana: ['¡Tenemos ganador! ¡Felicitaciones!'], pasa: ['¡Pasapalabra! Después volvés, che.', '¡Pasapalabra! La dejamos para la otra vuelta.'] };
