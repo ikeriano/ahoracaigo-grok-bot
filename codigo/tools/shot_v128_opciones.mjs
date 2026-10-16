@@ -1,0 +1,10 @@
+import puppeteer from 'puppeteer-core';
+const [base, out] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--mute-audio'] });
+const p = await b.newPage(); await p.setViewport({ width: 720, height: 1400 }); let errs = 0; p.on('pageerror', e => { errs++; console.log('PAGEERROR', e.message); });
+await p.evaluateOnNewDocument(() => { localStorage.setItem('ac3d_opts', JSON.stringify({ quality: 'baja' })); window.__noAviso = true; });
+await p.goto(base + 'index.html'); await p.waitForFunction('window.__eng && document.getElementById("loading").classList.contains("hidden")', { timeout: 120000 });
+await p.evaluate(() => __ac.menu('options')); await new Promise(r => setTimeout(r, 800));
+await p.evaluate(() => document.getElementById('optFiesta').scrollIntoView()); await p.screenshot({ path: `${out}/opciones_fiesta_pruebas.png` });
+await p.evaluate(() => __ac.menu('train')); await new Promise(r => setTimeout(r, 800)); await p.evaluate(() => (() => { const c = document.getElementById('train128').parentElement; c.scrollTop = c.scrollHeight; })()); await p.screenshot({ path: `${out}/entrenamiento_pruebas_nuevas.png` });
+console.log('ERRORES', errs); await b.close();
