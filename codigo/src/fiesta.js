@@ -1,17 +1,7 @@
 // v1.28 · MODO FIESTA: concurso de rondas con EUROS, presentado por BUZZ (o por Adrián). Tú contra 3 rivales.
 // Rondas: Ordena la respuesta (tartazo + trampillazo al que falla), Verdadero o Trampilla, La foto borrosa y Cadena rápida.
 const FIESTA = {
-  buzz: {
-    hola: ['¡Hola, hola, holaaa! ¡Soy Buzz, el presentador más guapo de la tele, y esto es el Modo Fiesta! ¡Jo, jo, jo!', '¡Bienvenidos a la fiesta! Hoy repartimos euros… y alguna que otra humillación.'],
-    ronda: { ordena: '¡Primera ronda: Ordena la respuesta! Las letras están hechas un lío, como vuestro peinado. ¡El que falle, tartazo!', vot: '¡Verdadero o Trampilla! Es fácil: si dudáis, os caéis. ¡Ja!', borrosa: '¡La foto borrosa! Tranquilos, que yo sin gafas tampoco veo nada… Ah, no, que llevo gafas.', cadena: '¡Cadena rápida! Cada respuesta empieza por la última letra de la anterior. ¡Pensad rápido, que se os ve el humo!' },
-    bien: ['¡Bien! ¡Hasta un reloj parado acierta dos veces al día!', '¡Correcto! ¡Casi tan listo como yo! Bueno… casi.', '¡Toma ya! ¡Eso son euros, campeón!', '¡Acierto! ¿Quién te ha soplado?'],
-    mal: ['¡Uy, uy, uy! Eso ha sido más torpe que un pato en patines. ¡Jo, jo, jo!', '¡Error! Mi abuela lo habría acertado… y no está aquí.', '¡Fallo! ¿Has pulsado con el codo?', '¡Incorrecto! Tranquilo, la vergüenza se pasa… en unos años.'],
-    tarta: ['¡Tartazo! ¡Jo, jo, jo! ¡Te queda mejor que tu peinado!', '¡Pastel en toda la cara! ¡Y ahora… trampillazo!'],
-    lento: '¡Se acabó el tiempo! ¿Te has dormido? ¡Que esto es una fiesta!',
-    ultimo: '¡Y el que menos euros tiene… se va por la trampilla! ¡Adiós, adiós!',
-    gana: ['¡Tenemos ganador! ¡Enhorabuena! Casi te pareces a mí… en lo de ganar.', '¡Ganador del Modo Fiesta! ¡Y con más euros que sentido del ritmo!'],
-    adios: '¡Esto ha sido el Modo Fiesta! ¡Soy Buzz, y vosotros… bueno, vosotros sois los concursantes! ¡Hasta la próxima!',
-  },
+  buzz: BUZZ_L, // frases con marcas de entonación (src/buzz_lineas.js),
 };
 FIESTA.adrian = { hola: ['¡Bienvenidos al Modo Fiesta de Ahora Caigo! Hoy jugamos por euros.'], ronda: { ordena: '¡Ordena la respuesta! Quien falle, tartazo y trampilla.', vot: '¡Verdadero o Trampilla!', borrosa: '¡La foto borrosa! Se aclara poco a poco.', cadena: '¡Cadena rápida! Cada respuesta empieza por la última letra.' }, bien: ['¡Correcto!', '¡Muy bien!'], mal: ['¡Oh, no! Respuesta incorrecta.', '¡Fallo!'], tarta: ['¡Tartazo! ¡Y ahora… trampillazo!'], lento: '¡Se acabó el tiempo!', ultimo: 'Quien tiene menos euros… ¡se cae!', gana: ['¡Enhorabuena! ¡Ganas el Modo Fiesta!'], adios: '¡Gracias por jugar al Modo Fiesta! ¡Hasta la próxima!' };
 const FIESTA_VOZ = { buzz: 'p_buzz', adrian: 'davefx' } /* Buzz: voz Piper propia (sharvard, voz 0, rápida y aguda) + bocadillos */, FI_COL = ['#2a7aff', '#ff8a1a', '#2ac040', '#ffd21a'], FI_NOM = ['TÚ', 'Rosa', 'Pepe', 'Lola'];
@@ -78,7 +68,7 @@ async function modoFiesta(opts = {}) {
   loop();
   const cierra = () => { ses.alive = false; cancelAnimationFrame(raf); removeEventListener('resize', resize); buzz && buzz.dispose(); sc.traverse(o => { if (o.isMesh && o.geometry) { o.geometry.dispose(); o.material.dispose && o.material.dispose(); } }); R.dispose(); div.remove(); F.stopTag && F.stopTag('voz'); };
   div.querySelector('.fx').onclick = ev => { ev.stopPropagation(); cierra(); };
-  const di = async (txt, modo = 'habla') => { bur.innerHTML = `<b>${host === 'buzz' ? 'Buzz' : 'Adrián'}:</b> ${txt}`; bur.style.display = 'block'; if (buzz) buzz.modo = modo; try { if (buzz) { sfx128('buzzer'); modo === 'risa' && ze.risas && ze.risas(); } await stHabla(vk, txt, ses); } finally { if (buzz) buzz.modo = 'senala'; bur.style.display = 'none'; } };
+  const di = async (txt, modo = 'habla') => { txt = buzzTexto(txt); bur.innerHTML = `<b>${host === 'buzz' ? 'Buzz' : 'Adrián'}:</b> ${txt}`; bur.style.display = 'block'; if (buzz) buzz.modo = modo; try { if (buzz) { sfx128('buzzer'); modo === 'risa' && ze.risas && ze.risas(); } await stHabla(vk, txt, ses); } finally { if (buzz) buzz.modo = 'senala'; bur.style.display = 'none'; } };
   const banner = async (t, ms = 1600) => { ban.textContent = t; ban.classList.add('on'); await ses.w(ms); ban.classList.remove('on'); };
   const planoBuzz = () => plano(new T.Vector3(0.25, 1.55, 1.3), new T.Vector3(0, 1.25, -1.6), true), planoGeneral = () => plano(new T.Vector3(0, 2.2, 7.5), new T.Vector3(0, 1.3, -0.6));
   const planoJug = k => { const x = at[k].position.x; plano(new T.Vector3(x * 0.85, 1.8, 3.3), new T.Vector3(x, 1.45, 0.6), true); };
