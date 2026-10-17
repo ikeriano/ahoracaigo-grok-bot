@@ -100,7 +100,7 @@ PROMOS.donarturo = { id: 'donarturo', nombre: 'Sketch: El regreso de Don Arturo'
     // v1.35: antes solo había voz del navegador (speechSynthesis), que en el WebView de Android NO existe → sketch mudo.
     // Ahora suenan los clips Piper incluidos en la app; si alguno falta, se intenta la voz del navegador (si la hay).
     const dichas = new Set(); const vozOn = !To.mute && window.__promoT == null && !window.__arturoMudo; window.__arturoVoz = [];
-    const decir = l => { if (!vozOn) return; if (l.clip) { try { F.playUrl(`${Us}voz/st/${l.clip}.mp3`, 1, 'voz').then(r => { if (r && r.dur > 0) window.__arturoVoz.push(l.quien + ':' + l.clip); else decirTTS(l); }).catch(() => decirTTS(l)); return; } catch (e) { } } decirTTS(l); };
+    const decir = l => { if (window.__maDecir && __maDecir(l.quien === 'r' ? 'arturo' : 'adrian', l.txt)) return; if (!vozOn) return; if (l.clip) { try { F.playUrl(`${Us}voz/st/${l.clip}.mp3`, 1, 'voz').then(r => { if (r && r.dur > 0) window.__arturoVoz.push(l.quien + ':' + l.clip); else decirTTS(l); }).catch(() => decirTTS(l)); return; } catch (e) { } } decirTTS(l); };
     const decirTTS = l => { try { if (!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(l.txt.replace(/[¡!«»]/g, '')); u.lang = 'es-ES'; u.rate = l.quien === 'r' ? 0.95 : 1.1; u.pitch = l.quien === 'r' ? 0.6 : 1.05; speechSynthesis.speak(u); } catch (e) { } };
     const bocadillo = (l, k) => { const w = W(), h = H(), s = h / 720, quien = l.quien === 'r' ? 'DON ARTURO · PRESENTADOR LEGENDARIO' : 'ADRIÁN VEGA · PRESENTADOR'; g.save(); g.globalAlpha = Math.min(1, k * 4); g.font = `700 ${21 * s}px system-ui, sans-serif`;
       const palabras = l.txt.split(' '), lin = ['']; for (const p of palabras) { const pr = (lin[lin.length - 1] + ' ' + p).trim(); if (g.measureText(pr).width > w * 0.55) lin.push(p); else lin[lin.length - 1] = pr; }
@@ -132,7 +132,7 @@ PROMOS.donarturo = { id: 'donarturo', nombre: 'Sketch: El regreso de Don Arturo'
       else { ar.root.position.set(-0.4, 0.45, 1.6); ad.root.position.set(1.6, 0.45, 2.4); ad.root.rotation.y = -0.5; C.cam.position.set(0.3, 1.8, 6.4); C.cam.lookAt(0, 1.5, 0); }
       gesto(ar, p === 4 ? 'tumbado' : ultR, t, hablaR); gesto(ad, hablaA ? (ultAd ? ultAd.gesto : 'habla') : 'idle', t, hablaA);
       C.render(S);
-      if (l) { bocadillo(l, t - l.t0); if (!dichas.has(l)) { dichas.add(l); decir(l); } }
+      if (l) { bocadillo(window.__maSubTxt ? { ...l, txt: __maSubTxt(l.quien === 'r' ? 'arturo' : 'adrian', l.txt) } : l, t - l.t0); if (!dichas.has(l)) { dichas.add(l); decir(l); } }
       g.fillStyle = 'rgba(0,0,0,0.01)'; g.fillRect(0, 0, 2, 2);
       if (t > ARTURO_DUR - 1) { g.fillStyle = `rgba(0,0,0,${t - ARTURO_DUR + 1})`; g.fillRect(0, 0, W(), H()); }
     };

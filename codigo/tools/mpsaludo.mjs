@@ -1,0 +1,13 @@
+import puppeteer from 'puppeteer-core';
+const [base, out, mp] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', protocolTimeout: 120000, args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--mute-audio', '--autoplay-policy=no-user-gesture-required'] });
+const p = await b.newPage(); await p.setViewport({ width: 1024, height: 576 }); let errs = 0;
+p.on('pageerror', e => { errs++; console.log('PAGEERROR', e.message); });
+await p.evaluateOnNewDocument(mp => { localStorage.setItem('ac3d_opts', JSON.stringify({ quality: 'baja', gradas: true })); localStorage.setItem('ac_miprog', JSON.stringify({ act: mp, propios: [], cab: {} })); window.__noAviso = true; window.__noMono = true; window.__vozLog = [];
+  const iv = setInterval(() => { try { if (window.F_ok) return; } catch (e) { } }, 1000); }, mp);
+await p.goto(base + 'index.html'); await p.waitForFunction('window.__eng && document.getElementById("loading").classList.contains("hidden")', { timeout: 120000 });
+await p.evaluate(() => { const zn = __mp.zn(), s0 = zn.say.bind(zn); zn.say = (e, t) => { const r = s0(e, t); window.__vozLog.push((r.ms ? 'CLIP ' : 'SIN ') + e[0].slice(0, 70)); return r; }; __startMode('programa'); window.__sk = setInterval(() => { const sk = document.getElementById('btnSkip'); if (sk && !sk.classList.contains('hidden')) sk.click(); }, 300); });
+await p.waitForFunction(() => { const b = document.querySelector('#bubble span'); return b && /Niños|Cazador|Adivina|Campe|Nuevo|Años|Suscript|Campion/.test(b.textContent) && !document.getElementById('bubble').classList.contains('hidden'); }, { timeout: 200000, polling: 50 });
+await new Promise(r => setTimeout(r, 400)); await p.screenshot({ path: out });
+console.log(await p.evaluate(() => document.querySelector('#bubble span').textContent), JSON.stringify(await p.evaluate(() => window.__vozLog.slice(-3))));
+console.log('ERRORES', errs); await b.close();

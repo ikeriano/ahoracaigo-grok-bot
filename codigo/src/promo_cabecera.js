@@ -174,7 +174,7 @@ PROMOS.apertura = { id: 'apertura', nombre: 'Apertura del programa', dur: 45, au
     // v1.35: clips Piper de Adrián (en el WebView de Android no hay speechSynthesis); si falta el clip, voz del navegador si existe
     const dichas = new Set(); const vozOn = !To.mute && !window.__promoT; window.__aperturaVoz = [];
     const clipAdr = txt => { const ks = [txt, /bienvenid[oa] al centro/i.test(txt) ? '¡Bienvenido al centro! ¡Mucha suerte!' : /no estoy solo/i.test(txt) ? '¡Y hoy no estoy solo! ¡Tenemos compañía!' : null].filter(Boolean).map(x => _f('adr|' + x)); return ks.find(k => typeof __VOZ_ST !== 'undefined' && __VOZ_ST[k] != null) || null; };
-    const decir = txt => { if (!vozOn) return; const k = clipAdr(txt); if (k) { try { F.playUrl(`${Us}voz/st/${k}.mp3`, 1, 'voz').then(r => { if (r && r.dur > 0) window.__aperturaVoz.push(k); else decirTTS(txt); }).catch(() => decirTTS(txt)); return; } catch (e) { } } decirTTS(txt); };
+    const decir = txt => { if (window.__maDecir && __maDecir('adrian', txt)) return; if (!vozOn) return; const k = clipAdr(txt); if (k) { try { F.playUrl(`${Us}voz/st/${k}.mp3`, 1, 'voz').then(r => { if (r && r.dur > 0) window.__aperturaVoz.push(k); else decirTTS(txt); }).catch(() => decirTTS(txt)); return; } catch (e) { } } decirTTS(txt); };
     const decirTTS = txt => { try { if (!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(txt.replace(/¡|!/g, '')); u.lang = 'es-ES'; u.rate = 1.1; speechSynthesis.speak(u); } catch (e) { } };
     const bocadillo = (quien, txt, k) => { const w = W(), h = H(), s = h / 720; g.save(); g.globalAlpha = Math.min(1, k * 4); g.font = `700 ${22 * s}px system-ui, sans-serif`; const ancho = Math.min(w * 0.6, g.measureText(txt).width + 40 * s); const x = 30 * s, y = 26 * s;
       g.fillStyle = '#ffffff'; g.beginPath(); g.roundRect ? g.roundRect(x, y, ancho, 78 * s, 18 * s) : g.rect(x, y, ancho, 78 * s); g.fill(); g.fillStyle = '#ff8a1a'; g.font = `800 ${13 * s}px system-ui, sans-serif`; g.fillText(quien, x + 16 * s, y + 24 * s); g.fillStyle = '#18204a'; g.font = `700 ${21 * s}px system-ui, sans-serif`; g.fillText(txt, x + 16 * s, y + 56 * s, ancho - 30 * s); g.restore(); };
@@ -220,7 +220,7 @@ PROMOS.apertura = { id: 'apertura', nombre: 'Apertura del programa', dur: 45, au
       else C.render(S);
       if (plano === 'seleccion') { seleccion(t - 16); if (!aviso5 && !conAudio && t - 16 >= 1.15 && window.__promoT == null && !To.mute) { aviso5 = true; try { const a = new Audio('./sb3/snd/419ca907843416e034fb72fd6a79bed3.mp3'); a.volume = Math.min(1, To.vol); a.play().catch(() => { }); } catch (e) { } } }
       if (plano === 'centro' && t > 24.6) rotulo(nombreCentro.toUpperCase(), 'Concursante del centro', t - 24.6);
-      if (!conAudio) for (const l of lineas) if (t >= l[0] && t < l[1]) { bocadillo(l[2], l[3], t - l[0]); if (!dichas.has(l)) { dichas.add(l); decir(l[3]); } }
+      if (!conAudio) for (const l of lineas) if (t >= l[0] && t < l[1]) { const adr = /ADRI/.test(l[2]); bocadillo(l[2], adr && window.__maSubTxt ? __maSubTxt('adrian', l[3]) : l[3], t - l[0]); if (!dichas.has(l)) { dichas.add(l); adr ? decir(l[3]) : decir(l[3]); } }
       g.fillStyle = 'rgba(0,0,0,0.01)'; g.fillRect(0, 0, 2, 2); // fuerza a presentar el lienzo 2D aunque quede vacío
       if (t > 32.4) { g.fillStyle = `rgba(0,0,0,${(t - 32.4) / 0.6})`; g.fillRect(0, 0, W(), H()); }
     };

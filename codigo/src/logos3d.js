@@ -97,7 +97,7 @@ const logoSes = () => ({ alive: true, w: ms => new Promise(r => setTimeout(r, ms
 { // enganche: tras las cabeceras (cabecera 3D, apertura, vídeo propio) y al salir «al aire» en el Programa completo
   const conLogo = fn => async function (hud, sess, ...r) { const v = await fn.call(this, hud, sess, ...r); if (v !== false && logoSel() !== 'actual') try { await logo3dCard(sess); } catch (x) { if (x === _o) throw x; console.warn('logo3d', x); } return v; };
   cab3D = conLogo(cab3D); aperturaPrograma = conLogo(aperturaPrograma); cabVideoPrograma = conLogo(cabVideoPrograma);
-  const rm0 = regidorMomento; regidorMomento = async function (c, k, ...r) { if (k === 'aire' && logoSel() !== 'actual' && performance.now() - LOGO_ULT > 25000) try { await logo3dCard(c.s); } catch (x) { if (x === _o) throw x; } return rm0.call(this, c, k, ...r); };
+  const rm0 = regidorMomento; regidorMomento = async function (c, k, ...r) { if (k === 'aire' && cabV136() !== 'siempre' && logoSel() !== 'actual' && performance.now() - LOGO_ULT > 25000) try { await logo3dCard(c.s); } catch (x) { if (x === _o) throw x; } return rm0.call(this, c, k, ...r); };
 }
 function filaLogoCab() {
   const box = document.createElement('div'); box.className = 'ocustom'; box.id = 'optLogo126';

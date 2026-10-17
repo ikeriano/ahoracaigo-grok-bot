@@ -1,0 +1,13 @@
+import puppeteer from 'puppeteer-core';
+const [base, out] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--mute-audio'] });
+const p = await b.newPage(); await p.setViewport({ width: 1024, height: 576 }); let errs = 0;
+p.on('pageerror', e => { errs++; console.log('PAGEERROR', e.message); });
+await p.evaluateOnNewDocument(() => { localStorage.setItem('ac3d_opts', JSON.stringify({ quality: 'baja', gradas: false })); window.__noAviso = true; });
+await p.goto(base + 'index.html'); await p.waitForFunction('window.__eng && document.getElementById("loading").classList.contains("hidden")', { timeout: 120000 });
+await p.evaluate(() => __menu('options')); await new Promise(r => setTimeout(r, 800));
+console.log(await p.evaluate(() => { const w = document.getElementById('optCabecera136'); if (!w) return 'NO'; w.scrollIntoView({ block: 'start' }); return [...w.querySelectorAll('.cabc')].map(x => x.textContent + (x.classList.contains('sel') ? ' [SEL]' : '')).join(' / ') + ' | dentro de Más opciones: ' + [...w.querySelectorAll('details > [id]')].map(x => x.id).join(','); }));
+await new Promise(r => setTimeout(r, 900)); await p.screenshot({ path: out + '_1.png' });
+await p.evaluate(() => { const d = document.getElementById('cabMas136'); d.open = true; d.scrollIntoView({ block: 'start' }); }); await new Promise(r => setTimeout(r, 500)); await p.screenshot({ path: out + '_2.png' });
+console.log('img ok', await p.evaluate(() => [...document.querySelectorAll('#optCabecera136 img')].map(i => i.naturalWidth)));
+console.log('ERRORES', errs); await b.close();
