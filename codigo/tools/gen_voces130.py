@@ -40,6 +40,12 @@ for m in ('saluda', 'acierta', 'falla', 'cae', 'gana', 'pasa'):
     for t in T[m]: trab.append(('tano', t, (tm, tspk, tls, 0.7, 0.8, ('CONC', tpt, teq))))
 for t in re.search(r"adr: \[(.*?)\]", open(os.path.join(RAIZ, 'src/v131.js'), encoding='utf8').read()).group(1).split("', '"):
     trab.append(('adr', t.strip("'"), ('es_ES-davefx-medium', None, 0.985, 0.667, 0.8, 'volume=1.0')))
+# v1.35 · sketch «El regreso de Don Arturo»: Adrián (su voz davefx) y DON ARTURO (voz original: davefx más grave, pausada y cálida)
+for q, t in re.findall(r"^  \[\d, '([ar])', '(.*?)', '", open(os.path.join(RAIZ, 'src/sketch_arturo.js'), encoding='utf8').read(), re.M):
+    trab.append(('adr', t, ('es_ES-davefx-medium', None, 0.985, 0.667, 0.8, 'volume=1.0')) if q == 'a' else ('arturo', t, ('es_ES-davefx-medium', None, 1.1, 0.6, 0.7, ('CONC', 0.84, 'equalizer=f=160:t=q:w=1:g=4,equalizer=f=3000:t=q:w=1:g=-2,aecho=0.7:0.4:35:0.12'))))
+# v1.35 · «Apertura del programa»: frases fijas de Adrián (antes solo voz del navegador, muda en Android)
+for t in re.findall(r"\[[\d.]+, [\d.]+, 'ADRIÁN VEGA', '((?:[^'\\]|\\.)*)'\]", open(os.path.join(RAIZ, 'src/promo_cabecera.js'), encoding='utf8').read()) + ['¡Bienvenido al centro! ¡Mucha suerte!', '¡Y hoy no estoy solo! ¡Tenemos compañía!']:
+    trab.append(('adr', t, ('es_ES-davefx-medium', None, 0.985, 0.667, 0.8, 'volume=1.0')))
 for vk, M in D['P'].items():
     mod, spk, ls, ns, nw, filt = PV[vk]
     for m, L in M.items():

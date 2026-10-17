@@ -53,7 +53,9 @@ const ARTURO_GUION = [
   [6, 'a', 'Trato hecho. Pero lejos de la trampilla central.', 'pulgar'],
   [6, 'r', '¡Trato hecho! Y ahora todos conmigo: tres, dos, uno... ¡Ahora caigo!', 'abre'],
 ];
-const ARTURO_T = (() => { let t = 1; return ARTURO_GUION.map(l => { const d = 1.0 + l[2].split(/\s+/).length * 0.24; const r = { plano: l[0], quien: l[1], txt: l[2], gesto: l[3], t0: t, t1: t + d }; t += d + 0.25; return r; }); })();
+// v1.35: cada frase dura lo que su clip de voz Piper (Adrián: 'adr', Don Arturo: 'arturo'), si es más largo que el bocadillo
+const arturoClip = l => { try { const k = _f((l[1] === 'r' ? 'arturo|' : 'adr|') + l[2]); return typeof __VOZ_ST !== 'undefined' && __VOZ_ST[k] != null ? { k, dur: +__VOZ_ST[k] } : null; } catch (e) { return null; } };
+const ARTURO_T = (() => { let t = 1; return ARTURO_GUION.map(l => { const c = arturoClip(l); const d = Math.max(1.0 + l[2].split(/\s+/).length * 0.24, c ? c.dur + 0.35 : 0); const r = { plano: l[0], quien: l[1], txt: l[2], gesto: l[3], t0: t, t1: t + d, clip: c && c.k }; t += d + 0.25; return r; }); })();
 const ARTURO_DUR = ARTURO_T[ARTURO_T.length - 1].t1 + 2.5;
 function arturoFigura() { // a partir del esqueleto del Adrián de las promos, con aspecto propio
   const T = _E, f = promoAdrian();
@@ -95,8 +97,11 @@ PROMOS.donarturo = { id: 'donarturo', nombre: 'Sketch: El regreso de Don Arturo'
     C.escenas = [S];
     const plano = t => { let p = 1; for (const l of ARTURO_T) if (t >= l.t0 - 0.2) p = l.plano; return p; };
     const linea = t => ARTURO_T.find(l => t >= l.t0 && t < l.t1);
-    const dichas = new Set(); const vozOn = !To.mute && window.speechSynthesis && window.__promoT == null;
-    const decir = l => { try { if (!vozOn) return; const u = new SpeechSynthesisUtterance(l.txt.replace(/[¡!«»]/g, '')); u.lang = 'es-ES'; u.rate = l.quien === 'r' ? 0.95 : 1.1; u.pitch = l.quien === 'r' ? 0.6 : 1.05; speechSynthesis.speak(u); } catch (e) { } };
+    // v1.35: antes solo había voz del navegador (speechSynthesis), que en el WebView de Android NO existe → sketch mudo.
+    // Ahora suenan los clips Piper incluidos en la app; si alguno falta, se intenta la voz del navegador (si la hay).
+    const dichas = new Set(); const vozOn = !To.mute && window.__promoT == null && !window.__arturoMudo; window.__arturoVoz = [];
+    const decir = l => { if (!vozOn) return; if (l.clip) { try { F.playUrl(`${Us}voz/st/${l.clip}.mp3`, 1, 'voz').then(r => { if (r && r.dur > 0) window.__arturoVoz.push(l.quien + ':' + l.clip); else decirTTS(l); }).catch(() => decirTTS(l)); return; } catch (e) { } } decirTTS(l); };
+    const decirTTS = l => { try { if (!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(l.txt.replace(/[¡!«»]/g, '')); u.lang = 'es-ES'; u.rate = l.quien === 'r' ? 0.95 : 1.1; u.pitch = l.quien === 'r' ? 0.6 : 1.05; speechSynthesis.speak(u); } catch (e) { } };
     const bocadillo = (l, k) => { const w = W(), h = H(), s = h / 720, quien = l.quien === 'r' ? 'DON ARTURO · PRESENTADOR LEGENDARIO' : 'ADRIÁN VEGA · PRESENTADOR'; g.save(); g.globalAlpha = Math.min(1, k * 4); g.font = `700 ${21 * s}px system-ui, sans-serif`;
       const palabras = l.txt.split(' '), lin = ['']; for (const p of palabras) { const pr = (lin[lin.length - 1] + ' ' + p).trim(); if (g.measureText(pr).width > w * 0.55) lin.push(p); else lin[lin.length - 1] = pr; }
       const x = l.quien === 'r' ? w - w * 0.6 - 30 * s : 30 * s, y = 24 * s, alto = (44 + lin.length * 28) * s; g.fillStyle = '#ffffff'; g.beginPath(); g.roundRect ? g.roundRect(x, y, w * 0.6, alto, 18 * s) : g.rect(x, y, w * 0.6, alto); g.fill();
