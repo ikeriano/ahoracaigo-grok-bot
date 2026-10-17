@@ -1,0 +1,13 @@
+import puppeteer from 'puppeteer-core';
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--mute-audio'] });
+const p = await b.newPage(); await p.setViewport({ width: 1280, height: 720 }); let errs = 0; p.on('pageerror', e => { errs++; console.log(e.message); });
+await p.evaluateOnNewDocument(() => { localStorage.setItem('ac_pres', 'rita'); localStorage.setItem('ac_logo_cab', 's300plato'); window.__noAviso = true; });
+await p.goto('http://localhost:8126/index.html'); await p.waitForFunction('window.__eng && document.getElementById("loading").classList.contains("hidden")', { timeout: 120000 });
+await new Promise(r => setTimeout(r, 1500)); await p.evaluate(() => __ac.menu('main')); await new Promise(r => setTimeout(r, 1000));
+await p.screenshot({ path: process.argv[2] + '/menu_principal.png' });
+console.log(await p.evaluate(() => [...document.querySelectorAll('#menu button')].map(x => x.textContent.trim()).filter(Boolean).slice(0, 8).join(' | ')));
+await p.evaluate(() => __ac.menu('options')); await new Promise(r => setTimeout(r, 800));
+const ok = await p.evaluate(() => { const e = document.getElementById('optPres126'); if (!e) return false; e.scrollIntoView(); return true; }); console.log('pres', ok);
+await new Promise(r => setTimeout(r, 500)); await p.screenshot({ path: process.argv[2] + '/opciones_presentador.png' });
+await p.evaluate(() => document.getElementById('optLogo126').scrollIntoView()); await new Promise(r => setTimeout(r, 800)); await p.screenshot({ path: process.argv[2] + '/opciones_logo.png' });
+console.log('ERR', errs); await b.close();

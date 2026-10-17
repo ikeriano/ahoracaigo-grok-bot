@@ -1,0 +1,10 @@
+import puppeteer from 'puppeteer-core';
+const S=ms=>new Promise(r=>setTimeout(r,ms)); const O='/workspace/ahoracaigo/shots-new/';
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox','--autoplay-policy=no-user-gesture-required'] });
+const p = await b.newPage(); await p.setViewport({ width: 412, height: 860, deviceScaleFactor: 2, isMobile:true, hasTouch:true });
+await p.goto('http://localhost:8824/index.html'); await S(3000);
+await p.evaluate(()=>{AppClasica.abrir(); [...document.querySelectorAll('button')].find(b=>b.textContent.includes('JUGAR')).click(); const st=AppClasica._st(); st.ganados=3; st.banco=7000; st.rivales[2].fuera=true; st.rivales[5].fuera=true; st.rivales[7].fuera=true; AppClasica._caida(st.rivales[0], true);
+  setTimeout(()=>{document.body.style.animationPlayState='paused'; document.querySelectorAll('*').forEach(e=>{if(e.style.transition)e.style.transition='none'})},900)}); await S(1000);
+await p.screenshot({path:O+'05-caida.png'}); await S(3000); await p.screenshot({path:O+'06-moneda.png'}); await S(3000); await p.screenshot({path:O+'07-decision.png'});
+await p.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Sigo')).click()); await S(500); await p.screenshot({path:O+'08-tablero-tras-duelo.png'});
+await b.close();

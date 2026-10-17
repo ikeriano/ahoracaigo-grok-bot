@@ -1,0 +1,17 @@
+import puppeteer from 'puppeteer-core';
+const S=ms=>new Promise(r=>setTimeout(r,ms)); const O='/workspace/ahoracaigo/shots-new/';
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required'] });
+const p = await b.newPage(); await p.setViewport({ width: 412, height: 860, deviceScaleFactor: 2, isMobile:true, hasTouch:true });
+const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+await p.goto('http://localhost:8824/index.html'); await S(3000);
+await p.evaluate(()=>AppClasica.abrir()); await S(1200); await p.screenshot({path:O+'01-inicio.png'});
+await p.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.includes('JUGAR')).click()); await S(800); await p.screenshot({path:O+'02-tablero.png'});
+await p.evaluate(()=>{const st=AppClasica._st(); AppClasica._previa(st.rivales[0]);}); await S(900); await p.screenshot({path:O+'03-previa-duelo.png'});
+await S(3800); await S(5600); await p.screenshot({path:O+'04-duelo-letras.png'});
+const st0 = await p.evaluate(()=>{const s=AppClasica._st(); return {enDuelo:s.enDuelo}}); console.log(st0);
+await p.evaluate(()=>{const st=AppClasica._st(); st.salirDuelo(); AppClasica._caida(st.rivales[0], true);}); await S(700); await p.screenshot({path:O+'05-caida.png'});
+await S(1600); await p.screenshot({path:O+'06-moneda.png'});
+await S(2800); await p.screenshot({path:O+'07-decision.png'});
+await p.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Sigo')).click()); await S(600); await p.screenshot({path:O+'08-tablero-tras-duelo.png'});
+await p.evaluate(()=>{const st=AppClasica._st(); AppClasica._caida(st.rivales[1], false);}); await S(800); await p.screenshot({path:O+'09-caes-tu.png'}); await S(1600); await p.screenshot({path:O+'10-final.png'});
+console.log('errors',errs); await b.close();
