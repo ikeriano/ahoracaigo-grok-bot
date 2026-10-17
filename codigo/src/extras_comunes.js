@@ -98,16 +98,20 @@ function crearExtras(cfg) {
     if (wkListo) return wkListo;
     wkListo = new Promise((res, rej) => {
       try { wk = new Worker((cfg.piperBase || 'piper/') + 'piper-worker.js'); } catch (e) { return rej(e); }
-      const to = setTimeout(() => rej(new Error('Piper tarda demasiado')), 90000);
+      const to = setTimeout(() => { rej(new Error('Piper tarda demasiado')); try { wk && wk.terminate(); } catch (e) { } wk = null; }, 45000);
       wk.onmessage = e => { const d = e.data; if (d.type === 'listo') { clearTimeout(to); res(d.sampleRate); } else if (d.type === 'error' && d.id == null) { clearTimeout(to); rej(new Error(d.msg)); } else if (d.id && pend[d.id]) { const p = pend[d.id]; delete pend[d.id]; d.type === 'audio' ? p.res(d) : p.rej(new Error(d.msg)); } };
-      wk.onerror = e => { clearTimeout(to); rej(new Error(e.message || 'worker')); };
+      wk.onerror = e => { clearTimeout(to); rej(new Error(e.message || 'worker')); for (const k in pend) { try { pend[k].rej(new Error('worker')); } catch (x) { } delete pend[k]; } };
     }); wkListo.catch(() => { wkListo = null; }); return wkListo;
   }
-  async function vozPiper(texto, vel) { await piper(); const id = ++wkId; const d = await new Promise((res, rej) => { pend[id] = { res, rej }; wk.postMessage({ id, texto, velocidad: vel || 1 }); }); const ac = cfg.audioCtx(); const b = ac.createBuffer(1, d.samples.length, d.sampleRate); b.copyToChannel(d.samples, 0); return b; }
+  // v1.33: si el worker se queda colgado (memoria justa en móviles modestos) se cierra y se reintenta otra vez desde cero
+  function piperReinicia() { try { wk && wk.terminate(); } catch (e) { } wk = null; wkListo = null; for (const k in pend) { try { pend[k].rej(new Error('Piper reiniciado')); } catch (e) { } delete pend[k]; } }
+  async function vozPiper(texto, vel, maxMs = 30000) { await piper(); const id = ++wkId; const d = await new Promise((res, rej) => { const to = setTimeout(() => { delete pend[id]; piperReinicia(); rej(new Error('Piper no responde')); }, maxMs); pend[id] = { res: x => { clearTimeout(to); res(x); }, rej: x => { clearTimeout(to); rej(x); } }; wk.postMessage({ id, texto, velocidad: vel || 1 }); }); const ac = cfg.audioCtx(); const b = ac.createBuffer(1, d.samples.length, d.sampleRate); b.copyToChannel(d.samples, 0); return b; }
+  // móvil modesto (≤3 GB de RAM o ≤4 núcleos): el Piper wasm (77 MB) no compensa; se usan las piezas pregrabadas
+  const movilModesto = () => window.__forzarModesto || (navigator.deviceMemory && navigator.deviceMemory <= 3) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
   let PIEZAS = null; const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, '0'); };
   const normPal = w => w.toLowerCase().normalize('NFC').replace(/[^a-zñáéíóúü0-9]/g, '');
   async function vozPiezas(texto) {
-    const base = cfg.piezasBase || 'voz/pal/'; if (!PIEZAS) PIEZAS = await (await fetch(base + 'index.json')).json();
+    const base = cfg.piezasBase || 'voz/pal/'; if (!PIEZAS) { const r = await fetch(base + 'index.json'); if (!r.ok) throw new Error('sin piezas'); PIEZAS = await r.json(); }
     const ac = cfg.audioCtx(), bufs = [];
     for (const tok of texto.split(/(\s+|[,.;:!?¡¿])/)) {
       if (/^[,.;:!?]$/.test(tok)) { bufs.push(ac.createBuffer(1, Math.round(ac.sampleRate * .22), ac.sampleRate)); continue; }
@@ -116,7 +120,11 @@ function crearExtras(cfg) {
     }
     const n = bufs.reduce((s, b) => s + b.length, 0); if (!n) return null; const out = ac.createBuffer(1, n, ac.sampleRate); let o = 0; for (const b of bufs) { out.getChannelData(0).set(b.getChannelData(0), o); o += b.length; } return out;
   }
-  async function voz(texto) { if (!texto || !texto.trim()) return null; try { return await vozPiper(texto); } catch (e) { console.warn('Piper wasm no disponible, uso piezas', e); try { return await vozPiezas(texto); } catch (x) { return null; } } }
+  async function voz(texto) { if (!texto || !texto.trim()) return null;
+    if (movilModesto()) { try { const b = await vozPiezas(texto); if (b) return b; } catch (x) { } }
+    const b = await conTope(vozPiper(texto), 14000, null); if (b) return b; console.warn('Piper wasm no disponible o lento, uso piezas'); try { return await vozPiezas(texto); } catch (x) { return null; } }
+  // v1.33: ninguna espera de la vista previa puede quedarse colgada (máximo ms, o Salir)
+  const conTope = (pr, ms, def, corta) => new Promise(res => { let ok = false; const fin = v => { if (!ok) { ok = true; clearTimeout(t); res(v); } }; const t = setTimeout(() => fin(def), ms); Promise.resolve().then(() => pr).then(fin, () => fin(def)); corta && corta(() => fin(def)); });
 
   // ---------- IndexedDB de promos ----------
   let dbp = null; const DB = () => dbp || (dbp = new Promise((res, rej) => { const r = indexedDB.open(P + '_promos', 1); r.onupgradeneeded = () => { r.result.createObjectStore('promos', { keyPath: 'id' }); r.result.createObjectStore('blobs'); }; r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }));
@@ -137,22 +145,30 @@ function crearExtras(cfg) {
     try { await v.play(); } catch (e) { } return v;
   }
   const easeOut = x => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
-  async function reproducir(p, opt = {}) {
-    const W = 1280, H = 720, ac = cfg.audioCtx(); try { await ac.resume(); } catch (e) { }
-    const cont = $('div', 'position:fixed;inset:0;z-index:99995;background:#000;display:flex;align-items:center;justify-content:center');
+  async function reproducir(p, opt = {}) { // v1.33: pase lo que pase, la pantalla negra se quita y se vuelve al menú
+    try { return await reproducir0(p, opt); } catch (e) { console.warn('promo', e); try { cfg.alTerminar && cfg.alTerminar(p); } catch (x) { } return null; } finally { document.querySelectorAll('.promoPlay').forEach(x => x.remove()); window.__promoFase = 'fin'; }
+  }
+  async function reproducir0(p, opt = {}) {
+    const W = 1280, H = 720, ac = cfg.audioCtx(); try { await conTope(ac.resume(), 1500); } catch (e) { }
+    const cont = $('div', 'position:fixed;inset:0;z-index:99995;background:#000;display:flex;align-items:center;justify-content:center'); cont.className = 'promoPlay';
     const cv = $('canvas', 'max-width:100vw;max-height:100vh;width:100%;aspect-ratio:16/9;object-fit:contain'); cv.width = W; cv.height = H; cont.appendChild(cv);
-    let parar = false; const salir = btn('✕ Salir', () => parar = true); salir.style.cssText += ';position:absolute;top:10px;left:10px'; if (!opt.sinBoton) cont.appendChild(salir);
+    let parar = false; const alParar = []; const corta = f => alParar.push(f); const salir = btn('✕ Salir', () => { parar = true; alParar.splice(0).forEach(f => { try { f(); } catch (e) { } }); }); salir.style.cssText += ';position:absolute;top:10px;left:10px'; if (!opt.sinBoton) cont.appendChild(salir);
     document.body.appendChild(cont); const g = cv.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, W, H); g.fillStyle = C1; g.font = 'bold 36px system-ui'; g.textAlign = 'center'; g.fillText('Preparando la promo y la voz en off…', W / 2, H / 2); g.textAlign = 'left';
     cfg.alEmpezar && cfg.alEmpezar(p);
-    const vid = await fondoVideo(p); const logo = await cfg.logoCanvas(512, p.logo === 'titulo' ? { tipo: 'titulo' } : p.logo && p.logo !== 'actual' ? { tipo: 'especial', id: p.logo } : { tipo: 'actual' });
+    const msg = t => { if (parar) return; g.fillStyle = '#000'; g.fillRect(0, H / 2 + 30, W, 60); g.fillStyle = '#fff9'; g.font = '26px system-ui'; g.textAlign = 'center'; g.fillText(t, W / 2, H / 2 + 70); g.textAlign = 'left'; };
+    window.__promoFase = 'prep';
+    const vid = await conTope(fondoVideo(p), 5000, null, corta); const logo = parar ? null : await conTope(cfg.logoCanvas(512, p.logo === 'titulo' ? { tipo: 'titulo' } : p.logo && p.logo !== 'actual' ? { tipo: 'especial', id: p.logo } : { tipo: 'actual' }), 5000, null, corta);
     // audio: música + voz con ducking, hacia la salida y la grabación
     const mezcla = ac.createGain(); mezcla.connect(ac.destination); let destRec = null; if (opt.grabar) { destRec = ac.createMediaStreamDestination(); mezcla.connect(destRec); }
     const gM = ac.createGain(); gM.gain.value = .55; gM.connect(mezcla); let mus = null; const MU = cfg.musica;
     const sal = cfg.salida && cfg.salida(); if (destRec && sal && sal !== mezcla) { try { sal.connect(destRec); } catch (e) { } }
-    if (p.musica && p.musica !== 'ninguna') { if (MU && MU.play) { try { MU.play(p.musica); } catch (e) { } } else if (cfg.musicaUrl) { try { const ab = await ac.decodeAudioData(await (await fetch(cfg.musicaUrl(p.musica))).arrayBuffer()); mus = ac.createBufferSource(); mus.buffer = ab; mus.loop = true; mus.connect(gM); mus.start(); } catch (e) { } } }
+    if (p.musica && p.musica !== 'ninguna') { if (MU && MU.play) { try { MU.play(p.musica); } catch (e) { } } else if (cfg.musicaUrl) { try { const ab = await conTope((async () => ac.decodeAudioData(await (await fetch(cfg.musicaUrl(p.musica))).arrayBuffer()))(), 6000, null, corta); if (!ab) throw 0; mus = ac.createBufferSource(); mus.buffer = ab; mus.loop = true; mus.connect(gM); mus.start(); } catch (e) { } } }
     const textoVoz = p.voz === false ? '' : (p.textoVoz || [p.titulo, ...(p.lineas || []), [p.dia, p.hora].filter(Boolean).join(', a las ')].filter(Boolean).join('. '));
-    const vb = textoVoz ? await voz(textoVoz) : null;
-    const lineas = (p.lineas || []).filter(Boolean); const durTxt = 2.2 + lineas.length * 2.6 + 3.2; const dur = Math.max(durTxt, vb ? vb.duration + 1.6 : 0, 6);
+    msg(textoVoz ? 'Preparando la voz en off… (si tarda, la promo sale con subtítulos)' : '');
+    const vb = textoVoz && !parar ? await conTope(voz(textoVoz), opt.vozMaxMs || (movilModesto() ? 10000 : 20000), null, corta) : null;
+    const subt = textoVoz && !vb ? textoVoz : ''; window.__promoFase = parar ? 'salir' : 'play'; window.__promoVoz = !!vb;
+    if (parar) { try { MU && MU.stop && p.musica !== 'ninguna' && MU.stop(); mus && mus.stop(); } catch (e) { } try { mezcla.disconnect(); } catch (e) { } if (vid) { try { vid.pause(); if (vid.srcObject) vid.srcObject = null; } catch (e) { } } cfg.alTerminar && cfg.alTerminar(p); cont.remove(); window.__promoFase = 'fin'; return null; }
+    const lineas = (p.lineas || []).filter(Boolean); const durTxt = 2.2 + lineas.length * 2.6 + 3.2; const dur = Math.max(durTxt, vb ? vb.duration + 1.6 : 0, subt ? subt.split(/\s+/).length * 0.36 + 2 : 0, 6);
     let rec = null, trozos = [];
     if (opt.grabar) { const st = cv.captureStream(30); destRec.stream.getAudioTracks().forEach(t => st.addTrack(t)); const mt = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || ''; rec = new MediaRecorder(st, mt ? { mimeType: mt, videoBitsPerSecond: 5e6 } : {}); rec.ondataavailable = e => e.data.size && trozos.push(e.data); rec.start(250); }
     const t0 = ac.currentTime + .15;
@@ -166,10 +182,13 @@ function crearExtras(cfg) {
         else { const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, C2); gr.addColorStop(1, '#000'); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
         const vi = g.createLinearGradient(0, H * .35, 0, H); vi.addColorStop(0, 'rgba(0,0,0,0)'); vi.addColorStop(1, 'rgba(0,0,0,.75)'); g.fillStyle = vi; g.fillRect(0, 0, W, H);
         const ent = (k0) => { const x = easeOut((t - k0) / .6); if (tr === 'barrido') return { a: x, dx: (1 - x) * -W * .5, s: 1 }; if (tr === 'zoom') return { a: x, dx: 0, s: .6 + .4 * x }; return { a: x, dx: 0, s: 1 }; };
-        const L = ent(.2); g.save(); g.globalAlpha = L.a; g.translate(W * .16 + L.dx, H * .3); g.scale(L.s, L.s); { const lh = 300 * logo.height / logo.width; g.drawImage(logo, -150, -lh / 2, 300, lh); } g.restore();
+        const L = ent(.2); g.save(); g.globalAlpha = L.a; g.translate(W * .16 + L.dx, H * .3); g.scale(L.s, L.s); if (logo && logo.width) { const lh = 300 * logo.height / logo.width; g.drawImage(logo, -150, -lh / 2, 300, lh); } g.restore();
         const T = ent(.6); g.save(); g.globalAlpha = T.a; g.translate(T.dx, 0); g.fillStyle = '#fff'; g.font = 'bold 64px system-ui'; g.textAlign = 'left'; g.shadowColor = '#000'; g.shadowBlur = 12; g.fillText(p.titulo || cfg.titulo(), W * .34, H * .28, W * .62); g.restore();
         lineas.forEach((ln, i) => { const k0 = 1.6 + i * 2.6, k1 = k0 + 2.6; if (t < k0) return; const e = ent(k0); const sal = i < lineas.length - 1 ? 1 - easeOut((t - k1 + .3) / .3) : 1; g.save(); g.globalAlpha = e.a * Math.max(0, sal); g.translate(e.dx, 0); g.fillStyle = C1; g.font = 'bold 44px system-ui'; g.shadowColor = '#000'; g.shadowBlur = 10; g.fillText(ln, W * .34, H * .44, W * .62); g.restore(); });
         if (p.dia || p.hora) { const e = ent(1.2); g.save(); g.globalAlpha = e.a; g.fillStyle = C1; g.fillRect(W * .06, H * .78, W * .88, 86); g.fillStyle = '#111'; g.font = 'bold 50px system-ui'; g.textAlign = 'center'; g.fillText([p.dia, p.hora].filter(Boolean).join(' · ').toUpperCase(), W / 2, H * .78 + 60, W * .84); g.restore(); }
+        if (subt) { // sin voz: el texto de la voz en off sale como subtítulos, a trozos
+          const pal = subt.split(/\s+/), por = Math.max(1, Math.ceil(pal.length / Math.max(1, (dur - 1.5) / 2.4))), k = Math.min(Math.floor(Math.max(0, t - .8) / 2.4), Math.ceil(pal.length / por) - 1), tx = pal.slice(k * por, k * por + por).join(' ');
+          g.save(); g.font = 'bold 34px system-ui'; g.textAlign = 'center'; const wv = Math.min(W * .9, g.measureText(tx).width + 40); g.fillStyle = 'rgba(0,0,0,.7)'; g.fillRect((W - wv) / 2, H * .66, wv, 50); g.fillStyle = '#fff'; g.fillText(tx, W / 2, H * .66 + 36, W * .88); g.restore(); }
         htDibuja(g, W, H, performance.now());
         const fo = Math.min(1, t / .5, (fin - performance.now()) / 500); if (fo < 1) { g.fillStyle = `rgba(0,0,0,${1 - Math.max(0, fo)})`; g.fillRect(0, 0, W, H); }
         requestAnimationFrame(fr);
@@ -177,8 +196,8 @@ function crearExtras(cfg) {
     });
     try { mus && mus.stop(); } catch (e) { } try { MU && MU.stop && p.musica !== 'ninguna' && MU.stop(); MU && MU.vol && MU.vol(1); } catch (e) { } if (destRec && sal) { try { sal.disconnect(destRec); } catch (e) { } } mezcla.disconnect(); if (vid) { vid.pause(); if (vid.srcObject) vid.srcObject = null; }
     cfg.alTerminar && cfg.alTerminar(p);
-    let blob = null; if (rec) { await new Promise(r => { rec.onstop = r; rec.stop(); }); blob = new Blob(trozos, { type: rec.mimeType || 'video/webm' }); }
-    cont.remove(); return blob;
+    let blob = null; if (rec) { await conTope(new Promise(r => { rec.onstop = r; try { rec.stop(); } catch (e) { r(); } }), 3000); blob = new Blob(trozos, { type: rec.mimeType || 'video/webm' }); }
+    cont.remove(); window.__promoFase = 'fin'; return blob;
   }
   async function exportar(p) { toast('Grabando la promo en vídeo…'); const b = await reproducir(p, { grabar: true }); if (b && b.size) await guardar(`promo-${limpio(p.titulo || 'promo')}.${/mp4/.test(b.type) ? 'mp4' : 'webm'}`, b, 'Movies'); return b; }
   async function aleatoria() { const L = await promosLista().catch(() => []); return L.length ? L[Math.floor(Math.random() * L.length)] : null; }
@@ -361,7 +380,7 @@ function crearExtras(cfg) {
     f.append(lab('Título'), zT, lab('Líneas'), ...zL, lab('Día y hora'), zD, zH, lab('Logo'), lg, lab('Música del juego'), mu, lab('Transición'), tr, lab('Fondo'), fo, extra, lab('Voz en off'), vz, zV); w.v.appendChild(f);
     const recoge = async () => { Object.assign(p, { titulo: zT.value.trim(), lineas: zL.map(z => z.value.trim()), dia: zD.value.trim(), hora: zH.value.trim(), logo: lg.value, musica: mu.value, transicion: tr.value, textoVoz: zV.value.trim() });
       if (fo.value.startsWith('cab:')) p.fondo = { tipo: 'cabecera', cab: fo.value.slice(4) }; else if (fo.value === 'video') { if (blobNuevo) { const k = 'v' + p.id; await blobGuarda(k, blobNuevo); p.fondo = { tipo: 'video', blob: k }; } else if (p.fondo.tipo !== 'video') p.fondo = { tipo: 'plato' }; } else if (fo.value === 'camlibre') p.fondo = { tipo: 'camlibre', blob: p.fondo.blob || (tomasLibres()[0] || {}).k }; else p.fondo = { tipo: 'plato' }; return p; };
-    w.v.append($('div', 'margin-top:10px'), btn('💾 Guardar', async () => { await promoGuarda(await recoge()); toast('Promo guardada'); w.cierra(); alGuardar && alGuardar(); }, true), btn('▶ Vista previa', async () => { const q = await recoge(); w.o.style.display = 'none'; await reproducir(q); w.o.style.display = 'flex'; }), btn('Cancelar', w.cierra));
+    w.v.append($('div', 'margin-top:10px'), btn('💾 Guardar', async () => { await promoGuarda(await recoge()); toast('Promo guardada'); w.cierra(); alGuardar && alGuardar(); }, true), btn('▶ Vista previa', async () => { w.o.style.display = 'none'; try { await reproducir(await recoge()); } catch (e) { } finally { w.o.style.display = 'flex'; } }), btn('Cancelar', w.cierra));
   }
   async function panelPromos() {
     const w = capa('🎬 Creador de promos'); const c = $('div'); w.v.appendChild(c);
