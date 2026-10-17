@@ -68,7 +68,7 @@ async function modoFiesta(opts = {}) {
   loop();
   const cierra = () => { ses.alive = false; cancelAnimationFrame(raf); removeEventListener('resize', resize); buzz && buzz.dispose(); sc.traverse(o => { if (o.isMesh && o.geometry) { o.geometry.dispose(); o.material.dispose && o.material.dispose(); } }); R.dispose(); div.remove(); F.stopTag && F.stopTag('voz'); };
   div.querySelector('.fx').onclick = ev => { ev.stopPropagation(); cierra(); };
-  const di = async (txt, modo = 'habla') => { txt = buzzTexto(txt); bur.innerHTML = `<b>${host === 'buzz' ? 'Buzz' : 'Adrián'}:</b> ${txt}`; bur.style.display = 'block'; if (buzz) buzz.modo = modo; try { if (buzz) { sfx128('buzzer'); modo === 'risa' && ze.risas && ze.risas(); } await stHabla(vk, txt, ses); } finally { if (buzz) buzz.modo = 'senala'; bur.style.display = 'none'; } };
+  const di = async (txt, modo = 'habla', mom = null) => { txt = buzzTexto(txt); bur.innerHTML = `<b>${host === 'buzz' ? 'Buzz' : 'Adrián'}:</b> ${txt}`; bur.style.display = 'block'; if (buzz) buzz.modo = modo; try { if (buzz) { sfx128('buzzer'); modo === 'risa' && ze.risas && ze.risas(); } if (!(host === 'buzz' && mom && await buzzAudToca(mom, ses))) await stHabla(vk, txt, ses); } finally { if (buzz) buzz.modo = 'senala'; bur.style.display = 'none'; } };
   const banner = async (t, ms = 1600) => { ban.textContent = t; ban.classList.add('on'); await ses.w(ms); ban.classList.remove('on'); };
   const planoBuzz = () => plano(new T.Vector3(0.25, 1.55, 1.3), new T.Vector3(0, 1.25, -1.6), true), planoGeneral = () => plano(new T.Vector3(0, 2.2, 7.5), new T.Vector3(0, 1.3, -0.6));
   const planoJug = k => { const x = at[k].position.x; plano(new T.Vector3(x * 0.85, 1.8, 3.3), new T.Vector3(x, 1.45, 0.6), true); };
@@ -76,8 +76,8 @@ async function modoFiesta(opts = {}) {
     const pie = tartaMesh(), desde = hostRoot.position.clone().add(new T.Vector3(0.5, 1.6, 0.3)); pie.position.copy(desde); sc.add(pie); sfx128('silbido'); if (buzz) buzz.modo = 'pulsa';
     const fin = hp.clone().add(new T.Vector3(0, 0, 0.15)), a = performance.now(); await ses.until(() => { const u = Math.min(1, (performance.now() - a) / 600); pie.position.lerpVectors(desde, fin, u); pie.position.y += Math.sin(u * Math.PI) * 0.7; pie.rotation.x = u * 7; return u >= 1; });
     EST.e = 'tartazo'; sc.remove(pie); const sp = nataSplat(); sp.position.set(0, 0.78, 0.13); sp.scale.setScalar(1.05); j.fig.add(sp); j.nata = sp; sfx128('splat'); temblor = 0.15; ze.risas(); if (buzz) buzz.modo = 'risa';
-    await di(fiRnd(D.tarta), 'risa'); await trampilla(k, true); }
-  async function trampilla(k, vuelve) { const j = jug[k], y0 = 0.8, a = performance.now(); EST.e = 'trampilla'; sfx128('boom'); const ag = new T.Mesh(new T.CircleGeometry(0.36, 20), new T.MeshBasicMaterial({ color: 0x000000 })); ag.rotation.x = -Math.PI / 2; ag.position.y = 0.81; at[k].add(ag); const fl = new T.Mesh(new T.RingGeometry(0.3, 0.5, 24), new T.MeshBasicMaterial({ color: 0xfff0c0, transparent: true, side: 2 })); fl.rotation.x = -Math.PI / 2; fl.position.y = 0.85; at[k].add(fl); temblor = 0.4;
+    await di(fiRnd(D.tarta), 'risa', 'tartazo'); await trampilla(k, true); }
+  async function trampilla(k, vuelve) { const j = jug[k], y0 = 0.8, a = performance.now(); EST.e = 'trampilla'; sfx128('boom'); if (host === 'buzz') buzzAudSuelto('trampillazo', bur, '¡Trampillazo!'); const ag = new T.Mesh(new T.CircleGeometry(0.36, 20), new T.MeshBasicMaterial({ color: 0x000000 })); ag.rotation.x = -Math.PI / 2; ag.position.y = 0.81; at[k].add(ag); const fl = new T.Mesh(new T.RingGeometry(0.3, 0.5, 24), new T.MeshBasicMaterial({ color: 0xfff0c0, transparent: true, side: 2 })); fl.rotation.x = -Math.PI / 2; fl.position.y = 0.85; at[k].add(fl); temblor = 0.4;
     await ses.until(() => { const u = (performance.now() - a) / 800; j.fig.position.y = y0 - u * u * 3; fl.scale.setScalar(1 + u * 3); fl.material.opacity = Math.max(0, 1 - u); return u >= 1; }); at[k].remove(fl); j.fig.visible = false;
     if (vuelve) { await ses.w(500); j.nata && j.fig.remove(j.nata); j.nata = null; j.fig.position.y = y0; j.fig.visible = true; at[k].remove(ag); } }
   async function pregunta(id, p, nq) {
@@ -95,13 +95,13 @@ async function modoFiesta(opts = {}) {
     const res = [{ k: 0, ok: elige === p.ok, t: elige < 0 ? MS : tEl, nada: elige < 0 }, ...bots];
     for (const r of res) if (!jug[r.k].cae && r.ok) jug[r.k].eur += 100 * (1 + Math.round(4 * (1 - Math.min(r.t, MS) / MS)));
     pinta(); await ses.w(1300); fq.style.display = 'none';
-    if (res[0].ok) { planoJug(0); ze.aplauso(1.5, 0.6); await di(fiRnd(D.bien)); }
-    else { if (id === 'ordena') { await di(res[0].nada ? D.lento : fiRnd(D.mal), 'risa'); await tarta(0); } else { planoBuzz(); await di(res[0].nada ? D.lento : fiRnd(D.mal), 'risa'); } }
+    if (res[0].ok) { planoJug(0); ze.aplauso(1.5, 0.6); await di(fiRnd(D.bien), 'habla', 'acierto'); }
+    else { if (id === 'ordena') { await di(res[0].nada ? D.lento : fiRnd(D.mal), 'risa', 'fallo'); await tarta(0); } else { planoBuzz(); await di(res[0].nada ? D.lento : fiRnd(D.mal), 'risa', 'fallo'); } }
     if (id === 'ordena') { const malBot = bots.find(b => !b.ok); if (malBot && nq % 2) await tarta(malBot.k); }
     planoGeneral();
   }
   try {
-    planoGeneral(); await ses.w(600); planoBuzz(); ze.aplauso && ze.aplauso(2, 0.7); for (const t of D.hola) await di(t);
+    planoGeneral(); await ses.w(600); planoBuzz(); ze.aplauso && ze.aplauso(2, 0.7); for (const [i, t] of D.hola.entries()) await di(t, 'habla', i === 0 ? 'saludo' : null);
     const rondas = opts.rondas || ['ordena', 'vot', 'borrosa', 'cadena'];
     for (const [i, id] of rondas.entries()) {
       planoGeneral(); await banner('RONDA ' + (i + 1) + ' · ' + V128.titulos[id]); planoBuzz(); await di(D.ronda[id]);
@@ -110,7 +110,7 @@ async function modoFiesta(opts = {}) {
     planoBuzz(); await di(D.ultimo); const orden = jug.map((j, k) => k).sort((a, b) => jug[a].eur - jug[b].eur), peor = orden[0], mejor = orden[3];
     planoJug(peor); await trampilla(peor, false); jug[peor].cae = true; pinta(); ze.risas();
     planoJug(mejor); await banner('🏆 ' + (mejor ? jug[mejor].n + ' GANA' : '¡HAS GANADO!') + ' · ' + jug[mejor].eur.toLocaleString('es-ES') + ' €', 2000); ze.ovacion && ze.ovacion(4);
-    planoBuzz(); await di(mejor === 0 ? fiRnd(D.gana) : '¡Esta vez gana ' + jug[mejor].n + '! ¡Tú vuelve a intentarlo, que la práctica hace al maestro!'); await di(D.adios);
+    planoBuzz(); await di(mejor === 0 ? fiRnd(D.gana) : '¡Esta vez gana ' + jug[mejor].n + '! ¡Tú vuelve a intentarlo, que la práctica hace al maestro!', 'habla', mejor === 0 ? 'victoria' : null); await di(D.adios, 'habla', 'despedida');
   } catch (e) { if (e !== _o) console.warn('fiesta', e); } finally { EST.e = 'fin'; if (ses.alive) cierra(); }
 }
 function filaFiesta() {

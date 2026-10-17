@@ -2,6 +2,15 @@
 // [hype] rápido y agudo · [normal] presentador · [solemne] lento y grave · [pausa] silencio de remate · [risa] risita chulesca
 // En el bocadillo y en la clave de la voz se quitan las marcas (buzzTexto).
 const BUZZ_L = {
+  // v1.34 · PROMO DE BUZZ (tráiler del Modo Fiesta): frases originales, una por plano
+  promo: ['[solemne]Dicen que la tele ya no sorprende a nadie. [pausa]Que ya lo hemos visto todo. [pausa][hype]¡Eso es porque no conocían a Buzz!',
+    '[hype]¡Llega el Modo Fiesta! [risa]¡Ah, jaja, sí!',
+    '[normal]Responde rápido, campeón… [solemne]o la bomba responde por ti.',
+    '[hype]¿Que fallas? ¡Tartazo!',
+    '[solemne]¿Que vuelves a fallar? [pausa]Al sótano.',
+    '[hype]¡El rosco! ¡La memoria! ¡La intrusa! ¡Cuentas, precios… y euros, muchos euros!',
+    '[hype]¡Es fantástico! ¡Fantástico! ¡Es faaantáaastico!',
+    '[susurro]Modo Fiesta, con Buzz. [pausa]Solo en Ahora Caigo.'],
   hola: ['[hype]¡Hola, hola, holaaaa! ¡Bienvenidos al Modo Fiesta! [normal]Soy Buzz, el presentador más guapo de la tele. [risa]¡Ah, jaja, sí!',
     '[normal]Hoy repartimos euros… [solemne]y también, [pausa]alguna que otra humillación. [hype]¡Empezamos!'],
   ronda: {
@@ -26,4 +35,4 @@ const BUZZ_L = {
     '[hype]¡Ganador del Modo Fiesta! [solemne]Y en verdad os digo que eres… [pausa][hype]¡un auténtico genio! [risa]¡Ah, jaja, sí!'],
   adios: '[normal]Esto ha sido el Modo Fiesta. [hype]¡Soy Buzz, el mejor presentador del universo! [solemne]Y vosotros… [pausa]bueno, vosotros también habéis venido. [risa]¡Ah, jaja! [hype]¡Hasta la próxima!',
 };
-const buzzTexto = t => t.replace(/\[(hype|normal|solemne|pausa|risa)\]/g, '').replace(/\s+/g, ' ').trim();
+const buzzTexto = t => t.replace(/\[(hype|normal|solemne|pausa|risa|susurro)\]/g, '').replace(/\s+/g, ' ').trim();
