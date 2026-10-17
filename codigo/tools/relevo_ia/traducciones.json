@@ -1,0 +1,146 @@
+{
+ "¡Ha caído el concursante central! Pero el programa no se acaba aquí.": {
+  "it": "È caduto il concorrente centrale! Ma il programma non finisce qui.",
+  "pt": "O participante central caiu! Mas o programa não acaba aqui."
+ },
+ "¡También ha caído este concursante central! Y otra vez, el ganador del duelo ocupa su sitio.": {
+  "it": "È caduto anche questo concorrente centrale! E ancora una volta, chi ha vinto il duello prende il suo posto.",
+  "pt": "Este participante central também caiu! E mais uma vez, quem venceu o duelo fica com o lugar dele."
+ },
+ "El oponente que ha ganado el duelo pasa al centro y se queda con todo el dinero acumulado.": {
+  "it": "L'avversario che ha vinto il duello passa al centro e si tiene tutto il montepremi accumulato.",
+  "pt": "O oponente que venceu o duelo vai para o centro e fica com todo o dinheiro acumulado."
+ },
+ "A partir de ahora juega la máquina. Tú puedes seguir el programa desde aquí.": {
+  "it": "Da adesso gioca la macchina. Tu puoi seguire il programma da qui.",
+  "pt": "A partir de agora quem joga é a máquina. Você pode acompanhar o programa daqui."
+ },
+ "Pero el programa sigue: el concursante central continúa con sus duelos y tú lo ves desde aquí.": {
+  "it": "Ma il programma continua: il concorrente centrale va avanti con i suoi duelli e tu lo guardi da qui.",
+  "pt": "Mas o programa continua: o participante central segue com os duelos e você assiste daqui."
+ },
+ "¡Bienvenido al centro! Sigues con los duelos que quedan y, si llegas, juegas el juego final.": {
+  "it": "Benvenuto al centro! Continui con i duelli che restano e, se ci arrivi, giochi il gioco finale.",
+  "pt": "Bem-vindo ao centro! Você segue com os duelos que faltam e, se chegar lá, joga o Desafio Final."
+ },
+ "¡El concursante central se la juega! ¡Vamos al juego final!": {
+  "it": "Il concorrente centrale ci prova! Andiamo al gioco finale!",
+  "pt": "O participante central vai arriscar! Vamos para o Desafio Final!"
+ },
+ "El concursante central prefiere plantarse y llevarse la mitad.": {
+  "it": "Il concorrente centrale preferisce fermarsi e portarsi a casa la metà.",
+  "pt": "O participante central prefere parar e levar a metade."
+ },
+ "¡Se cayó el concursante central! Pero el programa no termina acá.": {
+  "it": "È caduto il concorrente centrale! Ma il programma non finisce qui.",
+  "pt": "O participante central caiu! Mas o programa não acaba aqui."
+ },
+ "¡También se cayó este concursante central! Y otra vez, el ganador del duelo ocupa su lugar.": {
+  "it": "È caduto anche questo concorrente centrale! E ancora una volta, chi ha vinto il duello prende il suo posto.",
+  "pt": "Este participante central também caiu! E mais uma vez, quem venceu o duelo fica com o lugar dele."
+ },
+ "El oponente que ganó el duelo pasa al centro y se queda con toda la plata acumulada.": {
+  "it": "L'avversario che ha vinto il duello passa al centro e si tiene tutto il montepremi accumulato.",
+  "pt": "O oponente que venceu o duelo vai para o centro e fica com todo o dinheiro acumulado."
+ },
+ "Desde ahora juega la máquina. Vos podés seguir el programa desde acá.": {
+  "it": "Da adesso gioca la macchina. Tu puoi seguire il programma da qui.",
+  "pt": "A partir de agora quem joga é a máquina. Você pode acompanhar o programa daqui."
+ },
+ "Pero el programa sigue: el concursante central continúa con sus duelos y vos lo mirás desde acá.": {
+  "it": "Ma il programma continua: il concorrente centrale va avanti con i suoi duelli e tu lo guardi da qui.",
+  "pt": "Mas o programa continua: o participante central segue com os duelos e você assiste daqui."
+ },
+ "¡Bienvenido al centro! Seguís con los duelos que quedan y, si llegás, jugás el juego final.": {
+  "it": "Benvenuto al centro! Continui con i duelli che restano e, se ci arrivi, giochi il gioco finale.",
+  "pt": "Bem-vindo ao centro! Você segue com os duelos que faltam e, se chegar lá, joga o Desafio Final."
+ },
+ "👀 Juega la máquina": {
+  "it": "👀 Gioca la macchina",
+  "pt": "👀 A máquina joga"
+ },
+ "⏭ Saltar al resultado": {
+  "it": "⏭ Vai al risultato",
+  "pt": "⏭ Pular para o resultado"
+ },
+ "🏠 Menú": {
+  "it": "🏠 Menu",
+  "pt": "🏠 Menu"
+ },
+ "🤖 Nuevo concursante central": {
+  "it": "🤖 Nuovo concorrente centrale",
+  "pt": "🤖 Novo participante central"
+ },
+ "🤖 ¡{n} ha ganado {p} puntos!": {
+  "it": "🤖 {n} ha vinto {p} punti!",
+  "pt": "🤖 {n} ganhou {p} pontos!"
+ },
+ "🤖 {n} se ha plantado con {p} puntos": {
+  "it": "🤖 {n} si è fermato con {p} punti",
+  "pt": "🤖 {n} parou com {p} pontos"
+ },
+ "🤖 {n} también ha caído… ¡fin del programa!": {
+  "it": "🤖 Anche {n} è caduto… fine del programma!",
+  "pt": "🤖 {n} também caiu… fim do programa!"
+ },
+ "⚔️ Duelo {k}: {b} gana a {a} y pasa al centro": {
+  "it": "⚔️ Duello {k}: {b} batte {a} e passa al centro",
+  "pt": "⚔️ Duelo {k}: {b} vence {a} e vai para o centro"
+ },
+ "🏁 {n} va al juego final": {
+  "it": "🏁 {n} va al gioco finale",
+  "pt": "🏁 {n} vai para o Desafio Final"
+ },
+ "🏆 {n} gana el juego final y dobla el marcador": {
+  "it": "🏆 {n} vince il gioco finale e raddoppia il punteggio",
+  "pt": "🏆 {n} vence o Desafio Final e dobra o placar"
+ },
+ "💥 {n} cae en el juego final": {
+  "it": "💥 {n} cade nel gioco finale",
+  "pt": "💥 {n} cai no Desafio Final"
+ },
+ "🛑 {n} se planta y se lleva la mitad": {
+  "it": "🛑 {n} si ferma e si porta a casa la metà",
+  "pt": "🛑 {n} para e leva a metade"
+ },
+ "🏆 {n} ha tirado a todos y se lleva el bote": {
+  "it": "🏆 {n} ha fatto cadere tutti e vince il montepremi",
+  "pt": "🏆 {n} derrubou todos e leva o prêmio acumulado"
+ },
+ "😬 {n} llega al final con el marcador a cero": {
+  "it": "😬 {n} arriva alla fine con il punteggio a zero",
+  "pt": "😬 {n} chega ao final com o placar zerado"
+ },
+ "🤖 {n} decide: ¡al juego final!": {
+  "it": "🤖 {n} decide: al gioco finale!",
+  "pt": "🤖 {n} decide: para o Desafio Final!"
+ },
+ "🤖 {n} decide: plantarse": {
+  "it": "🤖 {n} decide: fermarsi",
+  "pt": "🤖 {n} decide: parar"
+ },
+ "SU TURNO": {
+  "it": "SUO TURNO",
+  "pt": "VEZ DELE"
+ },
+ "TU TURNO": {
+  "it": "TUO TURNO",
+  "pt": "SUA VEZ"
+ },
+ "⏭ Resultado del programa": {
+  "it": "⏭ Risultato del programma",
+  "pt": "⏭ Resultado do programa"
+ },
+ "Jugar otra vez": {
+  "it": "Gioca ancora",
+  "pt": "Jogar de novo"
+ },
+ "Duelos que ganaste tú: {g} · Relevos de la máquina: {r} 🤖": {
+  "it": "Duelli vinti da te: {g} · Cambi al centro (macchina): {r} 🤖",
+  "pt": "Duelos que você venceu: {g} · Trocas no centro (máquina): {r} 🤖"
+ },
+ "⚔️ Duelo {k}: {a} gana a {b} ✔": {
+  "it": "⚔️ Duello {k}: {a} batte {b} ✔",
+  "pt": "⚔️ Duelo {k}: {a} vence {b} ✔"
+ }
+}

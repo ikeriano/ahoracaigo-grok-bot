@@ -11,8 +11,8 @@ android {
         applicationId 'com.ikeriano.ahoracaigo'
         minSdk 24
         targetSdk 34
-        versionCode 44
-        versionName "1.37"
+        versionCode 46
+        versionName "1.39"
     }
     signingConfigs {
         release {

@@ -62,7 +62,7 @@ async function opoFase(sv) {
     return 'win';
   }
   F.stopMusic(); He(e.host, 'lamenta', 2.5); e.lights && e.lights.event('fallo'); await sv.caida(k, e.player);
-  await opoTalk(sv, 'pierdes', 5000); sv.placar = 0; return 'lose';
+  await opoTalk(sv, 'pierdes', 5000); sv._plAntes = sv.placar; sv.placar = 0; return 'lose';
 }
 // durante el duelo del modo oponente el rival (la IA) está en el centro y tú en su trampilla: las cámaras del duelo miran a cada uno en su sitio
 {
