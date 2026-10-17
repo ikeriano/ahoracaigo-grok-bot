@@ -76,12 +76,12 @@
           var eng = window.__eng, h = eng.host; if (!h) return; var p = h.root.position, d = E.hostPos;
           var x, z; if (u < .45) { var k = u / .45; x = 0; z = CI.lerp(-9.8, -6.7, k); } else { var k2 = CI.sale((u - .45) / .55); x = CI.lerp(0, d.x, k2); z = CI.lerp(-6.7, d.z, k2); }
           var y = eng.studio.heightAt ? eng.studio.heightAt(x, z) : null; p.set(x, y == null ? d.y : y, z); eng.face(h, new window.THREE.Vector3(d.x, 0, d.z + (u < .9 ? 0 : 6)));
-          c.fov = 46; c.updateProjectionMatrix(); c.position.set(1.5 - u * .7, 1.0 + (u < .45 ? 0 : (u - .45) * .8), p.z + 4.4); c.lookAt(p.x, p.y + 1.4, p.z); c.rotateZ(.06);
+          c.fov = 46; c.updateProjectionMatrix(); c.position.set(p.x * .5 + .9 - u * .5, p.y + 1.55 + (u < .45 ? 0 : (u - .45) * .5), p.z + 3.6); c.lookAt(p.x, p.y + 1.2, p.z); c.rotateZ(.06);
         } },
       { t0: 21.0, t1: 28.0, entra: function (E, eng) { var h = eng.host; if (!h) return; eng.movers = eng.movers.filter(function (m) { return m.p !== h; }); h.root.position.copy(E.hostPos); h.gestureType = 'saluda'; h.gesture = 2.2; h.gDur = 2.2; },
         cam: function (c, u, t, E, CI) { var h = window.__eng.host.root.position, a = -Math.PI * 2 * CI.suave(u) * 1.05 + .6; c.fov = 52; c.updateProjectionMatrix(); c.position.set(h.x + Math.sin(a) * 3.4, h.y + .75, h.z + Math.cos(a) * 3.4); c.lookAt(h.x, h.y + 1.25, h.z); c.rotateZ(Math.sin(t * 2.1) * .2); } },
       { t0: 28.0, t1: 30.3, entra: function (E, eng) { eng.opps.forEach(function (o) { o.gestureType = 'aplaude'; o.gesture = 2.4; o.gDur = 2.4; }); },
-        cam: function (c, u) { c.fov = 40; c.updateProjectionMatrix(); c.position.set(3.2, 2.6, 3.2); c.lookAt(7.6, 3.6, 7.0); } },
+        cam: function (c, u) { c.fov = 46; c.updateProjectionMatrix(); c.position.set(6.2, 3.3, 1.7); c.lookAt(9.3, 3.5, 3.6); } },
       { t0: 30.3, t1: 33, entra: function (E, eng) { var h = eng.host; if (h) { h.root.position.copy(E.hostPos); eng.face(h, new window.THREE.Vector3(h.root.position.x, 0, 9)); h.gestureType = 'baila'; h.gesture = 2.6; h.gDur = 2.6; } [4, 5].forEach(function (i) { var o = eng.opps[i]; if (o) { o.gestureType = 'aplaude'; o.gesture = 2.6; o.gDur = 2.6; } }); },
         cam: function (c, u, t) { var h = window.__eng.host.root.position; c.fov = 50; c.updateProjectionMatrix(); c.position.set(h.x * .3, 3.0, 9.2 - u * .4); c.lookAt(h.x * .5, 2.1, -3); } }
     ],
