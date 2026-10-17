@@ -1,0 +1,11 @@
+Programa completo                                combinaciones   82314 · categorías 8 · normas 46
+Entrenamiento · Duelo                            combinaciones    6660 · categorías 6 · normas 27
+Entrenamiento · Prueba                           combinaciones    1238 · categorías 4 · normas 21
+Entrenamiento · ¡Vaya lío!                       combinaciones    6660 · categorías 6 · normas 27
+Entrenamiento · Pruebas con reloj                combinaciones      94 · categorías 3 · normas 13
+Entrenamiento · Palabra gallina                  combinaciones     201 · categorías 4 · normas 14
+Entrenamiento · Juego final                      combinaciones      94 · categorías 3 · normas 13
+Entrenamiento · Huellas y moneda                 combinaciones     269 · categorías 3 · normas 18
+Entrenamiento · Pruebas sin tiempo               combinaciones      24 · categorías 2 · normas 11
+Programa completo (noche con palabra gallina)    combinaciones  116013 · categorías 9 · normas 49
+51 normas {"reloj":8,"rival":6,"comod":7,"tramp":4,"dinero":7,"final":5,"gallina":3,"fiesta":8,"voz":3}
