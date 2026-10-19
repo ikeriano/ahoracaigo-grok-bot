@@ -385,17 +385,45 @@ const PROMOS = {
     } },
 };
 // ---------- «Elige el valor de cada huella»: 20 valores (10 de la huella blanca y 10 de la negra) ----------
-const HUELLA_DEF = ETAPAS_DATOS['2021'].cifras.slice(); // las 20 cifras están en src/etapas_datos.js
-function huellaValores() { try { const v = JSON.parse(localStorage.getItem('ac_huellas') || 'null'); if (Array.isArray(v) && v.length === 20 && [...v].sort().join() === [...HUELLA_DEF].sort().join()) return v; } catch (e) {} return HUELLA_DEF.slice(); }
-const huellaTxt = v => v === 'vida' ? 'COMODÍN' : v === 'mitad' ? '÷2' : v === 'doble' ? 'x2' : v === 'cero' ? 'LO PIERDES TODO' : String(+String(v).replace('+', '')).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const huellaDef = () => ETAPAS_DATOS['2021'].cifras; // las 20 cifras están en src/etapas_datos.js (según «🔺 Pirámide», v1.40)
+function huellaValores() { try { const v = JSON.parse(localStorage.getItem('ac_huellas') || 'null'); if (Array.isArray(v) && v.length === 20 && [...v].sort().join() === [...huellaDef()].sort().join()) return v; } catch (e) {} return huellaDef().slice(); }
+const huellaTxt = v => v === 'vida' ? 'COMODÍN' : v === 'vida2' ? 'DOBLE COMODÍN' : v === 'x5' ? '×5' : v === 'oro' ? 'HUELLA DE ORO' : v === 'final15' ? '+15 s FINAL' : v === 'mitad' ? '÷2' : v === 'doble' ? 'x2' : v === 'cero' ? 'LO PIERDES TODO' : String(+String(v).replace('+', '')).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 function huellaMapa(def, lado) { // en el especial «Elige tu huella» (o si se activa para todos) la moneda usa la pirámide del jugador
   const usar = (Xe && Xe.theme && Xe.theme.id === 'eligehuella') || localStorage.getItem('ac_huellas_siempre') === '1';
-  const v = usar ? huellaValores() : HUELLA_DEF, m = { ...def }; for (let i = 1; i <= 10; i++) m[i] = v[lado * 10 + i - 1]; return m;
+  const v = usar ? huellaValores() : huellaDef(), m = { ...def }; for (let i = 1; i <= 10; i++) m[i] = v[lado * 10 + i - 1]; return m;
+}
+// v1.40 · pirámide personalizada: si los valores de la moneda no son los de fábrica, se dibujan encima de la imagen
+const _monedaCache = new Map();
+const _monedaImg = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; });
+function monedaPinta(g, x, y, r, v) {
+  const verde = ['vida', 'vida2', 'doble', 'x5', 'final15'].includes(v), oro = v === 'oro';
+  const gr = g.createRadialGradient(x + r * 0.3, y - r * 0.35, r * 0.1, x, y, r);
+  if (oro) { gr.addColorStop(0, '#fff3a0'); gr.addColorStop(0.45, '#ffb31a'); gr.addColorStop(1, '#a85a00'); }
+  else if (verde) { gr.addColorStop(0, '#5fe39a'); gr.addColorStop(0.5, '#0f9a55'); gr.addColorStop(1, '#055a2a'); }
+  else { gr.addColorStop(0, '#ff7aa0'); gr.addColorStop(0.5, '#e8204e'); gr.addColorStop(1, '#8a0a24'); }
+  g.save(); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.restore();
+  const t = v === 'vida' ? 'COMODÍN' : v === 'vida2' ? 'DOBLE|COMODÍN' : v === 'oro' ? 'HUELLA|DE ORO' : v === 'final15' ? '+15 s|FINAL' : v === 'cero' ? 'LO|PIERDES|TODO' : v === 'x5' ? 'x5' : v === 'doble' ? 'x2' : huellaTxt(v);
+  const L = t.split('|'), big = L.length === 1 && t.length <= 3, px = big ? r * 0.95 : L.length === 1 ? Math.min(r * 0.62, r * 3.4 / Math.max(4, t.length)) : r * (L.length > 2 ? 0.36 : 0.42);
+  g.save(); g.font = `bold ${px}px "Nimbus Sans Narrow","Arial Narrow","Roboto Condensed",Arial,sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = Math.max(3, px * 0.14); g.strokeStyle = oro ? '#5c3400' : verde ? '#05501a' : '#4d080e'; g.fillStyle = '#fff';
+  L.forEach((s, i) => { const yy = y + (i - (L.length - 1) / 2) * px * 1.0; g.strokeText(s, x, yy, r * 1.8); g.fillText(s, x, yy, r * 1.8); }); g.restore();
+}
+async function monedaSrc(c, vL, vR) {
+  const dL = huellaDef()[c - 1 < 10 ? c - 1 : 9], dR = huellaDef()[c - 1 < 10 ? 10 + c - 1 : 19];
+  const fabL = c === 11 ? (pirNueva() ? '+100000' : 'cero') : dL, fabR = c === 11 ? '+50000' : dR;
+  if (vL === fabL && vR === fabR) return null;
+  const k = c + '|' + vL + '|' + vR; if (_monedaCache.has(k)) return _monedaCache.get(k);
+  try {
+    const im = await _monedaImg(xr(bf('Valores', String(c)).f)), cv = document.createElement('canvas'); cv.width = im.naturalWidth || 960; cv.height = im.naturalHeight || 720;
+    const g = cv.getContext('2d'), sx = cv.width / 960, sy = cv.height / 720; g.drawImage(im, 0, 0, cv.width, cv.height);
+    if (vL !== fabL) monedaPinta(g, 391 * sx, 334.5 * sy, 84 * sx, vL);
+    if (vR !== fabR) monedaPinta(g, 569.5 * sx, 335 * sy, 84 * sx, vR);
+    const u = cv.toDataURL('image/webp', 0.9); _monedaCache.set(k, u); return u;
+  } catch (e) { return null; }
 }
 function huellaPantallaValores(g, w, h, cual) {
   const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#0a3ac8'); gr.addColorStop(1, '#06124a'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
   const u = h / 100; g.font = `900 ${u * 8}px ${CAB_FUENTE}`; g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(cual === 'altos' ? 'VALORES ALTOS' : 'VALORES BAJOS', w / 2, u * 16);
-  const filas = cual === 'altos' ? [['1 de', '50.000', '#ffd21a'], ['2 de', '25.000', '#ffd21a'], ['3 de', '15.000', '#ffd21a'], ['1 de', '5.000', '#ffd21a']] : [['3 de', '5.000', '#3ac85a'], ['5 de', '1.000', '#3ac85a'], ['1', 'COMODÍN', '#3ad0ff'], ['1', '÷2', '#ff7a1a'], ['1', 'LO PIERDES TODO', '#e8102a'], ['1', 'x2', '#d04aff'], ['1 de', '1', '#3ac85a']];
+  const filas = pirNueva() ? cual === 'altos' ? [['1 de', '100.000', '#ffd21a'], ['1 de', '50.000', '#ffd21a'], ['2 de', '25.000', '#ffd21a'], ['3 de', '15.000', '#ffd21a'], ['1', '×5', '#d04aff'], ['1', 'HUELLA DE ORO', '#ffb31a']] : [['4 de', '5.000', '#3ac85a'], ['2 de', '1.000', '#3ac85a'], ['1', 'COMODÍN', '#3ad0ff'], ['1', 'DOBLE COMODÍN', '#3ad0ff'], ['1', 'x2', '#d04aff'], ['1', '+15 s FINAL', '#ff7a1a'], ['1 de', '1', '#3ac85a']] : cual === 'altos' ? [['1 de', '50.000', '#ffd21a'], ['2 de', '25.000', '#ffd21a'], ['3 de', '15.000', '#ffd21a'], ['1 de', '5.000', '#ffd21a']] : [['3 de', '5.000', '#3ac85a'], ['5 de', '1.000', '#3ac85a'], ['1', 'COMODÍN', '#3ad0ff'], ['1', '÷2', '#ff7a1a'], ['1', 'LO PIERDES TODO', '#e8102a'], ['1', 'x2', '#d04aff'], ['1 de', '1', '#3ac85a']];
   filas.forEach(([a, b, c], i) => { const col = i % 2, fil = Math.floor(i / 2), x = w * (col ? 0.55 : 0.12), y = u * (34 + fil * 15); g.font = `900 ${u * 6}px ${CAB_FUENTE}`; g.textAlign = 'left'; g.fillStyle = '#fff'; g.fillText(a, x, y); const bx = x + u * 13, bw = u * 30; g.fillStyle = c; g.beginPath(); g.roundRect ? g.roundRect(bx, y - u * 4.5, bw, u * 9, u * 4.5) : g.rect(bx, y - u * 4.5, bw, u * 9); g.fill(); g.fillStyle = '#1a1000'; g.textAlign = 'center'; g.font = `900 ${u * (b.length > 8 ? 3.6 : 5.4)}px ${CAB_FUENTE}`; g.fillText(b, bx + bw / 2, y + 2, bw - u * 2); });
 }
 // ---------- Casting: los que se apuntan aparecen como oponentes en las partidas ----------
@@ -455,7 +483,7 @@ function menuExtra(a, r) {
     let v = huellaValores(), sel = -1; const pir = caja('', 'text-align:center');
     const pinta = () => { pir.innerHTML = ''; let n = 0; [6, 5, 4, 3, 2].forEach(c => { const f = document.createElement('div'); for (let i = 0; i < c; i++, n++) { const k = n, b = document.createElement('button'); b.textContent = huellaTxt(v[k]); b.style.cssText = `min-width:52px;margin:2px;padding:6px 5px;border-radius:16px;border:2px solid ${sel === k ? '#ffffff' : '#1a1000'};background:${k < 10 ? '#ffd21a' : '#3ac85a'};color:#1a1000;font:900 11px system-ui;white-space:nowrap;cursor:pointer;transform:${sel === k ? 'scale(1.1)' : 'none'}`; b.onclick = ev => { ev.stopPropagation(); try { F.play('Tecla'); } catch (e) {} if (sel < 0) sel = k; else { [v[sel], v[k]] = [v[k], v[sel]]; sel = -1; localStorage.setItem('ac_huellas', JSON.stringify(v)); } pinta(); }; f.appendChild(b); } pir.appendChild(f); }); };
     pinta(); r.appendChild(pir);
-    const fila = document.createElement('div'); fila.className = 'mrow'; fila.append(boton('🔀 Al azar', () => { for (let i = v.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [v[i], v[j]] = [v[j], v[i]]; } localStorage.setItem('ac_huellas', JSON.stringify(v)); pinta(); }), boton('↩️ Como en el programa', () => { v = HUELLA_DEF.slice(); localStorage.removeItem('ac_huellas'); pinta(); }), boton('▶️ Jugar el especial', () => { Ms = 'eligehuella'; localStorage.setItem('ac_theme', Ms); try { Xe.setTheme(xf(Ms)); Xe.resetPositions(); } catch (e) {} ii('programa'); }));
+    const fila = document.createElement('div'); fila.className = 'mrow'; fila.append(boton('🔀 Al azar', () => { for (let i = v.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [v[i], v[j]] = [v[j], v[i]]; } localStorage.setItem('ac_huellas', JSON.stringify(v)); pinta(); }), boton('↩️ Como en el programa', () => { v = huellaDef().slice(); localStorage.removeItem('ac_huellas'); pinta(); }), boton('▶️ Jugar el especial', () => { Ms = 'eligehuella'; localStorage.setItem('ac_theme', Ms); try { Xe.setTheme(xf(Ms)); Xe.resetPositions(); } catch (e) {} ii('programa'); }));
     r.appendChild(fila);
     const f2 = document.createElement('div'); f2.className = 'mrow'; f2.append(boton(localStorage.getItem('ac_huellas_siempre') === '1' ? '✅ Usar mis valores en todos los programas' : '⬜ Usar mis valores en todos los programas', b => { const on = localStorage.getItem('ac_huellas_siempre') !== '1'; localStorage.setItem('ac_huellas_siempre', on ? '1' : '0'); b.innerHTML = (on ? '✅' : '⬜') + ' Usar mis valores en todos los programas'; }), Ia('main')); r.appendChild(f2); return;
   }

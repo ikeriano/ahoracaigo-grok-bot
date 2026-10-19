@@ -2,7 +2,7 @@
 // casillas de letras y relojes, caída por la trampilla). Mecánica Antena 3 2011-2021 (ETAPAS_DATOS['2011']): 10 duelos, cada
 // trampilla esconde una cifra, 2 PASAR, plantarse tras cada duelo ganado y bote de 100.000 € si caen los 10. =====
 const AppClasica = (() => {
-  const E = (typeof ETAPAS_DATOS !== 'undefined' && ETAPAS_DATOS['2011']) || { cifras: [5000, 5000, 2000, 2000, 1000, 1000, 500, 500, 1, 1], comodines: 2, bote: 100000 };
+  const E = (typeof ETAPAS_DATOS !== 'undefined' && ETAPAS_DATOS['2011']) || { cifras: [5000, 5000, 2000, 2000, 1000, 1000, 500, 500, 10000, 20000], comodines: 2, bote: 100000 };
   const ORO = '#ffd23a', AZ = '#0a1a5a', AZ2 = '#3a6aff', CIAN = '#5fe6ff';
   const NOMBRES = ['Marta', 'Javi', 'Carmen', 'Rubén', 'Lucía', 'Paco', 'Elena', 'Sergio', 'Nuria', 'Toño', 'Rosa', 'Iván', 'Pilar', 'Diego', 'Sonia', 'Álvaro', 'Bea', 'Óscar', 'Inés', 'Raúl'];
   const eur = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' €';

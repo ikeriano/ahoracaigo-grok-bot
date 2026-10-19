@@ -18529,11 +18529,11 @@ class Em {
       const T = lo(Cn - 0.4, O * Gt.degToRad(122), 3.35);
       de(3, 2.6, T, new P(0, 3, 0));
     }
-    const Be = [["50.000", "#ffd23a", "#3a2600"], ["25.000", "#ffd23a", "#3a2600"], ["15.000", "#ffd23a", "#3a2600"], ["5.000", "#ffd23a", "#3a2600"], ["1.000", "#ffd23a", "#3a2600"], ["+1", "#ffe9a8", "#3a2600"], ["×2", "#39c8ff", "#001a33"], ["÷2", "#ff9a2a", "#331400"], ["VIDA EXTRA", "#5fff8a", "#002a10"], ["LO PIERDES TODO", "#ff3b3b", "#330000"]], et = 512, k = 820, Q = 66, oe = 130, j = Vt(et, k, (O, T, S) => {
+    const PN = pirNueva(), Be = PN ? [["100.000", "#ffd23a", "#3a2600"], ["50.000", "#ffd23a", "#3a2600"], ["25.000", "#ffd23a", "#3a2600"], ["15.000", "#ffd23a", "#3a2600"], ["5.000", "#ffd23a", "#3a2600"], ["1.000", "#ffd23a", "#3a2600"], ["+1", "#ffe9a8", "#3a2600"], ["×2", "#39c8ff", "#001a33"], ["×5", "#39c8ff", "#001a33"], ["HUELLA DE ORO", "#ffb31a", "#5a3000"], ["COMODÍN · DOBLE COMODÍN", "#5fff8a", "#002a10"], ["+15 s DUELO FINAL", "#5fff8a", "#002a10"]] : [["50.000", "#ffd23a", "#3a2600"], ["25.000", "#ffd23a", "#3a2600"], ["15.000", "#ffd23a", "#3a2600"], ["5.000", "#ffd23a", "#3a2600"], ["1.000", "#ffd23a", "#3a2600"], ["+1", "#ffe9a8", "#3a2600"], ["×2", "#39c8ff", "#001a33"], ["÷2", "#ff9a2a", "#331400"], ["VIDA EXTRA", "#5fff8a", "#002a10"], ["LO PIERDES TODO", "#ff3b3b", "#330000"]], et = 512, k = 820, Q = PN ? 56 : 66, oe = PN ? 128 : 130, j = Vt(et, k, (O, T, S) => {
       const z = O.createLinearGradient(0, 0, 0, S);
       z.addColorStop(0, "#06123a"), z.addColorStop(1, "#020818"), O.fillStyle = z, O.fillRect(0, 0, T, S), O.strokeStyle = "#" + r.getHexString(), O.lineWidth = 10, O.strokeRect(8, 8, T - 16, S - 16), O.textAlign = "center", O.textBaseline = "middle", O.fillStyle = "#ffffff", O.font = '900 54px "Arial Black", Arial, sans-serif', O.fillText("PREMIOS", T / 2, 58), O.fillStyle = "#ffd23a", O.font = "800 26px Arial, sans-serif", O.fillText("DE LA MONEDA", T / 2, 100), Be.forEach(([J, ae, te], we) => {
         const be = oe + we * Q, Se = O.createLinearGradient(0, be, 0, be + Q - 10);
-        Se.addColorStop(0, ae), Se.addColorStop(1, te), O.fillStyle = Se, O.beginPath(), O.roundRect ? O.roundRect(40, be, T - 80, Q - 12, 26) : O.rect(40, be, T - 80, Q - 12), O.fill(), O.fillStyle = we < 6 ? "#1a1000" : "#ffffff", O.font = `900 ${J.length > 8 ? 34 : 44}px "Arial Black", Arial, sans-serif`, we >= 6 && (O.lineWidth = 6, O.strokeStyle = "rgba(0,0,0,.6)", O.strokeText(J, T / 2, be + (Q - 12) / 2 + 2)), O.fillText(J, T / 2, be + (Q - 12) / 2 + 2);
+        Se.addColorStop(0, ae), Se.addColorStop(1, te), O.fillStyle = Se, O.beginPath(), O.roundRect ? O.roundRect(40, be, T - 80, Q - 12, PN ? 22 : 26) : O.rect(40, be, T - 80, Q - 12), O.fill(), O.fillStyle = we < (PN ? 7 : 6) ? "#1a1000" : "#ffffff", O.font = PN ? `900 ${J.length > 14 ? 24 : J.length > 8 ? 30 : 38}px "Arial Black", Arial, sans-serif` : `900 ${J.length > 8 ? 34 : 44}px "Arial Black", Arial, sans-serif`, we >= (PN ? 7 : 6) && (O.lineWidth = 6, O.strokeStyle = "rgba(0,0,0,.6)", O.strokeText(J, T / 2, be + (Q - 12) / 2 + 2)), O.fillText(J, T / 2, be + (Q - 12) / 2 + 2);
       });
     });
     this.prizeBoards = [];
@@ -20288,7 +20288,7 @@ class xv {
     let s = this.els.get(i);
     s || (s = document.createElement("img"), s.draggable = false, s.className = "spr", this.box.appendChild(s), this.els.set(i, s));
     const o = bf(e, t), r = ma.sprites[e], l = n.x ?? r.x, c = n.y ?? r.y, u = (n.size ?? 100) / 100;
-    s.src = xr(o.f), s.style.left = this.W / 2 + l * 2 - o.cx + "px", s.style.top = this.H / 2 - this.offY - c * 2 - o.cy + "px", s.style.width = o.w + "px", s.style.height = o.h + "px", s.style.transformOrigin = `${o.cx}px ${o.cy}px`, s.style.transform = `scale(${u})`, s.style.zIndex = String(n.z ?? 1), s.className = "spr" + (n.cls ? " " + n.cls : "") + (n.click ? " click" : ""), s.onclick = n.click ? (d) => {
+    s.src = n.src || xr(o.f), s.style.left = this.W / 2 + l * 2 - o.cx + "px", s.style.top = this.H / 2 - this.offY - c * 2 - o.cy + "px", s.style.width = o.w + "px", s.style.height = o.h + "px", s.style.transformOrigin = `${o.cx}px ${o.cy}px`, s.style.transform = `scale(${u})`, s.style.zIndex = String(n.z ?? 1), s.className = "spr" + (n.cls ? " " + n.cls : "") + (n.click ? " click" : ""), s.onclick = n.click ? (d) => {
       d.stopPropagation(), n.click();
     } : null, s.style.pointerEvents = n.click ? "auto" : "none";
     const h = n.fade ?? 0;
@@ -21237,7 +21237,7 @@ class Z2 {
     this.cur = null, e == null || e.stop();
   }
 }
-const Zt = new Z2(), Ym = "1.39", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
+const Zt = new Z2(), Ym = "1.40", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en el minijuego de Scratch", "Formato original: ¡Ahora Caigo! (Antena 3)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["El minijuego de Scratch", "«¡Ahora Caigo!»"]], ["Música y sonidos", ["Del minijuego de Scratch original"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora Caigo! (Antena 3)"]], ["Versión web 1.7", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
 function Hv() {
   const a = [["Presentado por", [Vv()]], ...Jr.final], e = [];
   return me.central && e.push(["Concursante central", [me.central + (me.profesion ? " · " + me.profesion : "")]]), e.push(["Oponentes", jn.map((t, n) => `${n + 1}. ${me.rival(n + 1)} · ${t.job}`)]), a.splice(1, 0, ...e), a;
@@ -21667,7 +21667,7 @@ async function hA(a) {
 }
 const Gd = (a, e) => a + Math.random() * (e - a), or = (a, e, t) => a + (e - a) * t, Jm = (a, e, t) => Math.max(e, Math.min(t, a)), fA = [0.05, -0.08, 0.1, -0.04, 0.12, -0.1, 0, 0.08, -0.06, 0.03];
 function Kr(a, e) {
-  return Jm(0.1 + (Jm(e, 1, 8) - 1) / 7 * 0.62 + (fA[(a - 1) % 10] || 0), 0.05, 0.85);
+  return (self.NSAC ? NSAC.skill : Number)(Jm(0.1 + (Jm(e, 1, 8) - 1) / 7 * 0.62 + (fA[(a - 1) % 10] || 0), 0.05, 0.85), e);
 }
 function pA(a) {
   var s;
@@ -21688,7 +21688,7 @@ function pA(a) {
   } };
 }
 async function Mh(a, e, t = {}) {
-  const { eng: n, hud: i, panel: s, st: o, s: r } = a.c, l = n.opps[e - 1], c = window, u = c.__botSkill ?? Kr(e, a.rodadas || 1), h = c.__duelClock || 30, d = { me: h, bot: c.__botClock || h };
+  const { eng: n, hud: i, panel: s, st: o, s: r } = a.c, l = n.opps[e - 1], c = window, u = c.__botSkill ?? Kr(e, a.rodadas || 1), h = c.__duelClock || (self.NSAC ? NSAC.reloj(30) : 30), d = { me: h, bot: c.__botClock || (self.NSAC ? NSAC.relojR(h) : h) };
   let f = c.__meFirst ? "me" : "bot", p = false, v = null;
   const g = (M) => (v = Ef(M, { delay: 350 }), c.__duel.lecturas++, v), m = pA(e);
   m.set(f, d.me, d.bot), c.__duel = { clocks: d, get turn() {
@@ -21759,7 +21759,7 @@ async function Mh(a, e, t = {}) {
       const D = performance.now();
       U && await r.until(() => !!L || !U.leyendo), await r.until(() => !!L || performance.now() - D >= 600), L || (p = true);
     }
-    return await r.until(() => !!L || d.me <= 0), Zt.stop(), s.showPasa(false), L ? L === "ok" ? (p = false, x("me-ok"), s.stopInput(), F.play("QuemFicaEmPé-Acerto"), ze.aplauso(2.4, 0.7), await s.reveal(), i.toast("¡CORRECTO!", 1100), He(n.player, "arriba", 1.2), await r.w(1e3), s.hideQuestion(250), "ok") : L === "pasaCom" ? (p = false, x("me-pasa-comodin"), s.stopInput(), F.play("SomPalavra@Teclado27"), a.vidas--, a.vidaExtra && a.vidas < 1 && (a.vidaExtra = 0), o.show("Painel", 1, { z: 46, fade: 330, from: 1.5 }), i.say(Ua(Nt.pasa), 2200), Pn(a.vidas, !!a.vidaExtra), He(l, "habla", 2), await r.w(1800), o.hide("Painel", 330), await r.w(350), "pasaCom") : (p = true, x("me-pasa"), s.stopInput(), F.play("SomPalavra@Teclado27"), i.say(Ua(Nt.pasaSin), 1600), await s.reveal(), await r.w(500), "pasa") : (p = false, s.stopInput(), F.play("DropM.mp3"), ze.ooh(0.8), await s.reveal(), "tiempo");
+    return await r.until(() => !!L || d.me <= 0), Zt.stop(), s.showPasa(false), L ? L === "ok" ? (p = false, x("me-ok"), s.stopInput(), F.play("QuemFicaEmPé-Acerto"), ze.aplauso(2.4, 0.7), await s.reveal(), i.toast((self.NSOK || String)("¡CORRECTO!"), 1100), He(n.player, "arriba", 1.2), await r.w(1e3), s.hideQuestion(250), "ok") : L === "pasaCom" ? (p = false, x("me-pasa-comodin"), s.stopInput(), F.play("SomPalavra@Teclado27"), a.vidas--, a.vidaExtra && a.vidas < 1 && (a.vidaExtra = 0), o.show("Painel", 1, { z: 46, fade: 330, from: 1.5 }), i.say(Ua(Nt.pasa), 2200), Pn(a.vidas, !!a.vidaExtra), He(l, "habla", 2), await r.w(1800), o.hide("Painel", 330), await r.w(350), "pasaCom") : (p = true, x("me-pasa"), s.stopInput(), F.play("SomPalavra@Teclado27"), i.say(Ua(Nt.pasaSin), 1600), await s.reveal(), await r.w(500), "pasa") : (p = false, s.stopInput(), F.play("DropM.mp3"), ze.ooh(0.8), await s.reveal(), "tiempo");
   };
   try {
     {
@@ -21783,7 +21783,7 @@ async function Mh(a, e, t = {}) {
         f = "me";
       } else {
         const B = await w(L, C);
-        if (B === "tiempo") return m.out("me"), x("me-tiempo"), "lose";
+        if (B === "tiempo") { if (self.NSAC && NSAC.prorroga(d)) continue; return m.out("me"), x("me-tiempo"), "lose"; }
         B === "pasaCom" ? (M = L, f = "bot") : B === "ok" && (f = "bot");
       }
     }
@@ -21899,6 +21899,7 @@ const zi = (a) => {
   return String(Math.floor(e)).padStart(2, "0") + ":" + String(Math.floor(e % 1 * 100)).padStart(2, "0");
 };
 function wh(a, e, t) {
+  if (self.NSAC && NSAC.salva()) return true;
   return a.vidas > 0 && !a.noVidas ? (a.vidas--, a.vidaExtra && a.vidas < 1 && (a.vidaExtra = 0), Pn(a.vidas, !!a.vidaExtra), e.hud.toast("🃏 ¡Te salva un comodín!", 1800), F.play("SomPalavra@Teclado27"), ze.aplauso(1.6, 0.5), true) : false;
 }
 async function yA(a, e, t = {}) {
@@ -21948,7 +21949,7 @@ async function yA(a, e, t = {}) {
       if (g.forEach((M, C) => {
         M.disabled = true, C === v && M.classList.add(w ? "ok" : "bad"), C === p[2] && M.classList.add("right");
       }), h.push(`${d}:${v < 0 ? "tiempo" : w ? "ok" : "mal"}`), w) {
-        F.play("QuemFicaEmPé-Acerto"), ze.aplauso(d === "me" ? 2.2 : 1.4, d === "me" ? 0.7 : 0.45), He(d === "me" ? i.player : r, "arriba", 1.2), await o.w(1300), d = d === "me" ? "bot" : "me";
+        F.play("QuemFicaEmPé-Acerto"), ze.aplauso(d === "me" ? 2.2 : 1.4, d === "me" ? 0.7 : 0.45), He(d === "me" ? (self.NSY || Object)(i.player) : r, "arriba", 1.2), await o.w(1300), d = d === "me" ? "bot" : "me";
         continue;
       }
       if (F.play(v < 0 ? "DropM.mp3" : "Erro"), ze.ooh(0.8), He(d === "me" ? i.player : r, "lamenta", 1.5), s.toast(v < 0 ? "⏱ ¡Se acabó el tiempo!" : "✘ ¡Respuesta incorrecta!", 1400), await o.w(1500), d === "bot") return "win";
@@ -22035,7 +22036,7 @@ async function xA(a, e, t = {}) {
         if (await r.until(() => {
           const de = (cmdNow() - Z) / 1e3;
           return h("advc").textContent = zi(re - de), de >= re && W == null && (W = false), W != null;
-        }), o.stopInput(), W) return await o.reveal(), F.play("QuemFicaEmPé-Acerto"), ze.aplauso(2.4, 0.7), s.toast("¡CORRECTO! Era: " + p.r, 1600), d.push("me:ok"), await r.w(1600), o.hideAll(300), "win";
+        }), o.stopInput(), W) return await o.reveal(), F.play("QuemFicaEmPé-Acerto"), ze.aplauso(2.4, 0.7), s.toast((self.NSOK || String)("¡CORRECTO! Era: ") + p.r, 1600), d.push("me:ok"), await r.w(1600), o.hideAll(300), "win";
         if (F.play("DropM.mp3"), ze.ooh(0.8), s.toast("✘ Era: " + p.r, 1800), d.push("me:mal"), await r.w(1800), o.hideAll(300), wh(a, n, t)) {
           await r.w(1e3);
           continue;
@@ -22190,7 +22191,7 @@ async function wA(a, e, t = {}) {
       }
       L || (L = "me"), C(), p.fase = "fin", F.play("QuemFicaEmPé-Acerto");
       const U = wr(L);
-      if (ze.aplauso(L === "me" ? 2.4 : 1.5, L === "me" ? 0.7 : 0.45), He(L === "me" ? i.player : r, "arriba", 1.4), s.toast(`${L === "me" ? "¡Correcto!" : "¡" + me.rival(e) + " lo dice!"} «${y}»`, 2e3), await o.w(2200), d.get(U) > 0) {
+      if (ze.aplauso(L === "me" ? 2.4 : 1.5, L === "me" ? 0.7 : 0.45), He(L === "me" ? (self.NSY || Object)(i.player) : r, "arriba", 1.4), s.toast(`${L === "me" ? "¡Correcto!" : "¡" + me.rival(e) + " lo dice!"} «${y}»`, 2e3), await o.w(2200), d.get(U) > 0) {
         d.set(U, d.get(U) - 1), d.get(L) === 0 ? (d.set(L, 1), s.toast(L === "me" ? `🃏 ¡Robas un comodín a ${me.rival(e)}!` : `🃏 ¡${me.rival(e)} te roba un comodín!`, 2e3), f.push(`${L}:roba`)) : (s.toast(U === "me" ? "🃏 Gastas un comodín y sigues" : `🃏 ${me.rival(e)} gasta un comodín y sigue`, 1800), f.push(`${U}:gasta`)), F.play("SomPalavra@Teclado27"), await o.w(2100), v = U;
         continue;
       }
@@ -22254,7 +22255,7 @@ async function SA(a, e, t = {}) {
       }
       const B = b === m[1];
       if (x.disabled = y.disabled = true, b != null && (b ? x : y).classList.add(B ? "ok" : "bad"), (m[1] ? x : y).classList.add("right"), d.push(`${p}:${b == null ? "tiempo" : B ? "ok" : "mal"}`), B) {
-        F.play("QuemFicaEmPé-Acerto"), ze.aplauso(p === "me" ? 2 : 1.3, p === "me" ? 0.6 : 0.4), He(p === "me" ? i.player : r, "arriba", 1.1), v === p && (h.set(p, h.get(p) + 1), s.toast(p === "me" ? "🃏 ¡Aciertas y robas el comodín!" : `🃏 ¡${me.rival(e)} acierta y te roba el comodín!`, 1800), d.push(`${p}:roba`), F.play("SomPalavra@Teclado27"), await o.w(800)), v = null, await o.w(1200), p = wr(p);
+        F.play("QuemFicaEmPé-Acerto"), ze.aplauso(p === "me" ? 2 : 1.3, p === "me" ? 0.6 : 0.4), He(p === "me" ? (self.NSY || Object)(i.player) : r, "arriba", 1.1), v === p && (h.set(p, h.get(p) + 1), s.toast(p === "me" ? "🃏 ¡Aciertas y robas el comodín!" : `🃏 ¡${me.rival(e)} acierta y te roba el comodín!`, 1800), d.push(`${p}:roba`), F.play("SomPalavra@Teclado27"), await o.w(800)), v = null, await o.w(1200), p = wr(p);
         continue;
       }
       if (v = null, F.play(b == null ? "DropM.mp3" : "Erro"), ze.ooh(0.8), He(p === "me" ? i.player : r, "lamenta", 1.4), s.toast(b == null ? "⏱ ¡Se acabó el tiempo!" : `✘ ¡Era ${m[1] ? "SÍ" : "NO"}!`, 1400), await o.w(1500), h.get(p) > 0) {
@@ -22381,9 +22382,17 @@ async function iy(a, e) {
   }
   return r;
 }
-const n0 = { 1: "+1000", 2: "+25000", 3: "+15000", 4: "+1000", 5: "+1", 6: "+5000", 7: "+1000", 8: "vida", 9: "+5000", 10: "+50000", 11: "cero" }, i0 = { 1: "+25000", 2: "+1000", 3: "+1000", 4: "+15000", 5: "+15000", 6: "mitad", 7: "+5000", 8: "+5000", 9: "doble", 10: "cero", 11: "+50000" }, a0 = (a) => a === "vida" ? "una VIDA EXTRA (comodín)" : a === "cero" ? "¡LO PIERDES TODO!" : a === "mitad" ? "la MITAD de tus puntos" : a === "doble" ? "¡el DOBLE de tus puntos!" : a.replace("+", "") === "1" ? "1 punto" : Uo(+a) + " puntos";
+// v1.40: pirámide «La nueva» (n0N/i0N): ÷2 → ×5, LO PIERDES TODO → 100.000 y novedades (huella de oro, doble comodín, +15 s en el Duelo Final)
+const n0N = { 1: "+1000", 2: "+25000", 3: "+15000", 4: "+1000", 5: "+1", 6: "+5000", 7: "final15", 8: "vida", 9: "+5000", 10: "+50000", 11: "+100000" }, i0N = { 1: "+25000", 2: "oro", 3: "vida2", 4: "+15000", 5: "+15000", 6: "x5", 7: "+5000", 8: "+5000", 9: "doble", 10: "+100000", 11: "+50000" }, n0C = { 1: "+1000", 2: "+25000", 3: "+15000", 4: "+1000", 5: "+1", 6: "+5000", 7: "+1000", 8: "vida", 9: "+5000", 10: "+50000", 11: "cero" }, i0C = { 1: "+25000", 2: "+1000", 3: "+1000", 4: "+15000", 5: "+15000", 6: "mitad", 7: "+5000", 8: "+5000", 9: "doble", 10: "cero", 11: "+50000" }, a0 = (a) => a === "vida" ? "una VIDA EXTRA (comodín)" : a === "vida2" ? "un DOBLE COMODÍN (+2 vidas extra)" : a === "oro" ? "la HUELLA DE ORO: ¡tu próxima moneda paga el triple!" : a === "final15" ? "+15 SEGUNDOS para el Duelo Final" : a === "x5" ? "¡el QUÍNTUPLE de tus puntos! (×5)" : a === "cero" ? "¡LO PIERDES TODO!" : a === "mitad" ? "la MITAD de tus puntos" : a === "doble" ? "¡el DOBLE de tus puntos!" : a.replace("+", "") === "1" ? "1 punto" : Uo(+a) + " puntos";
 function TA(a, e) {
-  a === "vida" ? (e.vidaExtra = 1, e.vidas = Math.min(33, e.vidas + 1)) : a === "cero" ? e.placar = 0 : a === "mitad" ? e.placar = Math.floor(e.placar / 2) : a === "doble" ? e.placar *= 2 : e.placar += +a;
+  a === "vida" ? (e.vidaExtra = 1, e.vidas = Math.min(33, e.vidas + 1)) : a === "vida2" ? (e.vidaExtra = 1, e.vidas = Math.min(33, e.vidas + 2)) : a === "oro" ? e.huellaOro = 1 : a === "final15" ? e.finalMas = (e.finalMas || 0) + 15 : a === "x5" ? e.placar *= 5 : a === "cero" ? e.placar = 0 : a === "mitad" ? e.placar = Math.floor(e.placar / 2) : a === "doble" ? e.placar *= 2 : e.placar += +a;
+}
+// v1.40: aplica la moneda teniendo en cuenta la Huella de oro pendiente (la siguiente moneda paga el triple)
+function TAoro(a, e) {
+  if (!e.huellaOro || a === "oro") return TA(a, e), 0;
+  e.huellaOro = 0;
+  if (a === "vida" || a === "vida2" || a === "final15" || /^\+\d+$/.test(a)) { for (let k = 0; k < 3; k++) TA(a, e); return 1; }
+  const p0 = e.placar; TA(a, e); const d = e.placar - p0; d > 0 && (e.placar += 2 * d); return d > 0 ? 1 : 2;
 }
 async function ay(a, e, t, n = false) {
   if (etapa().moneda === "fija") return ayFija(a, e, t);
@@ -22400,6 +22409,7 @@ async function ay(a, e, t, n = false) {
   };
   addEventListener("keydown", r);
   try {
+    const fz = window.__ladoForce; fz && (o = Array.isArray(fz) ? fz.shift() || 0 : fz); // solo pruebas
     monedaFija() ? (await s.w(1400), o = o || 1 + Math.floor(Math.random() * 2)) : await s.until(() => o > 0);
   } finally {
     removeEventListener("keydown", r), a.hud.hint(null);
@@ -22408,18 +22418,27 @@ async function ay(a, e, t, n = false) {
   do
     l = 1 + Math.floor(Math.random() * 10);
   while (t.moedas.includes(l) && t.moedas.length < 10);
+  const n0 = pirNueva() ? n0N : n0C, i0 = pirNueva() ? i0N : i0C; // v1.40: «🔺 Pirámide» (por defecto la clásica)
+  const mf = Array.isArray(window.__monedaForce) && window.__monedaForce.shift(); // solo pruebas: 1..11
+  mf && (l = Math.min(10, mf));
   t.moedas.push(l);
   let c = l;
-  l === 10 && (c = Math.random() < 0.5 ? 10 : 11), i.show("Valores", String(c), { z: 40 }), F.play("saltar@Moeda1"), await s.w(500);
+  l === 10 && (c = mf ? mf : Math.random() < 0.5 ? 10 : 11);
+  const vL = huellaMapa(n0, 0)[c], vR = huellaMapa(i0, 1)[c];
+  i.show("Valores", String(c), { z: 40, src: await monedaSrc(c, vL, vR) }), F.play("saltar@Moeda1"), await s.w(500);
   const u = (f) => i.tf("Moeda" + f, f === 1 ? "translate(-140px,40px) rotate(-35deg)" : "translate(140px,40px) rotate(35deg)", 330);
   u(o), F.play("fairydust@Moeda1"), await s.w(1e3);
   const h = huellaMapa(o === 1 ? n0 : i0, o === 1 ? 0 : 1)[c], d = huellaMapa(o === 1 ? i0 : n0, o === 1 ? 1 : 0)[c];
-  return TA(h, t), etapa().dobladora && t.dobladora === e && (t.placar *= 2, setTimeout(() => a.hud.toast("🐔 ¡GALLINA DOBLADORA! Doblas tu bote", 2600), 2700)), h === "cero" ? ze.ooh() : h === "mitad" ? ze.oohSuave() : ze.aplauso(h === "doble" || h === "vida" || h === "+50000" ? 3 : 2, 0.65), a.hud.toast(`Has ganado ${a0(h)}` + (n ? `<br><small>Al otro lado había: ${a0(d)}</small>` : ""), 2600), await s.w(1e3), u(o === 1 ? 2 : 1), await s.w(1e3), ["Valores", "Valores2", "Moeda1", "Moeda2"].forEach((f) => i.hide(f, 170)), { val: h, other: d };
+  const oro = TAoro(h, t);
+  let extra = oro === 1 ? "<br><b>✨ ¡Huella de oro! Esta moneda paga el TRIPLE" + (/^\+\d+$/.test(h) ? ": " + (3 * +h.slice(1)).toLocaleString("es-ES") + " puntos en total" : "") + "</b>" : oro === 2 ? "<br><small>✨ La huella de oro se gastó en esta moneda</small>" : "";
+  h === "oro" && t.ndTot && t.rodadas >= t.ndTot && (t.huellaOro = 0, t.placar += 15e3, extra = "<br><small>Era la última moneda: la huella de oro te da 15.000 puntos</small>");
+  return h === "cero" ? ze.ooh() : h === "mitad" ? ze.oohSuave() : (h === "x5" || h === "+100000" || h === "oro" || oro === 1) ? ze.vitores(3) : ze.aplauso(h === "doble" || h === "vida" || h === "vida2" || h === "+50000" ? 3 : 2, 0.65), a.hud.toast(`Has ganado ${a0(h)}` + extra + (n ? `<br><small>Al otro lado había: ${a0(d)}</small>` : ""), 2600), await s.w(1e3), u(o === 1 ? 2 : 1), await s.w(1e3), ["Valores", "Valores2", "Moeda1", "Moeda2"].forEach((f) => i.hide(f, 170)), { val: h, other: d };
 }
 async function CA(a, e, tot = 8) {
   F.play("Moeda@ContagemDuelos"), F.stopMusic();
-  const t = `AhoraCaigo - Round${Math.min(8, Math.max(1, e + 1 - (tot - 8)))}.mp3`, q = tot - e;
-  F.playMusic(t).then(() => a.hud.subs(t, true));
+  const q = tot - e, t = q > 8 ? null : `AhoraCaigo - Round${Math.min(8, Math.max(1, e + 1 - (tot - 8)))}.mp3`;
+  // v1.40: con 9 o 10 oponentes (etapas clásicas) ya no suena «Quedan 8 oponentes»: Adrián dice los que quedan de verdad
+  t ? F.playMusic(t).then(() => a.hud.subs(t, true)) : (F.playMusic("SuspenseDuelo", true), a.hud.say(e === 0 ? `¡Arrancamos! Tienes ${q} oponentes por delante.` : `¡Seguimos! Quedan ${q} oponentes.`, 3e3));
   if (etapa().moneda === "fija") { PANT.actualiza({ quedan: q }), PANT.mostrar("bote"), mec("pantalla bote " + q); await PANT.tarjeta("bote", a.s, 3300); return; }
   if (q > 8) { a.hud.toast(`QUEDAN ${q} OPONENTES`, 3200), await a.s.w(3500); return; }
   a.st.show("ContagemDuelos", q === 8 ? "0" : String(8 - q), { z: 45, fade: 330 }), await a.s.w(3500), a.st.hide("ContagemDuelos", 330), await a.s.w(330);
@@ -22445,7 +22464,7 @@ async function Wd(a) {
 class sy {
   constructor(e) {
     this.c = e, this.vidas = 2, this.placar = 0, this.acertos = 0, this.rodadas = 0, this.vidaExtra = 0, this.moedas = [], this.used = /* @__PURE__ */ new Set(), this.timerStop = () => {
-    }, this.noVidas = false, this.jokeDone = false, this.plan = [], this.dobladora = window.__dobladoraForce || 1 + Math.floor(Math.random() * 10), this.bank = new Iv(e.eng.theme.id), this.chistes = new K2(e.eng.theme.id);
+    }, this.noVidas = false, this.jokeDone = false, this.plan = [], this.dobladora = window.__gallinaForce || window.__dobladoraForce || 1 + Math.floor(Math.random() * 10), this.bank = new Iv(e.eng.theme.id), this.chistes = new K2(e.eng.theme.id);
   }
   async talk(e, t = 2500) {
     let n = false;
@@ -22475,7 +22494,7 @@ class sy {
     for (const c of e.theme.extra || []) He(e.host, "habla", 2.5), await this.talk(c, 3e3), ze.vitores(3);
     if (await coproEntra(this.c)) this.copreHecho = true; // v1.13 presentador sorpresa
     await regidorMomento(this.c, "aplausos");
-    e.theme.festivo && (ea(e.studio, $t(-2, Ae + 2, 1)), ea(e.studio, $t(2, Ae + 2, 1)), ze.vitores(3.5)), qv.on && !window.__noMono && (await n.w(500), await jv(this.c, $v(e.theme.id), n), Ot.wide(e)), CE(), me.presentaciones && (await n.w(400), await hA(this.c)), this.plan = Zv(this.bank.gallina5()), mec("plan " + this.plan.join(",")), me.eleccion && etapa().eleccion && !window.__noEleccion && !(window.__botForce && !window.__conEleccion) && (await n.w(300), await ny(this.c)), F.play("TemaCurto"), await this.joke("intro"), await n.w(600), await (this.opo ? opoColoca(this) : this.subirAlCentro()), F.playMusic("TrilhaCurta@Stage"), Ot.wide(e), e.opps.forEach((c, u) => setTimeout(() => He(c, "saluda", 1.2), u * 150)), ze.aplauso(3.5, 0.7), t.say(this.opo ? OPO_L.equipo : ND === 8 ? Nt.equipo : `¡Aquí están nuestros diez oponentes! Tienes que tirarlos a los ${ND} para llevarte el bote.`, 3800), e.glide($t(0, 5.2, 9.5), $t(0, 1.2, -3), 3.6), await n.w(2e3), F.play("AcerteOuCaia SuspEdit", 0.8, "susp");
+    e.theme.festivo && (ea(e.studio, $t(-2, Ae + 2, 1)), ea(e.studio, $t(2, Ae + 2, 1)), ze.vitores(3.5)), qv.on && !window.__noMono && (await n.w(500), await jv(this.c, $v(e.theme.id), n), Ot.wide(e)), CE(), me.presentaciones && (await n.w(400), await hA(this.c)), this.plan = Zv(this.bank.gallina5()), mec("plan " + this.plan.join(",")), me.eleccion && etapa().eleccion && !window.__noEleccion && !(window.__botForce && !window.__conEleccion) && (await n.w(300), await ny(this.c)), F.play("TemaCurto"), await this.joke("intro"), await n.w(600), (self.NSAC && await NSAC.inicio("programa", this, F)), await (this.opo ? opoColoca(this) : this.subirAlCentro()), F.playMusic("TrilhaCurta@Stage"), Ot.wide(e), e.opps.forEach((c, u) => setTimeout(() => He(c, "saluda", 1.2), u * 150)), ze.aplauso(3.5, 0.7), t.say(this.opo ? OPO_L.equipo : ND === 8 ? Nt.equipo : `¡Aquí están nuestros diez oponentes! Tienes que tirarlos a los ${ND} para llevarte el bote.`, 3800), e.glide($t(0, 5.2, 9.5), $t(0, 1.2, -3), 3.6), await n.w(2e3), F.play("AcerteOuCaia SuspEdit", 0.8, "susp");
     if (this.opo && await opoFase(this) === "lose" && !(await riaOpo(this))) return this.fin("perdido");
     const i = this.opo ? 0 : window.__testRodadas;
     if (i) {
@@ -22483,11 +22502,12 @@ class sy {
       for (let c = 1; c <= i; c++) this.used.add(c), e.opps[c - 1].root.visible = false;
       this.placar = 25e3;
     }
+    this.ndTot = ND;
     for (; this.rodadas < ND; ) {
       await CA(this.c, this.rodadas, ND), F.stopTag("susp"), Pn(-1, false), this.acertos = 0, this.rodadas++, Ot.wide(e, 1), He(e.host, "senala", 1.8), this.rodadas > 1 && (t.say(Ua(Nt.elige), 2e3, e.host.head), await n.w(1900), t.hideBubble());
       const c = await iy(this.c, this.used);
       if (this.used.add(c), await this.duelo(c) === "lose") { if (await riaRelevo(this, c)) { if (this.rodadas >= ND) break; continue; } return ET.relevo && (mec("relevo"), He(e.opps[c - 1], "arriba", 2), await t.say(`${me.rival(c)} ocupa tu sitio en el centro y se queda con tu dinero${this.vidas > 0 ? " y tu comodín" : ""}.`, 3500)), this.fin("perdido"); }
-      if (await ay(this.c, c, this), F.playMusic("SuspenseDuelo", true), await Wd(this.c), await n.w(1500), await coproMomento(this.c, "moneda", {}, 0.6), ET.moneda === "fija" ? (PANT.actualiza({ placar: this.placar, comodines: Math.max(0, this.vidas) }), await PANT.tarjeta("premios", n, 3500)) : await PA(this.c, this.moedas, this.placar, !!e.theme.festivo), this.rodadas === ND) break;
+      if (await nsMoneda(this.c, c, this), F.playMusic("SuspenseDuelo", true), await Wd(this.c), await n.w(1500), await coproMomento(this.c, "moneda", {}, 0.6), ET.moneda === "fija" ? (PANT.actualiza({ placar: this.placar, comodines: Math.max(0, this.vidas) }), await PANT.tarjeta("premios", n, 3500)) : await PA(this.c, this.moedas, this.placar, !!e.theme.festivo), this.rodadas === ND) break;
       if (ET.plantarse && await this.plantarseOSeguir(ND) === "plantarse") return mec("plantado"), F.stopAll(), F.playMusic("Trilha"), Ot.player(e, 1.5), t.say(`¡Te plantas! Te llevas ${Uo(this.placar)} €.`, 3e3), ze.aplauso(3.5, 0.75), await n.w(1500), await uu(this.c, this.placar, 4e3, true), this.fin("plantado");
       await n.w(600), this.jokeDone || (Ot.wide(e, 1), await this.joke("entre")); await regidorMomento(this.c, "entre", {}, 0.55);
       if (!this.copreHecho && this.rodadas >= 2 && this.rodadas < ND && await copresentador(this.c, n, { ctx: "programa" })) this.copreHecho = true;
@@ -22496,7 +22516,7 @@ class sy {
     if (ET.final === "bote") return mec("bote"), this.placar += ET.bote || 0, F.stopAll(), F.playMusic("TrilhaCurta@Stage"), (r = e.lights) == null || r.event("ganador"), ea(e.studio, $t(0, Ae + 1, 0)), ea(e.studio, $t(-3, 2, -3)), ea(e.studio, $t(3, 2, -3)), He(e.player, "arriba", 3), He(e.host, "aplaude", 3), Ot.player(e, 1.2), ze.ovacion(8), await t.say(`¡Has tirado a los ${ND} oponentes! Te llevas el bote: ${Uo(ET.bote || 0)} €. En total, ${Uo(this.placar)} €.`, 4500), await uu(this.c, this.placar, 5e3, true), this.fin("ganado");
     if (this.placar === 0) return F.stopMusic(), await t.say(Nt.cero, 3500), this.fin("perdido");
     mec("decision 2021");
-    if (await this.decision() === "plantarse") return this.placar = Math.floor(this.placar / 2), F.stopAll(), await Wd(this.c), F.playMusic("Trilha"), Ot.player(e, 1.5), t.say(Nt.plantas, 3e3), ze.aplauso(3.5, 0.75), await n.w(1500), await uu(this.c, this.placar, 4e3, true), this.fin("plantado");
+    if (await this.decision() === "plantarse") return this.placar = Math.floor(this.placar * (self.NSAC ? NSAC.planta() : 0.5)), F.stopAll(), await Wd(this.c), F.playMusic("Trilha"), Ot.player(e, 1.5), t.say(Nt.plantas, 3e3), ze.aplauso(3.5, 0.75), await n.w(1500), await uu(this.c, this.placar, 4e3, true), this.fin("plantado");
     const o = await this.juegoFinal();
     return this.fin(o ? "ganado" : "perdido");
   }
@@ -22543,11 +22563,11 @@ class sy {
       }), me.presentaciones ? (await o.until(() => p), await dA(this.c, e)) : await o.until(() => p);
     }
     const l = window, c = l.__pruebaForce || ((l.__botForce || l.__botClock) && !l.__planReal ? "clasico" : this.plan[this.rodadas - 1] || "clasico");
-    return l.__pruebaActual = c, await Jv(this.c, c), t.face(t.player, r.root.position), t.face(r, t.player.root.position), F.playMusic("TrilhaCurta@MenuEscolha2"), await o.w(1e3), F.play("AhoraCaigo - ComeceDuelo.mp3"), n.subs("AhoraCaigo - ComeceDuelo.mp3", false), i.show("MenuEscolha2", 1, { z: 35, fade: 170 }), Ot.duel(t, e, 1.6), (h = t.lights) == null || h.event("duelo"), await o.w(2e3), F.playMusic("SuspenseDuelo", true), await o.w(1e3), i.hide("MenuEscolha2", 330), await o.w(1e3), await Kv(this, e, c) === "win" ? (this.acertos++, (d = t.lights) == null || d.event("acierto"), await o.w(800), s.hideAll(500), Pn(-1, false), await o.w(500), F.playMusic("TrilhaCurta@Gcpgt1"), He(t.host, "senala", 2), n.say(Ua(Nt.ok), 2e3), Ot.opp(t, e, 1.2), await o.w(3e3), F.stopMusic(), F.play("AcerteOuCaia SuspEdit", 1, "susp"), await o.w(3e3), await this.caida(e, r), F.stopTag("susp"), await o.w(500), await coproMomento(this.c, "caida", { n: this.rodadas }), F.playMusic("TrilhaCurta@Stage"), He(t.player, "arriba", 2), Ot.player(t, 1.2), ze.vitores(3.5), t.theme.festivo && ea(t.studio, $t(0, Ae + 2, 0)), await o.w(1500), Math.random() < 0.5 ? (this.jokeDone = true, await this.joke("caida")) : this.jokeDone = false, await o.w(1200), "win") : this.perder();
+    return l.__pruebaActual = c, await Jv(this.c, c), t.face(t.player, r.root.position), t.face(r, t.player.root.position), F.playMusic("TrilhaCurta@MenuEscolha2"), await o.w(1e3), F.play("AhoraCaigo - ComeceDuelo.mp3"), n.subs("AhoraCaigo - ComeceDuelo.mp3", false), i.show("MenuEscolha2", 1, { z: 35, fade: 170 }), Ot.duel(t, e, 1.6), (h = t.lights) == null || h.event("duelo"), await o.w(2e3), F.playMusic("SuspenseDuelo", true), await o.w(1e3), i.hide("MenuEscolha2", 330), await o.w(1e3), await Kv(this, e, c) === "win" ? (this.acertos++, (d = t.lights) == null || d.event("acierto"), await o.w(800), s.hideAll(500), Pn(-1, false), await o.w(500), F.playMusic("TrilhaCurta@Gcpgt1"), He(t.host, "senala", 2), n.say(Ua(Nt.ok), 2e3), Ot.opp(t, e, 1.2), await o.w(3e3), F.stopMusic(), F.play("AcerteOuCaia SuspEdit", 1, "susp"), await o.w(3e3), await this.caida(e, r), F.stopTag("susp"), await o.w(500), await coproMomento(this.c, "caida", { n: this.rodadas }), F.playMusic("TrilhaCurta@Stage"), He(t.player, "arriba", 2), Ot.player(t, 1.2), ze.vitores(3.5), t.theme.festivo && ea(t.studio, $t(0, Ae + 2, 0)), await o.w(1500), Math.random() < 0.5 ? (this.jokeDone = true, await this.joke("caida")) : this.jokeDone = false, await o.w(1200), "win") : self.NSAC && NSAC.bloqueo() ? (Pn(-1, false), this.c.panel.hideAll(500), NSAC.salvado(this, e, r)) : this.perder();
   }
   async pregunta(e, t, n, i, s) {
-    const { panel: o, s: r, hud: l } = this.c;
-    o.stopInput(), F.play("SomPalavra@Gcpgt1"), o.showBg(t), s || (o.showClock(true), o.setTime(30)), await r.w(1300), n = n || this.bank.next(e), n.gallina && F.stopMusic(), o.setQuestion(n), !t && !this.noVidas && Pn(this.vidas, !!this.vidaExtra);
+    const { panel: o, s: r, hud: l } = this.c, nsT = self.NSAC ? NSAC.t30(e) : 30;
+    o.stopInput(), F.play("SomPalavra@Gcpgt1"), o.showBg(t), s || (o.showClock(true), o.setTime(nsT)), await r.w(1300), n = n || this.bank.next(e), n.gallina && F.stopMusic(), o.setQuestion(n), !t && !this.noVidas && Pn(this.vidas, !!this.vidaExtra);
     let c = null;
     o.showPasa(t || this.vidas > 0, () => {
       c || (c = "pasa", i == null || i());
@@ -22561,16 +22581,16 @@ class sy {
     let h = () => {
     };
     if (!s) {
-      let d = 30, f = 1 / 0;
+      let d = nsT, f = 1 / 0;
       const p = performance.now(), v = setInterval(() => {
         if (f === 1 / 0) {
           if (u.leyendo) {
-            o.setTime(30, 0);
+            o.setTime(nsT, 0);
             return;
           }
           f = Math.max(p + 1e3, performance.now() + 400);
         }
-        const g = (performance.now() - f) / 980, m = g < 0 ? 30 : Math.max(0, 30 - Math.floor(g) - 1);
+        const g = (performance.now() - f) / 980, m = g < 0 ? nsT : Math.max(0, nsT - Math.floor(g) - 1);
         o.setTime(m, g < 0 ? 0 : 1 - g % 1), m !== d && (d = m, d === 10 && F.play("10", 1, "clock"), d === 5 && F.play("5", 1, "clock")), d <= 0 && !c && (c = "tiempo");
       }, 50);
       h = () => {
@@ -22582,7 +22602,7 @@ class sy {
     } finally {
       h(), u.stop();
     }
-    return !c && s && s.left <= 0 && (c = "tiempo"), o.showPasa(false), c === "ok" ? (o.stopInput(), F.play("QuemFicaEmPé-Acerto"), ze.aplauso(t ? 1.4 : 2.2, t ? 0.5 : 0.65), await o.reveal(), l.toast("¡CORRECTO!", 1100)) : c === "tiempo" ? (o.stopInput(), F.play("DropM.mp3"), ze.ooh(0.7), await o.reveal()) : o.stopInput(), c;
+    return !c && s && s.left <= 0 && (c = "tiempo"), o.showPasa(false), c === "ok" ? (o.stopInput(), F.play("QuemFicaEmPé-Acerto"), ze.aplauso(t ? 1.4 : 2.2, t ? 0.5 : 0.65), await o.reveal(), l.toast((self.NSOK || String)("¡CORRECTO!"), 1100)) : c === "tiempo" ? (self.NSAC && NSAC.ko(), o.stopInput(), F.play("DropM.mp3"), ze.ooh(0.7), await o.reveal()) : o.stopInput(), c;
   }
   async caida(e, t) {
     var r;
@@ -22625,16 +22645,18 @@ class sy {
     const o = [];
     for (let f = 0; f < 10; f++) o.push(this.bank.next("normal"));
     await s.w(1500), F.playMusic("SuspenseDuelo", true), this.vidas = 0, Pn(-1, false), await s.w(1500), e.studio.setHoleColor(0, 16765498);
-    const r = { left: 120 };
+    const T0 = (self.NSAC ? NSAC.final(120) : 120) + (this.finalMas || 0);
+    this.finalMas && t.toast(`⏱ Las monedas te dan +${this.finalMas} s: tienes ${Math.floor(T0 / 60)}:${String(T0 % 60).padStart(2, "0")} para el Duelo Final`, 3200);
+    const r = { left: T0 };
     let l = false, c = 0;
-    window.__jfClock = r, i.showBg(true), i.showClock(true), i.setTime(120);
+    window.__jfClock = r, i.showBg(true), i.showClock(true), i.setTime(T0);
     const u = setInterval(() => {
       if (!l) return;
-      const f = (performance.now() - c) / 980, p = Math.max(0, 120 - Math.floor(f));
+      const f = (performance.now() - c) / 980, p = Math.max(0, T0 - Math.floor(f));
       p !== r.left && (r.left = p, p === 10 && F.play("10", 1, "clock"), p === 5 && F.play("5", 1, "clock")), i.setTime(r.left);
     }, 100);
     try {
-      for (; this.acertos < 10; ) {
+      for (; this.acertos < (self.NSAC ? NSAC.meta() : 10); ) {
         n.show("PlacarFinal", String(this.acertos), { z: 8, fade: 170 }), l || setTimeout(() => {
           l = true, c = performance.now();
         }, 2300);
@@ -22647,7 +22669,7 @@ class sy {
     } finally {
       clearInterval(u), F.stopTag("clock");
     }
-    return i.hideAll(500), n.hide("PlacarFinal", 300), await s.w(1e3), this.placar *= 2, F.stopAll(), F.playMusic("TrilhaCurta@Stage"), (d = e.lights) == null || d.event("ganador"), ea(e.studio, $t(0, Ae + 1, 0)), ea(e.studio, $t(-3, 2, -3)), ea(e.studio, $t(3, 2, -3)), He(e.player, "arriba", 3), He(e.host, "aplaude", 3), Ot.player(e, 1.2), ze.ovacion(8), t.say(Nt.ganado, 4e3), await s.w(1500), await uu(this.c, this.placar, 6e3, true), true;
+    return i.hideAll(500), n.hide("PlacarFinal", 300), await s.w(1e3), this.placar *= self.NSAC ? NSAC.finalX() : 2, F.stopAll(), F.playMusic("TrilhaCurta@Stage"), (d = e.lights) == null || d.event("ganador"), ea(e.studio, $t(0, Ae + 1, 0)), ea(e.studio, $t(-3, 2, -3)), ea(e.studio, $t(3, 2, -3)), He(e.player, "arriba", 3), He(e.host, "aplaude", 3), Ot.player(e, 1.2), ze.ovacion(8), t.say(Nt.ganado, 4e3), await s.w(1500), await uu(this.c, this.placar, 6e3, true), true;
   }
   async fin(e) {
     var r;
@@ -22666,7 +22688,7 @@ async function IA(a) {
 }
 async function LA(a, e, t) {
   const { eng: n, hud: i, s, panel: o } = a;
-  await IA(a), i.hashtag("#AhoraCaigoEntrena");
+  await IA(a), i.hashtag("#AhoraCaigoEntrena"), self.NSAC && await NSAC.inicio("ent:" + e, null, F);
   const r = new sy(a);
   r.noVidas = true, r.bank = new Iv(n.theme.id, t);
   let l = 0, c = 0, u = 0;
@@ -22684,10 +22706,10 @@ async function LA(a, e, t) {
     i.say(Nt.trFinal, 3500), await s.w(3e3);
     const d = [];
     for (let m = 0; m < 10; m++) d.push(r.bank.next("normal"));
-    const f = { left: 120 }, p = performance.now() + 2300;
-    window.__jfClock = f, o.showBg(true), o.showClock(true), o.setTime(120);
+    const nsJ = self.NSAC ? NSAC.final(120) : 120, f = { left: nsJ }, p = performance.now() + 2300;
+    window.__jfClock = f, o.showBg(true), o.showClock(true), o.setTime(nsJ);
     const v = setInterval(() => {
-      const m = (performance.now() - p) / 980, x = m < 0 ? 120 : Math.max(0, 120 - Math.floor(m));
+      const m = (performance.now() - p) / 980, x = m < 0 ? nsJ : Math.max(0, nsJ - Math.floor(m));
       x !== f.left && (f.left = x, x === 10 && F.play("10", 1, "clock")), o.setTime(f.left);
     }, 100);
     let g = 0;
@@ -22721,24 +22743,25 @@ async function LA(a, e, t) {
         p = p || "pasa";
       }), o.ask().then((v) => {
         v && (p = p || "ok");
-      }), Ef(f, { delay: 300 }), await s.until(() => !!p), Zt.stop(), o.showPasa(false), o.stopInput(), p === "ok" && (F.play("QuemFicaEmPé-Acerto"), ze.aplauso(2, 0.6), i.toast("¡CORRECTO!", 1100)), await o.reveal(), d = p;
+      }), Ef(f, { delay: 300 }), await s.until(() => !!p), Zt.stop(), o.showPasa(false), o.stopInput(), p === "ok" && (F.play("QuemFicaEmPé-Acerto"), ze.aplauso(2, 0.6), i.toast((self.NSOK || String)("¡CORRECTO!"), 1100)), await o.reveal(), d = p;
     } else r.vidas = 99, d = await r.pregunta(e === "gallina" ? "gallina" : "normal", false);
     d === "ok" ? (l++, He(n.player, "arriba", 1.2)) : (d === "pasa" ? u++ : c++, await o.reveal(), i.toast(d === "pasa" ? "Pasada. La respuesta era la que ves en rojo/descubierta" : "¡Tiempo! Mira la respuesta correcta", 2e3)), h(), await s.w(d === "ok" ? 1200 : 2400), o.hideQuestion(250), await s.w(260);
   }
 }
 async function NA(a) {
-  const { eng: e, hud: t, s: n } = a, i = { placar: 0, vidas: 2, vidaExtra: 0, moedas: [] }, s = /* @__PURE__ */ new Set();
+  const { eng: e, hud: t, s: n } = a, i = { placar: 0, vidas: 2, vidaExtra: 0, moedas: [], ndTot: 8, rodadas: 0 }, s = /* @__PURE__ */ new Set();
   t.say(Nt.trHuellas, 3e3);
   for (let o = 1; o <= 8; o++) {
+    i.rodadas = o;
     t.score(`Ronda ${o}/8 · ${Uo(i.placar)} puntos`);
     const r = await iy(a, s);
-    s.add(r), Ot.opp(e, r, 1), He(e.opps[r - 1], "saluda", 1.5), t.say(Gu(Nt.trHuellaT, r), 1800), await n.w(2e3), await ay(a, r, i, true), await uu(a, i.placar, 2200);
+    s.add(r), Ot.opp(e, r, 1), He(e.opps[r - 1], "saluda", 1.5), t.say(Gu(Nt.trHuellaT, r), 1800), await n.w(2e3), await nsMoneda(a, r, i, true), await uu(a, i.placar, 2200);
   }
   t.score(`Total: ${Uo(i.placar)} puntos`, true), t.say(Nt.trHuellasFin, 5e3), await n.w(5e3);
 }
 async function o0(a, e, t = "clasico") {
   const { eng: n, hud: i, s, panel: o } = a, r = window.__trOpp || 1 + Math.floor(Math.random() * 10);
-  e.noVidas = false, e.vidas = cmdIni(2), e.vidaExtra = 0, e.rodadas = window.__trRonda || 4;
+  e.noVidas = false, e.vidas = cmdIni(2) + (self.NSAC ? NSAC.comodMas() : 0), e.vidaExtra = 0, e.rodadas = window.__trRonda || 4;
   const l = n.opps[r - 1];
   n.face(n.player, l.root.position), n.face(l, n.player.root.position), n.studio.setHoleColor(r, n.theme.accent), Ot.opp(n, r), He(l, "saluda", 1.4), t === "clasico" ? (i.say(Nt.trDuelo, 3500), await s.w(3200)) : await Jv(a, t), F.play("AhoraCaigo - ComeceDuelo.mp3"), i.subs("AhoraCaigo - ComeceDuelo.mp3", false), Ot.duel(n, r, 1.4), await s.w(1800), F.playMusic("SuspenseDuelo", true, 0.6);
   const c = await Kv(e, r, t, { training: true });
@@ -23261,6 +23284,7 @@ function XA() {
 }
 function Lt(a = "main") {
   var c;
+  self.NSAC && NSAC.fin();
   if (Ke.__AR) { a === "play" && (a = "ar"); a === "train" && (a = "artrain"); }
   Ke.__AR && !/^ar/.test(a) && typeof arSalir === "function" && arSalir();
   Gr = a, XA(), en("topbar").classList.add("hidden"), EXAC && (EXAC.bugOcultar(), EXAC.ocioMenu(a === "main")), LUCES115.modo !== "charla" && (LUCES115.hasta = 0, acLucesModo("charla"));
@@ -23391,7 +23415,7 @@ function Lt(a = "main") {
       _.stopPropagation(), await YA(), setTimeout(() => Lt("options"), 300);
     }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaPersonajes(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), filaRegidor(), filaApertura(), filaTitulo(), filaVideoCab(), ...(window.MC3D ? [MC3D.fila()] : []), ...filasV115(), ZA(), HA(() => Lt("gallina")));
     const A = document.createElement("p");
-    A.className = "mtext", A.textContent = `Rendimiento actual: ${Math.round(Xe.fps)} fps. Si el juego va lento en tu móvil, elige calidad «Baja».`, r.append(g, x, A, Ia("main"));
+    A.className = "mtext", A.textContent = `Rendimiento actual: ${Math.round(Xe.fps)} fps. Si el juego va lento en tu móvil, elige calidad «Baja».`, r.append(...(typeof nsFilaOpc === "function" ? nsFilaOpc() : []), g, x, A, Ia("main"));
   } else if (a === "monologos") {
     r.appendChild(Pa("Monólogos del presentador"));
     const u = { publico: "👏", telefono: "📱", normas: "📜" }, h = { publico: "Con el público", telefono: "Al teléfono", normas: "Cambiando las normas" }, d = document.createElement("div");
@@ -23416,7 +23440,7 @@ function Lt(a = "main") {
 <p><b>2. El duelo.</b> Juegas contra el oponente elegido, <b>por turnos</b>: empieza él. Cada uno tiene <b>su reloj de 30 segundos</b> y solo corre el del que tiene el turno. En tu turno escribe <b>las letras que faltan</b> con el teclado del móvil (o del ordenador); si te equivocas puedes volver a intentarlo mientras te quede tiempo. Al acertar, el turno pasa al otro.</p>
 <p><b>3. ¡Ahora cae!</b> El primero que se queda sin tiempo cae por su trampilla: si es tu oponente, sigues; si eres tú… ¡adiós!</p>
 <p><b>PASAR:</b> empiezas con 2 comodines. Con un comodín, «PASAR» le manda esa pregunta a tu oponente. Sin comodines, te sale otra pregunta pero tu reloj sigue corriendo. En el Juego Final, «PASAR» salta a la siguiente pregunta y los 2 minutos siguen corriendo.</p>
-<p><b>4. La moneda.</b> Tras cada duelo ganado eliges un lado de la moneda: puedes ganar puntos, una vida extra… o perderlo todo, el doble o la mitad.</p>
+${pirNueva() ? '<p><b>4. La moneda.</b> Tras cada duelo ganado eliges un lado de la moneda: puedes ganar puntos (hasta 100.000), una vida extra o un doble comodín, el doble (×2) o el quíntuple (×5), la <b>huella de oro</b> (tu próxima moneda paga el triple) o +15 segundos para el Duelo Final. En las etapas clásicas (2011-2017) la moneda es fija y puede salir la <b>Gallina triplicadora</b>.</p>' : '<p><b>4. La moneda.</b> Tras cada duelo ganado eliges un lado de la moneda: puedes ganar puntos, una vida extra… o perderlo todo, el doble o la mitad. (Con «🔺 Pirámide: La nueva» en Opciones: hasta 100.000, ×5, huella de oro, doble comodín y +15 s en el Duelo Final.) En las etapas clásicas (2011-2017) la moneda es fija y puede salir la <b>Gallina triplicadora</b>.</p>'}
 <p><b>5. La decisión.</b> Si tiras a los 8 oponentes puedes <b>plantarte</b> (te llevas la mitad) o jugar el <b>Juego Final</b>: 10 preguntas en 2 minutos. Si las aciertas todas, ¡doblas tu marcador!</p>
 <p><b>Controles 3D:</b> joystick a la izquierda para andar, arrastra a la derecha para mirar (PC: WASD + ratón). 👁 cambia entre primera y tercera persona. ☰ vuelve al menú. «Saltar» pasa la cabecera y la despedida.</p>`, r.append(u);
   } else if (a === "credits") {
@@ -23705,6 +23729,7 @@ function Cf() {
   Zt.stop(), jt && (jt.alive = false), jt = null, Mi = false, Lt("play");
 }
 async function ii(a, e) {
+  self.NSAC && NSAC.fin();
   EXAC && EXAC.ocioMenu(false);
   if (a === "camlibre") { en("menu").classList.add("hidden"), en("topbar").classList.add("hidden"), F.stopAll(), Mi = false; await camaraLibreAC(); Lt("main"); return; }
   if (EXAC && (a === "programa" || a === "promos" || a === "promoadrian")) EXAC.bugMostrar(); if (a === "programa" || a === "oponente") acPuertas(5); if (a === "promos") acLucesModo("fiesta");

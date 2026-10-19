@@ -156,7 +156,7 @@ async function riaOpo(sv) {
 function riaSimula(sv) {
   const ET = etapa(), ND = ET.duelos || 8, used = new Set(sv.used), L = []; let nom = RIA.nombre, pl = sv.placar, k0 = sv.rodadas;
   const libres = () => { const a = []; for (let j = 1; j <= 10; j++) used.has(j) || a.push(j); return a; };
-  const moneda = () => [1000, 1000, 5000, 5000, 15000, 25000, 50000][Math.floor(Math.random() * 7)];
+  const moneda = () => (pirNueva() ? [1000, 1000, 5000, 5000, 15000, 25000, 50000, 100000] : [1000, 1000, 5000, 5000, 15000, 25000, 50000])[Math.floor(Math.random() * (pirNueva() ? 8 : 7))]; // v1.40: hasta 100.000 con la pirámide nueva
   let desde = k0 + 1; if (RIA.enDuelo && RIA.rival) { const j = RIA.rival; if (Math.random() < 0.68) { L.push(riaF('dueloG', { k: k0, a: nom, b: me.rival(j) })); pl += moneda(); } else { L.push(riaF('dueloP', { k: k0, a: nom, b: me.rival(j) })); nom = me.rival(j); } }
   if (RIA.enFinal) desde = ND + 1;
   for (let k = desde; k <= ND; k++) { const lb = libres(); if (!lb.length) break; const j = lb[Math.floor(Math.random() * lb.length)]; used.add(j); if (Math.random() < 0.68) { L.push(riaF('dueloG', { k, a: nom, b: me.rival(j) })); pl += moneda(); } else { L.push(riaF('dueloP', { k, a: nom, b: me.rival(j) })); nom = me.rival(j); } }

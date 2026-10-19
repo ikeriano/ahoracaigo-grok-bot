@@ -1,0 +1,6 @@
+global.window = global; global.document = { createElement: () => ({}), head: { appendChild() {} } }; global.localStorage = { getItem: () => null };
+require('../ns/ns.js'); require('../ns/cat.js');
+const C = NS.cat(); let s = '# Normas sorpresa · ¡Ahora caigo! 1.36\n\nOpciones › «🎲 Normas sorpresa» (No por defecto). Al empezar el Programa completo (también los especiales) o una prueba del Entrenamiento se sortean de 2 a 4 normas, una por categoría, entre las que sirven para ese modo. Adrián Vega las anuncia con su voz Piper de siempre (es_ES-davefx-medium, length_scale 0.985) desde `ns/voz/`.\n\n';
+for (const c of C.cats) { s += `## ${c.ico} ${c.n}\n\n| Norma | Qué hace | Modos |\n|---|---|---|\n`; for (const r of C.reglas.filter(r => r.c === c.id)) s += `| ${r.n} | ${r.d} | ${(r.req || []).join(' + ') || 'todos'} |\n`; s += '\n'; }
+s += '## Rasgos de cada modo\n\n' + Object.keys(C.modos).map(m => `- **${m}**: ${C.modos[m].join(', ') || '(solo fiesta y presentador)'}`).join('\n') + '\n- En el Programa completo se añaden `gallina` y `gallinaDuelo` cuando esa noche hay palabra gallina.\n- El minijuego clásico de Scratch (iframe) y el bloque Argentina no usan normas sorpresa.\n';
+require('fs').writeFileSync(__dirname + '/CATALOGO.md', s); console.log('ok');

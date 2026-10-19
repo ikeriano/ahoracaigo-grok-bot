@@ -8,11 +8,11 @@ android {
     namespace 'com.ikeriano.webjuego'
     compileSdk 34
     defaultConfig {
-        applicationId 'com.ikeriano.ahoracaigo'
+        applicationId 'com.ikeriano.ahoracaigo.gb'   // v1.40: app aparte (firma nueva ikeriano-2026)
         minSdk 24
         targetSdk 34
-        versionCode 46
-        versionName "1.39"
+        versionCode 47
+        versionName "1.40"
     }
     signingConfigs {
         release {

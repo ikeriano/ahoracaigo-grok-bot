@@ -165,7 +165,7 @@ function alturaA3(x, z) {
 const ETAPAS = {
   '2011': { nombre: '2011-2014', sub: 'Antena 3 · 10 rivales, duelos clásicos', plato: 'antena3', nota: 'Plató de Antena 3. El central se elige con la tableta y se enfrenta a 10 rivales, cada uno en su trampilla. Solo duelos clásicos. Cada trampilla esconde una de las 10 cifras. Tras cada duelo ganado: plantarte o seguir. Si tiras a los 10, te llevas el bote.' },
   '2015': { nombre: '2015-2017', sub: 'Antena 3 · Entre tres, Adivina, Gallina, Vaya lío', plato: 'antena3', nota: 'Mismo plató, con la pantalla verde de premios. Duelos Clásico, Entre tres, Adivina, Palabra gallina y Vaya lío, y comodines. Si pierdes, el oponente ocupa tu sitio y se queda con tu dinero y tu comodín. 10 cifras, una por trampilla.' },
-  '2017': { nombre: '2017-2021', sub: 'Plató oscuro · monedas y Gallina Dobladora', plato: 'oscuro', nota: 'Plató oscuro con aros de neón rojo. 10 rivales y 10 cifras de las monedas, una por trampilla. Una trampilla esconde la Gallina Dobladora: dobla tu bote. Tras cada duelo ganado: plantarte o seguir.' },
+  '2017': { nombre: '2017-2021', sub: 'Plató oscuro · monedas y Gallina Triplicadora', plato: 'oscuro', nota: 'Plató oscuro con aros de neón rojo. 10 rivales y 10 cifras de las monedas, una por trampilla. Una trampilla esconde la Gallina Triplicadora: triplica tu bote. Tras cada duelo ganado: plantarte o seguir.' },
   '2021': { nombre: '2021-actual', sub: 'Huella blanca o negra · Duelo final', plato: 'virtual', nota: 'Plató morado con tarima blanca. Al ganar cada duelo eliges la huella blanca o la negra de la moneda (20 cifras). 8 duelos y Duelo final de 10 preguntas en 2 minutos.' },
 };
 for (const [k, e] of Object.entries(ETAPAS)) Object.assign(e, ETAPAS_DATOS[k] || {});
@@ -173,8 +173,8 @@ for (const [k, e] of Object.entries(ETAPAS)) Object.assign(e, ETAPAS_DATOS[k] ||
 window.__mec = []; const mec = t => { window.__mec.push(t); };
 /** reparte las 10 cifras de la etapa entre las 10 trampillas (al azar en cada programa) */
 function cifrasTrampillas() { const c = (etapa().cifras || []).slice(0, 10).map((v, i) => i); for (let i = c.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [c[i], c[j]] = [c[j], c[i]]; } const m = {}; c.forEach((v, i) => m[i + 1] = v); return m; }
-const cifraTxt = v => v === 'vida' ? 'un comodín' : v === 'mitad' ? 'la mitad' : v === 'doble' ? 'el doble' : v === 'cero' ? 'lo pierdes todo' : Uo(+String(v).replace('+', '')) + ' €';
-/** 2011-2021: al tirar al rival, la trampilla descubre su cifra (sin elegir lado). 2017-2021: Gallina Dobladora. */
+const cifraTxt = v => v === 'vida' ? 'un comodín' : v === 'vida2' ? 'un doble comodín' : v === 'x5' ? 'el quíntuple' : v === 'oro' ? 'la huella de oro' : v === 'final15' ? '+15 s para el final' : v === 'mitad' ? 'la mitad' : v === 'doble' ? 'el doble' : v === 'cero' ? 'lo pierdes todo' : Uo(+String(v).replace('+', '')) + ' €';
+/** 2011-2021: al tirar al rival, la trampilla descubre su cifra (sin elegir lado). 2017-2021: Gallina Triplicadora (v1.40, antes dobladora). */
 async function ayFija(a, e, t) {
   const { s } = a; F.stopMusic(), F.play('AhoraCaigo - Moeda.mp3'), F.play('Moeda@Valores');
   const ix = (t.cifrasT || {})[e] ?? 0, v = (etapa().cifras || [1000])[ix]; t.moedas.push(e);
@@ -182,9 +182,24 @@ async function ayFija(a, e, t) {
   a.hud.hint('🪙 La trampilla ' + e + ' esconde…'); await s.w(1400); a.hud.hint(null);
   TA(typeof v === 'number' ? '+' + v : v, t); F.play('fairydust@Moeda1'); mec('moneda fija ' + v);
   ze.aplauso(2, 0.6); a.hud.toast(`🪙 Trampilla ${e}: <b>${cifraTxt(v)}</b>`, 2600); await s.w(2000);
-  if (etapa().dobladora && t.dobladora === e) { mec('dobladora'); t.placar *= 2; F.play('pop'); ze.vitores(3); a.hud.toast('🐔 ¡GALLINA DOBLADORA! Doblas tu bote', 2800); await s.w(2600); }
+  if (etapa().dobladora && (t.dobladora === e || window.__gallinaForce === 'siempre')) { mec('triplicadora'); const antes = t.placar; t.placar *= 3; F.play('pop'); ze.vitores(3); await gallinaTriplicadora(a, antes, t.placar); }
   PANT.actualiza({ usadas: PANT.est.usadas.concat(ix), placar: t.placar, comodines: Math.max(0, t.vidas) }); PANT.mostrar('premios');
   return { val: v, other: null };
+}
+// v1.40 · Gallina triplicadora: cartel en pantalla + frase de Adrián Vega (voz Piper es_MX-ald +0,5 st, como en la 1.38)
+const GALLINA_FRASE = '¡Ha salido la Gallina triplicadora! ¡Tu bote se multiplica por tres!';
+async function gallinaTriplicadora(a, antes, ahora) {
+  const { s } = a; let d = null;
+  try {
+    d = document.createElement('div'); d.id = 'gallina3';
+    d.style.cssText = 'position:fixed;left:50%;top:42%;transform:translate(-50%,-50%) scale(.6);opacity:0;transition:all .35s;z-index:60;pointer-events:none;text-align:center;padding:18px 34px;border-radius:22px;border:5px solid #ffd23a;background:linear-gradient(#ff9a1a,#c0400a);box-shadow:0 0 40px #ffb31a;color:#fff;font:900 34px "Arial Black",Arial,sans-serif;text-shadow:0 3px 0 #5a1a00';
+    d.innerHTML = '<div style="font-size:64px;line-height:1">🐔</div>¡GALLINA TRIPLICADORA!<div style="font-size:22px;margin-top:6px">Triplicas tu bote: ' + Uo(antes) + ' € → <b>' + Uo(ahora) + ' €</b></div>';
+    document.body.appendChild(d); d.offsetWidth; d.style.opacity = '1'; d.style.transform = 'translate(-50%,-50%) scale(1)';
+  } catch (x) { }
+  a.hud.toast('🐔 ¡GALLINA TRIPLICADORA! Triplicas tu bote (×3)', 3200);
+  try { await a.hud.say(GALLINA_FRASE, 3600); } catch (x) { await s.w(3000); }
+  await s.w(600); try { a.hud.hideBubble && a.hud.hideBubble(); } catch (x) { }
+  if (d) { d.style.opacity = '0'; setTimeout(() => d.remove(), 400); }
 }
 let ETAPA = localStorage.getItem('ac_etapa') || '2021';
 const etapa = () => ETAPAS[ETAPA] || ETAPAS['2021'];
