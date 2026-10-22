@@ -113,6 +113,7 @@ class R142Juego {
       let rival = this.opos.find(o => o.n === ronda.rival && !o.fuera);
       if (ronda.elige !== false) rival = await this.elegir(ronda);
       rival = rival || this.opos.find(o => !o.fuera) || { n: 'Oponente', premio: 0 };
+      if (ronda.final && typeof pe144 === 'function') { const w = await pe144(p.id, { premio: 'si aciertas, +1.000 € para el bote' }); if (w) this.bote += 1000; }
       const r = await this.duelo(ronda, rival); if (this.fuera) return;
       if (r === 'gana' && ronda.final) { this.bote += ronda.premio || 0; continue; }
       if (r === 'gana') { rival.fuera = true; await this.cae(rival.n); if (typeof rival.premio === 'number') this.bote += rival.premio; else if (rival.premio === 'doble') this.bote *= 2; else if (rival.premio === 'mitad') this.bote = Math.round(this.bote / 2);

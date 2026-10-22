@@ -16,7 +16,7 @@ function filaPiramide140() {
   const g = document.createElement('div'); g.className = 'cab2';
   for (const [v, t, s, img] of [['clasica', 'La clásica', 'La pirámide de siempre: hasta 50.000, ×2, ÷2, comodín y LO PIERDES TODO', 'assets/pir140/pir_clasica.jpg'], ['nueva', 'La nueva', 'Hasta 100.000, ×5, Huella de oro, Doble comodín y +15 s en el Duelo Final', 'assets/pir140/pir_nueva.jpg']]) {
     const b = document.createElement('button'); b.className = 'cabc' + ((pirNueva() ? 'nueva' : 'clasica') === v ? ' sel' : ''); b.dataset.pir = v;
-    b.innerHTML = `<img src="${img}" alt="">${t}${v === 'clasica' ? ' <span style="color:#ffc21a">(por defecto)</span>' : ''}<small>${s}</small>`;
+    b.innerHTML = `<img src="${img}" alt="">${t}${v === 'nueva' ? ' <span style="color:#ffc21a">(por defecto)</span>' : ''}<small>${s}</small>`;
     b.onclick = ev => { ev.stopPropagation(); try { F.play('Tecla'); } catch (e) { } localStorage.setItem('ac_piramide', v); g.querySelectorAll('.cabc').forEach(x => x.classList.toggle('sel', x === b)); try { Xe.setTheme(xf(Ms)); } catch (e) { } };
     g.appendChild(b); }
   w.appendChild(g);

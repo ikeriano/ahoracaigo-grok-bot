@@ -1,6 +1,6 @@
 /* Normas sorpresa · motor común (ES5, sin dependencias) · juegos de Iker
    (copia de ¡Ahora caigo! 1.40: motor de Millonario 1.13 + varias normas de «Fiesta» a la vez y relleno hasta CAT.max)
-   Opciones › «🎲 Normas sorpresa» (clave localStorage 'ns_on', NO por defecto).
+   Opciones › «🎲 Normas sorpresa» (clave localStorage 'ns_on', SÍ por defecto desde la 1.44).
    Al empezar cada partida se sortean las normas (CAT.min–CAT.max, hasta CAT.maxCat por categoría) entre las que sirven para ese modo,
    el presentador las anuncia con subtítulos y su voz Piper (ns/voz/<id>.mp3) y el juego las aplica. */
 (function () {
@@ -9,7 +9,7 @@
   var CAT = null, BASE = '', activas = [], est = {}, badge = null, sonOn = true;
   var D = document;
   function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  NS.on = function () { return ls('ns_on') === '1'; };
+  NS.on = function () { return ls('ns_on') !== '0'; };
   NS.pon = function (v) { try { localStorage.setItem('ns_on', v ? '1' : '0'); } catch (e) { } };
   NS.catalogo = function (c) { CAT = c; };
   NS.cat = function () { return CAT; };
@@ -172,6 +172,6 @@
   NS.esVocal = function (l) { return 'AEIOU'.indexOf(String(l).toUpperCase()) >= 0; };
   // ---------- fila para Opciones ----------
   NS.fila = function (claseFila, claseBoton) { var R = el('div', claseFila || 'orow'); var l = el('label', '', '🎲 Normas sorpresa'); R.appendChild(l);
-    [['0', 'No (normas de siempre)'], ['1', 'Sí']].forEach(function (o) { var b = el('button', (claseBoton || 'tbtn') + (((ls('ns_on') || '0') === o[0]) ? ' sel' : ''), o[1]); b.onclick = function (e) { e.stopPropagation(); NS.pon(o[0] === '1'); [].forEach.call(R.querySelectorAll('button'), function (x) { x.className = (claseBoton || 'tbtn') + (x === b ? ' sel' : ''); }); }; R.appendChild(b); });
+    [['0', 'No (normas de siempre)'], ['1', 'Sí']].forEach(function (o) { var b = el('button', (claseBoton || 'tbtn') + (((ls('ns_on') || '1') === o[0]) ? ' sel' : ''), o[1]); b.onclick = function (e) { e.stopPropagation(); NS.pon(o[0] === '1'); [].forEach.call(R.querySelectorAll('button'), function (x) { x.className = (claseBoton || 'tbtn') + (x === b ? ' sel' : ''); }); }; R.appendChild(b); });
     return R; };
 })();

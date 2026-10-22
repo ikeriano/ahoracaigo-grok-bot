@@ -1,7 +1,7 @@
 // ===================================================================================================
 // v1.40 · Normas sorpresa (motor ns/ns.js + catálogo ns/cat.js + adaptador ns/ac.js, cargados en index.html)
 // Enganches del código fuente: aquí la moneda y la fila de Opciones; el resto, en src/app.js (buscar «NSAC»).
-// Con «🎲 Normas sorpresa: No» (por defecto) no se activa ninguna norma y el juego es el de siempre.
+// Con «🎲 Normas sorpresa: No» no se activa ninguna norma y el juego es el de siempre.
 // ===================================================================================================
 async function nsMoneda(a, e, t, n) {
   self.NSAC && NSAC.antes(t);

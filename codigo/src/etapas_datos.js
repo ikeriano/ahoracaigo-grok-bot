@@ -10,7 +10,7 @@
 // v1.40 · «🔺 Pirámide» (Opciones, solo etapa 2021+): 'clasica' (POR DEFECTO, la de siempre) o 'nueva'.
 const PIR_CLASICA_2021 = ['+1000', '+25000', '+15000', '+1000', '+1', '+5000', '+1000', 'vida', '+5000', '+50000', '+25000', '+1000', '+1000', '+15000', '+15000', 'mitad', '+5000', '+5000', 'doble', 'cero'];
 const PIR_NUEVA_2021 = ['+1000', '+25000', '+15000', '+1000', '+1', '+5000', 'final15', 'vida', '+5000', '+50000', '+25000', 'oro', 'vida2', '+15000', '+15000', 'x5', '+5000', '+5000', 'doble', '+100000'];
-function pirNueva() { try { return localStorage.getItem('ac_piramide') === 'nueva'; } catch (e) { return false; } }
+function pirNueva() { try { return localStorage.getItem('ac_piramide') !== 'clasica'; } catch (e) { return true; } }
 const ETAPAS_DATOS = {
   '2011': {
     duelos: 10,                 // rivales a los que hay que tirar
