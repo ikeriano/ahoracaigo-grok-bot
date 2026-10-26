@@ -1,0 +1,10 @@
+base: APK 1.58 sha256 105e17c6... (release v1.58); www copiado de ac_lomejor/apk158/x/assets/www
+NOTA: node_modules ahora = nm/node_modules (puppeteer-core instalado)
+NOTA: node_modules ahora = nm/node_modules (puppeteer-core instalado; el anterior estaba vacío)
+HECHO 53/53 escenas OK 0 errores; voces pruebas generadas. SIGUE: t_pruebas.mjs, build apk
+21:27 RETOMADO por 3er ejecutor: t_pruebas.mjs (3 de 9 pruebas OK: refran, capital, mito), sigo con el resto
+21:29 t_pruebas (otro proceso ya en marcha pid 34773) 6/9 OK sin errores; esperando 3 restantes; luego build_apk.py
+21:31 t_pruebas 9/9 OK, 0 errores (shots/p_*). SIGUE: build_apk.py, verificar, release
+21:31 JDK no existía; instalado JRE Temurin17 en ~/.gradle/jdks/jre17 (PATH=.../bin) para apksigner
+21:33 1.58 es .v2 con firma ANTIGUA (f54a5de4) y la clave vieja no está en el store -> 1.59 firmada con ikeriano-2026 va como app aparte com.ikeriano.ahoracaigo.gb (build_apk.py parchea manifest+arsc). Backup tools/build_apk.py.bak
+21:33 APK construido y verificado: out/AhoraCaigo-1.59.apk sha256 57d668c8…2c3b, 850252144 B, pkg .gb vc66, cert 6c538a62…6e811ea5. SIGUE: subir fuentes a repo (clon limpio /workspace/ac_159/repo) + release v1.59

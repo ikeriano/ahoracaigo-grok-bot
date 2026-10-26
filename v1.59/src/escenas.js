@@ -1,0 +1,551 @@
+// ¡Ahora Caigo! 1.59 · escenas INVENTADAS (cámaras ocultas, tomas falsas, fuera de cámaras y mejores momentos)
+// Formato de paso: [quien, texto, cámara, gesto, efecto]
+const PERSONAJES = {
+  lola: ["Lola · directora", "v59_lola"],
+  nuria: ["Nuria · maquillaje", "v59_nuria"],
+  rober: ["Rober · sonido", "v59_rober"],
+  marisa: ["Marisa · catering", "v59_marisa"],
+  carmen: ["Carmen · producción", "v59_carmen"],
+  nacho: ["Nacho · guionista", "v59_nacho"],
+  segu: ["Segu · seguridad", "v59_segu"],
+  jefe2: ["«El jefe»", "v59_jefe"],
+  peque: ["Sobrino de un concursante", "v59_peque"],
+  vet: ["Concursante veterano", "v59_vet"],
+  abuela: ["Abuela de un concursante", "v59_abuela"],
+  locu: ["Voz en off", "v59_locu"]
+};
+const LUGARES = {
+  camerino: [["nuria", 0xe0603a, "nuria", "f", -1.5, 0.3], ["conc", 0x3366aa, "conc-cam", "m", 1.5, 0.3]],
+  cafeteria: [["marisa", 0xc83a6a, "marisa", "f", -1.6, 0.2], ["reg", 0x2a8a5a, "toni", "m", 1.4, 0.4], ["rober", 0x555a66, "rober", "m", 2.6, 0.7]],
+  pasillo: [["lola", 0x7a3aa0, "lola", "f", -1.6, 0.3], ["reg", 0x2a8a5a, "toni", "m", 1.5, 0.3], ["segu", 0x1a2a4a, "segu", "m", 2.7, 0.0]],
+  azotea: [["lola", 0x7a3aa0, "lola", "f", -1.5, 0.3], ["nacho", 0x8a6a2a, "nacho", "m", 1.5, 0.3], ["carmen", 0x2a7aaa, "carmen", "f", 2.7, 0.2]],
+  almacen: [["rober", 0x555a66, "rober", "m", -1.5, 0.3], ["reg", 0x2a8a5a, "toni", "m", 1.5, 0.3]],
+  parking: [["segu", 0x1a2a4a, "segu", "m", -1.5, 0.5], ["carmen", 0x2a7aaa, "carmen", "f", 1.2, 1.2]]
+};
+const OCULTA = [
+{ id: "n_pato", titulo: "El pato de la trampilla", pasos: [
+ ["adrian", "Buenas tardes y bienvenidos a ¡Ahora caigo! Primera pregunta, para el número cuatro.", "host", "saluda", ""],
+ ["adrian", "¿Cuál es el animal que dice cuac? Un momento... ¿qué es ese ruido?", "host", "habla", "pato"],
+ ["adrian", "Hay un pato de goma paseándose por mi plató. ¿Alguien lo ha invitado?", "grua", "senala", ""],
+ ["reg", "Adrián, el pato viene por la puerta de atrás. Dice que es el nuevo regidor.", "wide", "", "risas"],
+ ["adrian", "Pues que fiche por la mañana, que a mí el cuac me desconcentra.", "host", "encoge", ""],
+ ["conc", "Yo le preguntaba a él, que seguro que sabe más que yo de animales.", "opp4", "", "risas"],
+ ["lola", "¡Inocente, inocente! El patito lo manejaba Rober con un mando a distancia.", "wide", "", "inocente"],
+ ["adrian", "¡Rober! Después de la publicidad, tú y yo hablamos de patos y de respeto.", "host", "senala", "risas"]
+]},
+{ id: "n_apagon", titulo: "El apagón de mentira", pasos: [
+ ["adrian", "Y ahora, la pregunta de los diez mil euros. Atención, número seis.", "host", "senala", ""],
+ ["adrian", "¿Cuál es el río más largo de España? Y de pronto... ¡se ha ido la luz!", "host", "lamenta", "apagon"],
+ ["adrian", "No pasa nada, mantengan la calma. Yo sigo leyendo la pregunta de memoria.", "host", "habla", ""],
+ ["conc", "Adrián, que estás hablando con la pared. Yo estoy a tu derecha.", "opp6", "", "risas"],
+ ["adrian", "Ah, perdona. Es que con tanta oscuridad me parecías una columna muy simpática.", "host", "encoge", "risas"],
+ ["rober", "Perdón, Adrián. He tropezado con el interruptor general. Y con tu cable. Y con mi vergüenza.", "wide", "", "luces"],
+ ["lola", "¡Inocente, inocente! Era un apagón de broma. Y Rober, de verdad, tropieza siempre.", "wide", "", "inocente"],
+ ["adrian", "¡Me habéis dejado a oscuras de verdad! Pero me encanta no ver mi cara de susto.", "host", "aplaude", "risas"]
+]},
+{ id: "n_robot", titulo: "El robot de la limpieza", pasos: [
+ ["adrian", "Siguiente pregunta para el nueve: ¿cuántos lados tiene un hexágono?", "host", "senala", "robot"],
+ ["conc", "Seis, Adrián. Y creo que algo me ha tocado el pie.", "opp9", "", ""],
+ ["adrian", "Correcto. Pero hay un disco negro dando vueltas por el plató. ¿Eso es del programa?", "grua", "lamenta", ""],
+ ["reg", "Es el robot aspirador. Lo hemos puesto a limpiar el confeti de ayer.", "wide", "", "risas"],
+ ["adrian", "¿En directo? ¡Si se traga una trampilla me quedo sin concursantes!", "host", "habla", "ooh"],
+ ["conc", "A mí lo que me preocupa es que ahora mismo me está mirando.", "opp9", "", "risas"],
+ ["lola", "¡Inocente, inocente! Nadie limpia en directo. Lo manejaba Toni con el móvil.", "wide", "", "inocente"],
+ ["adrian", "Toni, devuélvele el mando al robot. Que tiene más sentido común que nosotros.", "host", "aplaude", "risas"]
+]},
+{ id: "n_ovni", titulo: "El ovni que pide turno", pasos: [
+ ["adrian", "Atención, número dos. Pregunta de ciencia: ¿cuál es el planeta más grande del sistema solar?", "host", "senala", ""],
+ ["adrian", "Un momento. Me dicen por el pinganillo que ha aterrizado un platillo volante.", "host", "lamenta", "ovni"],
+ ["conc", "Júpiter. Y por favor, que el platillo no se lleve mi trampilla.", "opp2", "", "risas"],
+ ["adrian", "Correcto. Y aquí hay un visitante que quiere participar. ¿Cómo te llamas, marciano?", "grua", "habla", ""],
+ ["rober", "Adrián, no habla, pero su luz parpadea en morse. Dice que quiere el bote.", "wide", "", "risas"],
+ ["adrian", "Pues tendrá que acertar diez preguntas seguidas, como todos. Sin trucos de otro planeta.", "host", "senala", "ooh"],
+ ["lola", "¡Inocente, inocente! Es un dron con forma de platillo. Se lo hemos pedido al sobrino de Toni.", "wide", "", "inocente"],
+ ["adrian", "Un dron. Menos mal. Ya me veía cediendo mi sillón a un extraterrestre.", "host", "aplaude", "risas"]
+]},
+{ id: "n_futuro", titulo: "El concursante del futuro", pasos: [
+ ["adrian", "Vamos con el número ocho. Cuéntenos, ¿a qué se dedica?", "host", "habla", ""],
+ ["conc", "Vengo del año dos mil ochenta y siete, Adrián. Es mi primera vez en el pasado.", "opp8", "", "risas"],
+ ["adrian", "Qué bien. ¿Y qué tal por allí? ¿Siguen las trampillas?", "host", "encoge", ""],
+ ["conc", "Sí, pero ahora te caes con una piscina de bolas. Mucho más seguro, y más divertido.", "opp8", "", "ooh"],
+ ["adrian", "Pregunta: ¿cuántos continentes hay? Aunque supongo que ya habrán fundado alguno más.", "host", "senala", ""],
+ ["conc", "Siete, y dos en construcción. Pero para esta pregunta cuenta siete.", "opp8", "", "risas"],
+ ["reg", "¡Inocente, inocente! Es un actor que ha leído mucha ciencia ficción.", "wide", "", "inocente"],
+ ["adrian", "Qué actor. Y qué trampilla tan moderna. A ver si la copiamos de cara al año que viene.", "host", "aplaude", "risas"]
+]},
+{ id: "n_cumple", titulo: "El cumpleaños que no era", pasos: [
+ ["adrian", "Antes de seguir, quiero agradecer al equipo que haya venido hoy tan puntual.", "host", "gracias", ""],
+ ["pub", "¡Feliz cumpleaños, Adrián! ¡Feliz cumpleaños!", "wide", "", "confeti"],
+ ["adrian", "¿Cumpleaños? Pero si yo nací en febrero. ¿Hoy es febrero?", "host", "lamenta", "ooh"],
+ ["lola", "Hoy es la fiesta de aniversario del programa. Y la tarta es para ti.", "wide", "", "aplauso"],
+ ["adrian", "¡Qué detalle! Me emociono. ¿Dónde está la tarta? ¿Me la traéis a la mesa?", "host", "senala", "tarta"],
+ ["adrian", "No me lo puedo creer. Una tarta de nata en la cara, y delante de toda España.", "gloria", "lamenta", ""],
+ ["lola", "¡Inocente, inocente! Aunque es tarta de verdad. Está buenísima.", "wide", "", "inocente"],
+ ["adrian", "Pues es la tarta más rica que me han estampado jamás. Gracias, de corazón y de nata.", "host", "aplaude", "risas"]
+]},
+{ id: "n_cartel", titulo: "El cartel de los aplausos", pasos: [
+ ["adrian", "Público, hoy quiero que nos animéis mucho. Rober, el cartel de aplausos, por favor.", "host", "senala", "cartel:APLAUSOS"],
+ ["pub", "¡Bravo! ¡Bravo! ¡Viva Adrián!", "publico", "", "aplauso"],
+ ["adrian", "Gracias, gracias. Pero cambia el cartel, que se está poniendo raro.", "host", "habla", "cartel:LLORAD"],
+ ["pub", "Buaaa... Buaaa... ¡Qué triste está el programa hoy!", "publico", "", "ooh"],
+ ["adrian", "Rober, ¡no! Que me estáis arruinando la entrevista. Pon el de silencio, por favor.", "host", "lamenta", "cartel:SILENCIO"],
+ ["pub", "Shhh... Shhh... Se escuchan los grillos.", "publico", "", "grillos"],
+ ["rober", "¡Inocente, inocente! Me he equivocado de cartel adrede. Perdón.", "wide", "", "inocente"],
+ ["adrian", "Pues ahora el que tiene que hacer silencio eres tú. Un mes, como mínimo.", "host", "senala", "risas"]
+]},
+{ id: "n_dron", titulo: "El dron que no se va", pasos: [
+ ["adrian", "Pregunta para el número tres: ¿cuál es la capital de Portugal?", "host", "senala", "dron"],
+ ["conc", "Lisboa, Adrián. Pero tengo un bicho zumbándome en la oreja.", "opp3", "", "risas"],
+ ["adrian", "Es un dron. Alguien lo ha dejado suelto. Toni, ¿es tuyo?", "grua", "habla", ""],
+ ["reg", "Es de la productora, para las tomas aéreas. Pero hoy se ha enamorado del plató.", "wide", "", "risas"],
+ ["adrian", "Pues dile que se vaya a su casa. Me hace corriente y me despeina el peinado.", "host", "lamenta", ""],
+ ["conc", "A mí me ha dado dos besos y se ha ido. Creo que es de los buenos.", "opp3", "", "risas"],
+ ["lola", "¡Inocente, inocente! El dron lo pilotaba Rober desde el pasillo.", "wide", "", "inocente"],
+ ["adrian", "Rober, tienes mucho futuro de piloto. Y poco futuro de regidor de mi plató.", "host", "senala", "risas"]
+]},
+{ id: "n_micro", titulo: "El micrófono invasor", pasos: [
+ ["adrian", "Pregunta para el número uno: ¿en qué país está la Torre Eiffel?", "host", "senala", ""],
+ ["conc", "En Francia, Adrián. Y en París, si quieres ser preciso.", "opp1", "", ""],
+ ["adrian", "Correcto. Ahora, la siguiente... ¿qué es esta cosa peluda que se mueve delante de mí?", "host", "lamenta", "micro"],
+ ["rober", "Es el micro de jirafa, Adrián. Te estaba apuntando a la boca.", "wide", "", "risas"],
+ ["adrian", "Pues me hace cosquillas en la nariz. Y se oye cómo me río por dentro.", "host", "habla", "risas"],
+ ["conc", "Yo creo que quiere entrevistarte a ti. Pregúntale cómo se llama.", "opp1", "", "risas"],
+ ["lola", "¡Inocente, inocente! Rober lo movía a propósito. Le hemos pagado un café.", "wide", "", "inocente"],
+ ["adrian", "Un café por una cámara oculta. Qué barato me salgo, de verdad.", "host", "aplaude", "risas"]
+]},
+{ id: "n_gato", titulo: "El gato del plató", pasos: [
+ ["adrian", "Buenas noches. Hoy, la pregunta para el cinco trata de animales domésticos.", "host", "habla", ""],
+ ["adrian", "¿Qué animal, según la tradición, tiene siete vidas?", "host", "senala", "gato"],
+ ["conc", "El gato, Adrián. Y precisamente hay uno negro delante de tu trampilla.", "opp5", "", "ooh"],
+ ["adrian", "Un gato negro en el plató. Esto es mala suerte o muy buena publicidad.", "grua", "lamenta", ""],
+ ["segu", "Perdone, señor presentador. No lo conozco. Entró por la puerta de seguridad con mucha confianza.", "wide", "", "risas"],
+ ["adrian", "Pues dale una ficha de identificación y que firme los autógrafos.", "host", "encoge", "risas"],
+ ["lola", "¡Inocente, inocente! El gato es de la vecina de Nuria. Solo ha venido a saludar.", "wide", "", "inocente"],
+ ["adrian", "Me encanta. Si hay gato en el plató, a partir de hoy cobra como regidor.", "host", "aplaude", "risas"]
+]},
+{ id: "n_pelota", titulo: "El partido en el plató", pasos: [
+ ["adrian", "Último tramo del programa. Número siete, ¿cuántos jugadores hay en un equipo de fútbol?", "host", "senala", "pelota"],
+ ["conc", "Once, Adrián. Y creo que alguien me ha pasado una pelota de playa.", "opp7", "", "risas"],
+ ["adrian", "Tampoco hace falta. A los concursantes les pedimos conocimientos, no regates.", "host", "lamenta", ""],
+ ["pub", "¡Ole! ¡Ole! ¡Pásala, pásala!", "publico", "", "aplauso"],
+ ["adrian", "Público, por favor, que esto es un concurso, no un estadio. Un poco de calma.", "host", "habla", ""],
+ ["reg", "Es que la pelota la ha lanzado una señora de la tercera fila con muchísima puntería.", "wide", "", "risas"],
+ ["lola", "¡Inocente, inocente! La señora era del equipo de producción. Y juega de delantera.", "wide", "", "inocente"],
+ ["adrian", "Pues fichadla. La puntería que tiene se merece un contrato y una trampilla propia.", "host", "aplaude", "risas"]
+]},
+{ id: "n_eco", titulo: "El eco que se repite", pasos: [
+ ["adrian", "Buenas tardes, bienvenidos. Hoy tenemos un plató muy especial.", "host", "saluda", ""],
+ ["rober", "¡Muy especial! ¡Especial! ¡Ial!", "wide", "", "risas"],
+ ["adrian", "¿Y ese eco? Qué raro, nunca había pasado en este plató.", "host", "lamenta", ""],
+ ["rober", "¡Este plató! ¡Plató! ¡Ató!", "wide", "", "risas"],
+ ["adrian", "Rober, deja de repetirme. Que te estoy viendo con las manos en la boca.", "host", "senala", ""],
+ ["conc", "Adrián, el eco soy yo. Me han pagado para que repita lo que dices.", "opp1", "", "risas"],
+ ["lola", "¡Inocente, inocente! Eran los dos, Rober y el concursante. Se lo han pasado en grande.", "wide", "", "inocente"],
+ ["adrian", "Una cámara oculta con eco. Y yo, que pensaba que mi voz era única.", "host", "aplaude", "risas"]
+]}
+];
+const TOMAS = [
+{ id: "n_palabra", titulo: "La palabra imposible", pasos: [
+ ["adrian", "Buenas tardes y bienvenidos. Hoy hablaremos del otorrinolaringólogo... del otorrino...", "host", "saluda", "claqueta:1"],
+ ["adrian", "¡Del otorrinolaringólogo! Perdón. ¡Del ororoto... laringoso!", "host", "lamenta", "tomafalsa"],
+ ["lola", "Adrián, que es un médico. No te pongas nervioso con el médico.", "wide", "", "risas"],
+ ["adrian", "Es que cada vez que digo esa palabra me da un poco de tos. Toma tres.", "host", "habla", "claqueta:3"],
+ ["adrian", "Hoy hablaremos del dentista, que es más corto.", "host", "encoge", "risas"],
+ ["lola", "No. Hoy hablaremos del otorrino. Y tú vas a decirlo bien.", "wide", "", ""],
+ ["adrian", "Otorrinolaringólogo. ¡Lo he dicho! ¡He ganado el programa!", "gloria", "aplaude", "aplauso"],
+ ["lola", "¡Corten! Muy bien, Adrián. Ahora hay que decirlo en la toma que vale.", "wide", "", "corten"]
+]},
+{ id: "n_micropelo", titulo: "El micro de pelo", pasos: [
+ ["adrian", "Un gran saludo a todos. Hoy el programa viene cargadito de sorpresas.", "host", "saluda", "claqueta:1"],
+ ["adrian", "Rober, ¿qué es esto que me roza la nariz? ¿Un conejo?", "host", "lamenta", "micro"],
+ ["rober", "Es el micro, Adrián. Lleva su funda de peluche para que no suene el viento.", "wide", "", "tomafalsa"],
+ ["adrian", "¿Viento? En un plató cerrado. A mí me parece un hámster con delirios de grandeza.", "host", "habla", "risas"],
+ ["rober", "Pues si no te gusta, le quito la funda y te lo pongo desnudo.", "wide", "", "risas"],
+ ["adrian", "Mejor no. Ya tengo bastante con ser el único presentador que hace de pastor de ovejas.", "host", "encoge", "risas"],
+ ["lola", "¡Corten! Rober, un poco más arriba, que sale en cuadro.", "wide", "", "corten"]
+]},
+{ id: "n_tartafinal", titulo: "La tarta de despedida", pasos: [
+ ["adrian", "Y con esto nos despedimos hasta mañana. Ha sido un placer, de verdad.", "host", "saluda", "claqueta:2"],
+ ["adrian", "Un momento. ¿Eso que baja del techo es una tarta?", "host", "lamenta", "tarta"],
+ ["adrian", "Pues sí. Qué bien me conoce el equipo: para mí, y con nata.", "gloria", "habla", "tomafalsa"],
+ ["lola", "Era para el concursante. Es que se ha movido la tarta.", "wide", "", "risas"],
+ ["adrian", "Querrás decir que se ha movido la trampilla de al lado. Aquí no se mueve nadie.", "host", "senala", "risas"],
+ ["conc", "Yo no me muevo. Yo solo vengo a hacer el ridículo con mi mejor sonrisa.", "opp3", "", "risas"],
+ ["lola", "¡Corten! Hay que repetirla. Y comprar otra tarta.", "wide", "", "corten"]
+]},
+{ id: "n_estornudo", titulo: "El estornudo de oro", pasos: [
+ ["adrian", "Vamos con la pregunta final. Cuánto me gusta esta... ¡achís!", "host", "senala", "claqueta:1"],
+ ["pub", "¡Jesús!", "publico", "", "risas"],
+ ["adrian", "Gracias. Vamos con la pregunta final. Cuánto me... ¡achís! ¡Achís!", "host", "lamenta", "tomafalsa"],
+ ["pub", "¡Jesús! ¡Jesús! ¡Y otro Jesús por si acaso!", "publico", "", "risas"],
+ ["adrian", "No sé qué me pasa. Creo que el peluche del micro me ha dado alergia.", "host", "encoge", ""],
+ ["rober", "Es que lo hemos lavado con suavizante de lavanda.", "wide", "", "risas"],
+ ["adrian", "Pues dile a la lavanda que no se acerque a mí. ¡Achís!", "host", "habla", "risas"],
+ ["lola", "¡Corten! Vamos a dejarlo para después del descanso. Y tú, un pañuelo.", "wide", "", "corten"]
+]},
+{ id: "n_nombre", titulo: "Se me ha olvidado mi nombre", pasos: [
+ ["adrian", "Buenas tardes, soy Adrián Vera. Digo Vegas. ¡Adrián Vegas! No, Vega.", "host", "saluda", "claqueta:1"],
+ ["lola", "Es Vega, Adrián. Como la estrella.", "wide", "", "risas"],
+ ["adrian", "Pues claro, la estrella Vega. Mi apellido tiene brillo, y eso confunde.", "host", "encoge", "tomafalsa"],
+ ["adrian", "Buenas tardes, soy Adrián Vega, el que va a guiarles en esta noche de... ¿en esta noche?", "host", "habla", ""],
+ ["lola", "De ¡Ahora caigo! Es el nombre del programa, Adrián.", "wide", "", "risas"],
+ ["adrian", "Ay, madre. Me olvido del nombre del programa. A mí, que me lo sé desde la cuna.", "host", "lamenta", "risas"],
+ ["lola", "¡Corten! Tú descansa un poco y bebe agua.", "wide", "", "corten"]
+]},
+{ id: "n_risa", titulo: "Se ríe y no puede parar", pasos: [
+ ["adrian", "Buenas noches, señoras y señores. Y... pff... bienvenidos a... jajaja.", "host", "saluda", "claqueta:1"],
+ ["lola", "Adrián, concéntrate, que todavía no he dicho nada gracioso.", "wide", "", "risas"],
+ ["adrian", "Es que me he acordado de la tarta de ayer. Perdón. Toma dos.", "host", "lamenta", "claqueta:2"],
+ ["adrian", "Buenas noches... jajaja... ¡Es que la cara de Rober con la nata!", "host", "habla", "tomafalsa"],
+ ["rober", "Que estaba muy rica, y no me dejaste ni un trozo.", "wide", "", "risas"],
+ ["adrian", "Toma cuatro. Buenas noches. ¡Buenas! ¡Buenas! Lo estoy consiguiendo.", "host", "aplaude", "risas"],
+ ["adrian", "Bienvenidos a... jajajaja. No puedo. No puedo, de verdad.", "gloria", "lamenta", ""],
+ ["lola", "¡Corten! Vamos a por la toma nueve. Y tú, sin pensar en la nata.", "wide", "", "corten"]
+]},
+{ id: "n_pelotazo", titulo: "El pelotazo", pasos: [
+ ["adrian", "Pregunta de deportes para el número cinco. ¿Cuántos puntos vale un triple en baloncesto?", "host", "senala", "pelota"],
+ ["adrian", "¿Y esa pelota de playa? ¿Quién ha sacado una pelota de playa en un plató?", "host", "lamenta", "tomafalsa"],
+ ["conc", "Tres puntos. Y la pelota me ha dado en la cabeza, pero estoy bien, gracias.", "opp5", "", "risas"],
+ ["adrian", "Correcto. Rober, ¿no estabas de vigilante de la pelota?", "host", "senala", ""],
+ ["rober", "Es que se me ha escapado por la rendija. Tenía mucho viento.", "wide", "", "risas"],
+ ["adrian", "Pues dile que vuelva a su sitio, que aquí solo se tiran los concursantes.", "host", "habla", "risas"],
+ ["lola", "¡Corten! Y la pelota, castigada sin sillón.", "wide", "", "corten"]
+]},
+{ id: "n_claqueta", titulo: "La claqueta equivocada", pasos: [
+ ["rober", "Escena uno, toma uno. ¡Ahora caigo!", "wide", "", "claqueta:1"],
+ ["adrian", "Un segundo. Rober, ¿no ibas por la toma dos?", "host", "habla", "tomafalsa"],
+ ["rober", "Escena dos, toma uno. ¡Ahora caigo!", "wide", "", "claqueta:2"],
+ ["adrian", "Rober, es la misma escena. Y estamos aún con la toma uno.", "host", "lamenta", ""],
+ ["rober", "Escena cinco, toma nueve. Perdón. Escena cero, toma menos uno.", "wide", "", "risas"],
+ ["adrian", "Lola, le voy a quitar la claqueta antes de que se le acaben los números.", "host", "senala", "risas"],
+ ["lola", "¡Corten! Rober, hoy cuentas hasta tres. Y no más.", "wide", "", "corten"]
+]},
+{ id: "n_teleprompter", titulo: "El teleprompter se vuelve loco", pasos: [
+ ["adrian", "Buenas noches. Hoy en nuestro concurso... mezclamos los huevos con las preguntas.", "host", "saluda", "claqueta:1"],
+ ["adrian", "Un momento. ¿Mezclamos los huevos? ¿Eso es lo que pone aquí?", "host", "lamenta", "tomafalsa"],
+ ["lola", "Es que el teleprompter se ha equivocado de texto. Está leyendo una receta de tortilla.", "wide", "", "risas"],
+ ["adrian", "Pues me pide que bata durante cinco minutos. Y que le añada cebolla al bote.", "host", "habla", "risas"],
+ ["nacho", "Perdón. He pegado el texto en el archivo equivocado. Había mucha prisa.", "wide", "", "risas"],
+ ["adrian", "Ahora tengo hambre. Tengo mucha hambre. Y una pregunta sobre tortilla.", "host", "encoge", "risas"],
+ ["lola", "¡Corten! Que alguien traiga bocadillos y otro guion.", "wide", "", "corten"]
+]},
+{ id: "n_hola", titulo: "El «hola» de once formas", pasos: [
+ ["adrian", "Hola. Hola. ¡Hola! Holaaa. Hola, hola, hola.", "host", "saluda", "claqueta:1"],
+ ["lola", "Adrián, solo hay que decirlo una vez. Con naturalidad.", "wide", "", "risas"],
+ ["adrian", "Es que no me sale. Cuando lo digo normal parece que estoy en una tienda.", "host", "encoge", "tomafalsa"],
+ ["adrian", "Hola, buenas, tenga usted muy buenas tardes, de parte de ¡Ahora caigo!", "host", "habla", ""],
+ ["lola", "Más corto, Adrián. Y menos mayordomo.", "wide", "", "risas"],
+ ["adrian", "Holi. ¡Holi! Ya estoy diciendo cosas que no existen.", "host", "lamenta", "risas"],
+ ["adrian", "¡Hola! Perfecto. Ha sido la toma once. Vengo de lejos.", "gloria", "aplaude", "aplauso"],
+ ["lola", "¡Corten! Y ahora, grabamos la despedida.", "wide", "", "corten"]
+]},
+{ id: "n_repite", titulo: "La pregunta repetida", pasos: [
+ ["adrian", "¿Cuál es el animal más grande del mundo?", "host", "senala", "claqueta:1"],
+ ["lola", "Más serio, Adrián. Como si fuera una pregunta grave.", "wide", "", ""],
+ ["adrian", "¿Cuál... es... el animal... más grande del mundo? Mmm.", "host", "habla", "claqueta:2"],
+ ["lola", "Demasiado misterio. Ahora más animado, que es un concurso.", "wide", "", ""],
+ ["adrian", "¡¿Cuál es el animal más grande del mundo?! ¡Venga ya!", "host", "aplaude", "claqueta:3"],
+ ["conc", "La ballena azul. Y ya la he contestado cinco veces. Estoy mareado.", "opp6", "", "risas"],
+ ["adrian", "Qué buena respuesta. Y qué difícil es repetir una pregunta tan sencilla.", "host", "encoge", "tomafalsa"],
+ ["lola", "¡Corten! Es la toma buena. La sexta.", "wide", "", "corten"]
+]},
+{ id: "n_confeti", titulo: "El confeti antes de tiempo", pasos: [
+ ["adrian", "Y ahora, atención, que va a pasar algo muy emocionante. Tres, dos...", "host", "senala", "confeti"],
+ ["adrian", "¡Un momento! ¡Que todavía no he terminado la cuenta atrás!", "host", "lamenta", "tomafalsa"],
+ ["reg", "Perdón. Me han dicho que lo soltara cuando tú cogieras aire.", "wide", "", "risas"],
+ ["adrian", "Pues he cogido aire para decir que me falta una pregunta, Toni.", "host", "habla", "risas"],
+ ["reg", "¿Y el confeti de después?", "wide", "", ""],
+ ["adrian", "Ese lo dejamos para después. Si es que queda algo de confeti en el estudio.", "host", "encoge", "risas"],
+ ["lola", "¡Corten! Y barred el suelo, por favor, que se resbala.", "wide", "", "corten"]
+]},
+{ id: "n_rayo", titulo: "La tormenta a destiempo", pasos: [
+ ["adrian", "Esta noche vamos a hablar del tiempo que hace en cada región de nuestro país.", "host", "saluda", "claqueta:1"],
+ ["adrian", "En el norte, probablemente llueva, y mucho. ¡Ay!", "host", "lamenta", "rayo"],
+ ["rober", "Perdón, Adrián. Ese rayo era para la pregunta del final.", "wide", "", "tomafalsa"],
+ ["adrian", "Pues me has dejado el pelo de punta. Mírame. Parezco un erizo.", "host", "habla", "risas"],
+ ["lola", "Estás guapísimo, no te preocupes. Es un look muy poético.", "wide", "", "risas"],
+ ["adrian", "Poético sí, pero desde ahora hablo del tiempo con paraguas. Y con casco.", "host", "encoge", "risas"],
+ ["lola", "¡Corten! Rober, solo un rayo. Con permiso del presentador.", "wide", "", "corten"]
+]},
+{ id: "n_apuntes", titulo: "Los apuntes en la mano", pasos: [
+ ["adrian", "Pregunta fácil: ¿cuánto es ocho por siete? Voy a consultarlo con mis apuntes... digo, con mi memoria.", "host", "senala", "claqueta:1"],
+ ["lola", "Adrián, tienes una chuleta pintada en la mano. Se te ve desde aquí.", "wide", "", "tomafalsa"],
+ ["adrian", "No es una chuleta. Es un tatuaje de usar y tirar. Dice cincuenta y seis.", "host", "encoge", "risas"],
+ ["conc", "Yo lo hubiera hecho igual, para ser honestos. Cincuenta y seis.", "opp7", "", "risas"],
+ ["adrian", "Y la de la otra mano es la pregunta siguiente. Pero se me ha emborronado con el sudor.", "host", "lamenta", "risas"],
+ ["adrian", "Pone... ¿cuántas patas tiene una araña? O un tres. O una cebra.", "host", "habla", "risas"],
+ ["lola", "¡Corten! Hoy te vas a casa con las manos limpias y las preguntas aprendidas.", "wide", "", "corten"]
+]},
+{ id: "n_dronaereo", titulo: "El dron de las tomas aéreas", pasos: [
+ ["adrian", "Buenas noches. Hoy contamos con la ayuda de un nuevo equipo de cámaras aéreas.", "host", "saluda", "claqueta:1"],
+ ["adrian", "Mirad, mirad cómo se mueven. Parece que bailan. Toni, ¿eso es normal?", "host", "habla", "dron"],
+ ["reg", "No, Adrián. Se supone que solo grababan. Hoy están felices.", "wide", "", "tomafalsa"],
+ ["adrian", "Hombre, es normal. Los han contratado con cuarenta días de vacaciones.", "host", "encoge", "risas"],
+ ["rober", "Es que he pulsado el botón del modo baile. Perdón, perdón.", "wide", "", "risas"],
+ ["adrian", "Pues dile a tu dron que baile mejor, que ha pisado dos veces a mi sombra.", "host", "senala", "risas"],
+ ["lola", "¡Corten! Y la próxima vez, grabamos con los cables en su sitio.", "wide", "", "corten"]
+]}
+];
+const FUERA = [
+{ id: "n_nuriamaq", titulo: "Nuria y el maquillaje de hoy", lugar: "camerino", pasos: [
+ ["nuria", "Siéntate aquí, Adrián. Hoy te voy a poner un poco de base y mucho cariño.", "lugar", "", ""],
+ ["adrian", "Qué bien. Pero no me pongas mucho brillo en la frente, que luego parezco una bola de discoteca.", "cerca", "habla", ""],
+ ["nuria", "Cada día te digo lo mismo: si dejas de sudar, no necesitas polvos.", "cerca", "", "risas"],
+ ["adrian", "Es que el plató es un horno. Y cuando se abre una trampilla me da un calambre.", "cerca", "encoge", ""],
+ ["nuria", "Cierra los ojos. Te voy a poner una cosa en las pestañas.", "detalle", "", ""],
+ ["adrian", "¿Rímel? Nuria, que soy un presentador serio.", "cerca", "lamenta", "risas"],
+ ["nuria", "Es una máscara de pestañas transparente. Pero a ti te sienta mejor el color azul, no te lo voy a negar.", "cerca", "", "risas"],
+ ["adrian", "Gracias, Nuria. Eres la mejor, y sabes guardar un secreto. A ver, ¿y si me pones un lunar?", "lugar", "aplaude", "risas"]
+]},
+{ id: "n_nervios", titulo: "El concursante nervioso", lugar: "camerino", pasos: [
+ ["conc", "Adrián, estoy muy nervioso. Se me ha olvidado hasta cómo me llamo.", "lugar", "", ""],
+ ["adrian", "Tranquilo, respira hondo. Cuenta hasta tres con los ojos cerrados.", "cerca", "habla", ""],
+ ["conc", "Uno, dos, tres... Sigo igual. Y me tiemblan las piernas.", "cerca", "", "risas"],
+ ["adrian", "Eso es bueno. Significa que quieres ganar. Y que las piernas están vivas.", "cerca", "encoge", "risas"],
+ ["nuria", "Toma, un vasito de agua y un poquito de azúcar. Es el truco de siempre.", "cerca", "", ""],
+ ["conc", "Gracias, Nuria. Ahora tengo dulce el miedo. ¿Y si me caigo en la primera pregunta?", "cerca", "", "ooh"],
+ ["adrian", "Pues te caes con elegancia. Y si no, te aplaudimos igual. ¿Trato hecho?", "lugar", "senala", ""],
+ ["conc", "Trato hecho. Pero la próxima vez me traigo a mi madre de reserva.", "cerca", "", "risas"]
+]},
+{ id: "n_cafe", titulo: "El café de media tarde", lugar: "cafeteria", pasos: [
+ ["marisa", "Buenas tardes. ¿Lo de siempre, Adrián? ¿Un cortado con una nube de espuma?", "lugar", "", ""],
+ ["adrian", "Sí, Marisa. Y una galleta, porque a las seis me entra el hambre del concursante.", "cerca", "habla", ""],
+ ["reg", "Yo me tomo un café descafeinado, pero con azúcar. Para la buena conciencia.", "cerca", "", "risas"],
+ ["marisa", "Aquí tenéis. Y cuidado, que el cortado hoy sale con ganas de vivir.", "cerca", "", ""],
+ ["adrian", "Si pongo la taza en la mesa y se mueve, ¿qué hago?", "detalle", "encoge", ""],
+ ["marisa", "Entonces la taza es un concursante. Y la mesa, una trampilla.", "cerca", "", "risas"],
+ ["reg", "Qué buenos están los cafés cuando no hay directo. Mira, Adrián, que se te cae la galleta.", "cerca", "", "ooh"],
+ ["adrian", "¡Mi galleta! Se ha caído a la trampilla de la cafetería. Con lo que costaba una galleta.", "lugar", "lamenta", "risas"]
+]},
+{ id: "n_maquina", titulo: "La máquina que se traga monedas", lugar: "cafeteria", pasos: [
+ ["adrian", "Rober, ayúdame. Me he gastado una moneda y la máquina no me da la botella.", "lugar", "lamenta", ""],
+ ["rober", "Dale un golpecito en el lado izquierdo. Con cariño, como a un concursante.", "cerca", "", ""],
+ ["adrian", "Ya está. Y no sale nada. Esta máquina es peor que la trampilla del número tres.", "cerca", "habla", "monedas"],
+ ["marisa", "No le des más golpes, que se pone nerviosa. Y cuando se pone nerviosa suelta cuatro refrescos de golpe.", "cerca", "", "risas"],
+ ["adrian", "¿Y si le canto algo? A lo mejor las máquinas tienen sensibilidad.", "cerca", "senala", ""],
+ ["rober", "Prueba con una canción de Navidad, que son las que más entienden.", "cerca", "", "risas"],
+ ["adrian", "Ay, la moneda cae, cae, cae... y la máquina se la traga otra vez. ¡Qué ruina!", "detalle", "lamenta", "boing"],
+ ["marisa", "Tranquilo. Yo te regalo una botella y tú me firmas un autógrafo en el delantal.", "lugar", "", "aplauso"]
+]},
+{ id: "n_pasos", titulo: "Los pasos antes de salir", lugar: "pasillo", pasos: [
+ ["adrian", "Faltan cinco minutos para salir. Y sigo dando vueltas por el pasillo como un león.", "lugar", "habla", ""],
+ ["lola", "Ya lo sé. Llevas treinta y siete vueltas. Mira cómo tengo el suelo.", "cerca", "", "risas"],
+ ["adrian", "Es que me pongo nervioso. Y eso que llevo años haciendo el mismo programa.", "cerca", "encoge", ""],
+ ["segu", "Perdone, señor Vega. Que está usted pisando mi línea de seguridad.", "cerca", "", "risas"],
+ ["adrian", "Segu, tú sí que sabes de nervios. ¿Cómo haces para no moverte en cinco horas?", "cerca", "senala", ""],
+ ["segu", "Pienso en un bocadillo de tortilla. Siempre funciona. Me lo recomendó mi abuela.", "cerca", "", "risas"],
+ ["lola", "Un minuto. Adrián, chaqueta, sonrisa, y la lucecita roja encendida.", "lugar", "", "sirena"],
+ ["adrian", "Allá voy. Ahora pienso en la tortilla... Gracias, Segu. Funciona.", "cerca", "aplaude", "risas"]
+]},
+{ id: "n_guionroto", titulo: "El guion desordenado", lugar: "pasillo", pasos: [
+ ["lola", "Nacho, ¿dónde están las hojas del guion? Faltan las páginas tres, cuatro y seis.", "lugar", "", ""],
+ ["nacho", "Las tenía aquí. Bueno, las tenía hace un momento. Es que he estornudado.", "cerca", "", "risas"],
+ ["adrian", "O sea, que ahora el guion está volando por todo el plató.", "cerca", "habla", ""],
+ ["nacho", "Y la hoja cuatro creo que se ha ido por la ventilación. La cinco está en el café de Toni.", "cerca", "", "risas"],
+ ["reg", "No me mires a mí. Mi café nunca ha tenido hojas. Bueno, la del té de ayer.", "cerca", "", "risas"],
+ ["adrian", "Pues improvisamos. Hoy el programa empieza por el final y acaba por el principio.", "cerca", "senala", ""],
+ ["lola", "Eso es un caos total. Pero me gusta. Nacho, ve a por una copia.", "lugar", "", ""],
+ ["nacho", "Es que solo había una copia. Y una cebra de peluche encima. Es una larga historia.", "cerca", "", "risas"]
+]},
+{ id: "n_estrellas", titulo: "La pausa bajo las estrellas", lugar: "azotea", pasos: [
+ ["adrian", "Desde la azotea se ve toda la ciudad. Y alguna estrella, si no hay muchas farolas.", "lugar", "habla", ""],
+ ["lola", "A mí me gusta subir aquí en los descansos. Es el único sitio donde nadie me pide nada.", "cerca", "", ""],
+ ["nacho", "Mira, una luz que se mueve. Parece un satélite. O una luciérnaga con prisa.", "cerca", "senala", "ovni"],
+ ["carmen", "Es un dron de la competencia. Siempre llegan antes que nosotros.", "cerca", "", "risas"],
+ ["adrian", "Pues saludadles, que seguro que nos están grabando. ¡Hola, competencia!", "cerca", "saluda", ""],
+ ["lola", "Aprovecho para pedir un deseo. Que mañana no falle ninguna trampilla.", "cerca", "", ""],
+ ["carmen", "Yo pido que me suban el sueldo. Pero ya es más difícil que lo de las trampillas.", "cerca", "", "risas"],
+ ["adrian", "Pues yo pido que cada día que hagamos este programa lo hagamos igual de a gusto.", "lugar", "aplaude", "luces"]
+]},
+{ id: "n_ensayo", titulo: "El ensayo del discurso", lugar: "azotea", pasos: [
+ ["adrian", "Querida ciudad, queridos espectadores, queridos tejados de la capital...", "lugar", "saluda", ""],
+ ["nacho", "Adrián, que estás hablando a las antenas. Ellas no te responden.", "cerca", "", "risas"],
+ ["adrian", "Es que me gusta ensayar con público. Las antenas son muy atentas y no tosen.", "cerca", "habla", ""],
+ ["carmen", "Y las palomas, ¿qué tal? ¿Tienen alguna crítica constructiva?", "cerca", "", "risas"],
+ ["adrian", "Una me ha dicho que prefiere el discurso corto. Y que le caigo mejor que su vecino.", "cerca", "encoge", "risas"],
+ ["nacho", "Te propongo tres frases: gracias, buenas noches y hasta mañana.", "cerca", "", ""],
+ ["adrian", "Qué bien resumido. Gracias, buenas noches y hasta mañana. Lo voy a clavar.", "cerca", "senala", ""],
+ ["carmen", "Con eso y una sonrisa, te vas a casa con un aplauso asegurado.", "lugar", "", "aplauso"]
+]},
+{ id: "n_monedagrande", titulo: "La moneda gigante", lugar: "almacen", pasos: [
+ ["rober", "Toni, ven a ver lo que he encontrado detrás de las cajas. ¡Una moneda gigante!", "lugar", "senala", "moneda"],
+ ["reg", "Es la moneda del final de temporada. La usamos cuando alguien gana el bote.", "cerca", "", ""],
+ ["rober", "Pesa más que mi cuñado. Y mi cuñado come bien.", "cerca", "", "risas"],
+ ["adrian", "Si me dais un minuto, la llevo a casa para ponerla de mesa. Queda elegante.", "cerca", "habla", ""],
+ ["reg", "No puedes. Es de utilería, y además está prestada por un concursante.", "cerca", "", "risas"],
+ ["rober", "Mira lo que dice por detrás: «propiedad de Rober, no tocar». Yo mismo la firmé.", "detalle", "", "risas"],
+ ["adrian", "Qué descaro. Pues yo la llevo igual, y si me caigo, me lleva la moneda a mí.", "cerca", "encoge", "boing"],
+ ["reg", "Venga, que hay que devolverla antes del próximo programa. Y sin dejar abolladuras.", "lugar", "", ""]
+]},
+{ id: "n_utileria", titulo: "Se acabó la utilería", lugar: "almacen", pasos: [
+ ["reg", "Rober, necesitamos un bote de cartón para el final. ¿Dónde lo dejaste?", "lugar", "", ""],
+ ["rober", "Debajo del cartel de LLORAD. O encima del cartel de APLAUSOS. No me acuerdo.", "cerca", "", "risas"],
+ ["adrian", "Yo he visto una caja con un trofeo, un paraguas y una cabeza de cartón.", "cerca", "senala", ""],
+ ["reg", "¿Una cabeza de cartón? ¿De quién?", "cerca", "", "ooh"],
+ ["adrian", "Pues se parece mucho a mí. Pero con una sonrisa más grande.", "detalle", "habla", "humo"],
+ ["rober", "Ah, es mi cabeza de ensayo. Cuando me pides algo, la pongo en la mesa y me voy.", "cerca", "", "risas"],
+ ["reg", "Con razón no te veo trabajar nunca. Sácame el bote del fondo, ahora mismo.", "cerca", "senala", ""],
+ ["rober", "Aquí está, Toni. Lo tenía detrás de la humareda de la máquina de humo. Qué tos.", "lugar", "", "tos"]
+]},
+{ id: "n_coche", titulo: "El coche que no arranca", lugar: "parking", pasos: [
+ ["adrian", "Segu, ¿tienes un cable de batería? Mi coche no arranca otra vez.", "lugar", "lamenta", ""],
+ ["segu", "Lo tengo, señor Vega. Pero antes tengo que preguntarle: ¿ha probado a cerrarlo y abrirlo?", "cerca", "", "risas"],
+ ["adrian", "Eso es para los ordenadores. Esto es un coche, tiene sentimientos.", "cerca", "habla", ""],
+ ["carmen", "Adrián, ¿y si se ha quedado sin gasolina? Tú siempre dices que llegas con la reserva.", "cerca", "", ""],
+ ["adrian", "La reserva era para la ida. Para la vuelta confiaba en la buena suerte.", "cerca", "encoge", "humo"],
+ ["segu", "Aquí tiene el cable. Pero si lo conecto mal, nos vamos todos de vacaciones con los pelos de punta.", "cerca", "", "risas"],
+ ["adrian", "Prefiero un taxi, de verdad. Aunque cuente a los taxistas todo el programa de hoy.", "cerca", "senala", "bocina"],
+ ["carmen", "Yo te acerco, que voy hacia tu barrio. Pero prometo no dar ninguna pista del programa de mañana.", "lugar", "", "aplauso"]
+]},
+{ id: "n_aparcacoches", titulo: "El aparcacoches de la cadena", lugar: "parking", pasos: [
+ ["segu", "Buenas noches, señor Vega. Aquí tiene su plaza. La número uno, como siempre.", "lugar", "", ""],
+ ["adrian", "Segu, creo que alguien ha puesto una furgoneta en mi plaza. Una furgoneta con alas.", "cerca", "lamenta", "sirena"],
+ ["segu", "Es la furgoneta del catering. La tiene aparcada la señora Marisa por un asunto de croquetas.", "cerca", "", "risas"],
+ ["carmen", "Yo me quejaría a producción. Pero producción soy yo. Así que me callo.", "cerca", "", "risas"],
+ ["adrian", "No pasa nada. Aparco en la plaza de Rober. Que ya lleva una semana sin venir.", "cerca", "habla", ""],
+ ["segu", "Rober está en el almacén, señor. Duerme en una caja desde el martes.", "cerca", "", "risas"],
+ ["adrian", "Qué buena vida. Hoy me quedo con la furgoneta y que las croquetas me lleven a casa.", "cerca", "encoge", "risas"],
+ ["segu", "Buenas noches, señor Vega. Y recuerde: aquí nadie se cae. Solo se baja con estilo.", "lugar", "", "aplauso"]
+]}
+];
+const MEJOR = [
+{ id: "n_m_bote", titulo: "El bote más grande jamás soñado", pasos: [
+ ["locu", "Recreación inventada de un gran momento: la noche del bote más soñado. Ningún suceso fue real.", "wide", "", "rotulo:EL_BOTE_SOÑADO"],
+ ["adrian", "Queda un hueco y dos preguntas. El bote está en un millón. Concursante, ¿cómo estás?", "host", "habla", "redoble"],
+ ["conc", "Con ganas de comer chocolate y de llamar a mi madre. En ese orden.", "opp1", "", "risas"],
+ ["adrian", "Primera pregunta: ¿cuántas patas tiene una araña? Tiempo.", "host", "senala", ""],
+ ["conc", "Ocho, Adrián. Siempre han sido ocho.", "opp1", "", "ooh"],
+ ["adrian", "¡Correcto! La última pregunta es para el millón: ¿cuál es el océano más grande de la Tierra?", "gloria", "senala", "redoble"],
+ ["conc", "El Pacífico. Pacífico, y ahora no me lo preguntes dos veces.", "opp1", "", ""],
+ ["adrian", "¡Correcto! ¡Es el mayor bote de la historia del programa!", "grua", "aplaude", "monedas"],
+ ["locu", "Y así fue el bote más grande jamás soñado. Un recuerdo inventado, con el aplauso verdadero del público.", "wide", "", "confeti"]
+]},
+{ id: "n_m_lenta", titulo: "La caída más lenta del mundo", pasos: [
+ ["locu", "Recreación inventada: la caída que duró tres minutos. En cámara lenta, y con ayuda de la imaginación.", "wide", "", "lenta"],
+ ["adrian", "Pregunta para el cinco: ¿cuántos días tiene un año bisiesto?", "host", "senala", ""],
+ ["conc", "Trescientos sesenta y cuatro. ¡Digo cinco! ¡Seis! ¡No, siete! Ay, ¡cuarenta!", "opp5", "", "risas"],
+ ["adrian", "Qué lástima. Fallo. Trampilla cinco, adiós.", "hole5", "lamenta", "cae:5"],
+ ["locu", "Observen la caída: el brazo derecho, el izquierdo, una pierna que saluda, y el sombrero con ganas de quedarse.", "suelo", "", ""],
+ ["locu", "Tres minutos más tarde, el concursante todavía agitaba una mano en señal de despedida.", "grua", "", "risas"],
+ ["adrian", "Qué manera de caer. A esa trampilla hay que darle un abrazo y una medalla.", "host", "aplaude", "aplauso"],
+ ["locu", "Una repetición inventada para el recuerdo. Y una trampilla muy educada.", "wide", "", ""]
+]},
+{ id: "n_m_silencio", titulo: "El silencio más largo de la historia", pasos: [
+ ["locu", "Recreación inventada: veintinueve segundos de silencio, en los que nadie dijo ni mu.", "wide", "", "bn+rotulo:29_SEGUNDOS"],
+ ["adrian", "Pregunta de diez mil: ¿cuál es el único mamífero capaz de volar?", "host", "senala", "redoble"],
+ ["conc", "Mmm... Pues... Déjame pensar... Es que lo tengo en la punta de la lengua.", "opp4", "", "silencio"],
+ ["pub", "Shhh... ¡Que piensa! Shhh...", "publico", "", "grillos"],
+ ["adrian", "Quedan diez segundos. ¿Algún pajarito te ayuda?", "host", "habla", ""],
+ ["conc", "Es el murciélago. Lo tenía delante... y me lo comía mi propio pelo.", "opp4", "", "ooh"],
+ ["adrian", "¡Correcto! ¡Y con el tiempo justo! Qué manera de hacernos sufrir.", "gloria", "aplaude", "color"],
+ ["locu", "Veintinueve segundos que parecieron un año. Recuerdo inventado, con grillos de verdad.", "wide", "", "aplauso"]
+]},
+{ id: "n_m_respuesta", titulo: "La respuesta que nadie esperaba", pasos: [
+ ["locu", "Recreación inventada: el día en que un concursante dio la respuesta más original de la historia.", "wide", "", "rotulo:RESPUESTA_INESPERADA"],
+ ["adrian", "Pregunta para el siete: ¿qué animal da la lana?", "host", "senala", ""],
+ ["conc", "El jersey, Adrián. El jersey da mucha lana.", "opp7", "", "risas"],
+ ["adrian", "Hmm. El jersey no da lana, la lleva. El animal es la oveja.", "host", "habla", ""],
+ ["conc", "Ya, pero mi jersey es más cómodo que una oveja. Y no me da miedo.", "opp7", "", "risas"],
+ ["adrian", "No puedo dártela por buena, pero te la guardo como la mejor respuesta del año.", "gloria", "encoge", "aplauso"],
+ ["locu", "Una respuesta inventada para la historia. Y un jersey que se hizo famoso.", "wide", "", "risas"]
+]},
+{ id: "n_m_duelo", titulo: "El duelo que acabó en tablas", pasos: [
+ ["locu", "Recreación inventada: el duelo más igualado, que terminó con dos ganadores y nadie en la trampilla.", "wide", "", "rotulo:EL_DUELO_DE_INFARTO"],
+ ["adrian", "Duelo final entre el seis y la tres. El que se equivoque, cae. Primera categoría: Geografía.", "host", "senala", "redoble"],
+ ["conc", "Madrid, Madrid, Madrid. Sé que es esa. Madrid.", "opp6", "", "risas"],
+ ["adrian", "Todavía no he dicho la pregunta. Pero qué buena intuición. ¿La capital de España?", "host", "habla", "ooh"],
+ ["conc", "Eso mismo he dicho yo, pero con más clase. Madrid.", "opp3", "", "risas"],
+ ["adrian", "Los dos tienen razón. Y los dos están a diez metros de la trampilla.", "host", "lamenta", ""],
+ ["adrian", "Vamos a repetir. Y vuelve a empatar. Y otra vez. ¡Esto es increíble!", "gloria", "aplaude", "ooh"],
+ ["locu", "Empate técnico, empate emocional y empate en los nervios del presentador. Recuerdo inventado.", "wide", "", "aplauso"]
+]},
+{ id: "n_m_sabelotodo", titulo: "El que lo sabía todo menos su nombre", pasos: [
+ ["locu", "Recreación inventada: el concursante más culto, que no recordaba cómo se llamaba.", "wide", "", "rotulo:EL_SABELOTODO"],
+ ["adrian", "Cuéntanos, ¿cómo te llamas?", "host", "habla", ""],
+ ["vet", "Pues... esperaba que no me lo preguntaran. Es el único dato que tengo en blanco.", "opp8", "", "risas"],
+ ["adrian", "Qué raro. Pero vamos con las preguntas. ¿Quién escribió el Quijote?", "host", "senala", ""],
+ ["vet", "Cervantes. Y el Quijote tiene dos partes, y salen molinos. Y yo me llamo Quijote, ahora que lo pienso.", "opp8", "", "risas"],
+ ["adrian", "Seguimos. ¿Cuántos huesos tiene el cuerpo humano?", "host", "senala", ""],
+ ["vet", "Doscientos seis. Ahora, si tienes alguna duda sobre mi nombre, mira el carnet que lleva mi madre.", "opp8", "", "risas"],
+ ["locu", "Un concursante que lo sabía todo, salvo su nombre. Recuerdo inventado, y con carnet.", "wide", "", "aplauso"]
+]},
+{ id: "n_m_pleno", titulo: "El pleno de las diez trampillas", pasos: [
+ ["locu", "Recreación inventada: la noche en que los diez concursantes acertaron las diez preguntas.", "wide", "", "rotulo:PLENO_DE_ACIERTOS"],
+ ["adrian", "Esto no ha pasado nunca. Ni diez aciertos, ni nada. Vamos con la siguiente.", "host", "habla", ""],
+ ["conc", "Aquí seguimos. Y no te voy a dar el gusto de caerme todavía.", "opp2", "", "risas"],
+ ["adrian", "Nueva pregunta para todos: ¿de qué color es el cielo?", "host", "senala", "ooh"],
+ ["pub", "¡Azul! ¡Azul! ¡Azul!", "publico", "", "aplauso"],
+ ["adrian", "Veo que el público también se sabe esta. Concursantes, ¡diez de diez!", "grua", "aplaude", "confeti"],
+ ["adrian", "No tengo bote para tantos. Voy a tener que repartirlo en croquetas.", "host", "encoge", "risas"],
+ ["locu", "Diez trampillas cerradas, diez sonrisas y un presentador sin dinero. Recuerdo inventado.", "wide", "", "aplauso"]
+]},
+{ id: "n_m_luz", titulo: "Cuando se fue la luz y siguió el programa", pasos: [
+ ["locu", "Recreación inventada: un apagón total en el plató. Y el programa siguió con linternas.", "wide", "", "apagon"],
+ ["adrian", "No se asusten, que hemos vivido cosas peores. Pregunta para el nueve, con linterna.", "host", "habla", "luces"],
+ ["conc", "No veo nada, Adrián. Pero tengo muy buen oído y un poco de ilusión.", "opp9", "", "risas"],
+ ["adrian", "Pregunta: ¿cuántos días tiene una semana?", "host", "senala", ""],
+ ["conc", "Siete. Y por si acaso, ocho si contamos el que se ha ido la luz.", "opp9", "", "risas"],
+ ["pub", "¡Viva la luz! ¡Viva la luz!", "publico", "", "aplauso"],
+ ["adrian", "Qué suerte tener a este público. Si no, esto sería un programa de radio, y con peor voz.", "gloria", "aplaude", "luces"],
+ ["locu", "El programa que iluminó la noche con linternas. Recuerdo inventado, con mucha electricidad.", "wide", "", "aplauso"]
+]},
+{ id: "n_m_abrazo", titulo: "El abrazo del veterano", pasos: [
+ ["locu", "Recreación inventada: el último programa de un concursante veterano, que se despidió con un abrazo.", "wide", "", "sepia+rotulo:EL_ABRAZO"],
+ ["vet", "Adrián, llevo treinta programas con vosotros. Y esta noche tengo que decir adiós.", "opp3", "", "ooh"],
+ ["adrian", "No me hagas llorar, que tengo el maquillaje recién puesto. Cuéntame.", "host", "habla", ""],
+ ["vet", "Mi sobrino dice que ya soy muy mayor para esto. Pero me ha encantado cada trampilla.", "opp3", "", ""],
+ ["adrian", "Pues ven aquí, que te debo un abrazo. Y un bote de los grandes.", "gloria", "gracias", "nieve"],
+ ["pub", "¡Bravo! ¡Bravo! ¡Qué grande!", "publico", "", "aplauso"],
+ ["vet", "Gracias, Adrián. Y gracias a todos por este rincón tan bonito.", "opp3", "", "ooh"],
+ ["locu", "Un abrazo que no sucedió, pero que merece la pena imaginar. Recuerdo inventado.", "wide", "", "color+aplausos"]
+]},
+{ id: "n_m_trofeo", titulo: "La noche del trofeo", pasos: [
+ ["locu", "Recreación inventada: la entrega del trofeo al mejor concursante de la temporada.", "wide", "", "rotulo:EL_TROFEO"],
+ ["adrian", "Y el premio al mejor concursante de la temporada es... para el número cuatro.", "host", "senala", "redoble"],
+ ["conc", "¿Para mí? ¿Seguro? Seguro que se han equivocado de sobre.", "opp4", "", "ooh"],
+ ["adrian", "Qué sobre ni qué sobre. Aquí tienes tu trofeo, y un abrazo de oso.", "gloria", "aplaude", "trofeo"],
+ ["conc", "Gracias, gracias. Se lo dedico a mi madre, a mi vecino y a la trampilla número cuatro.", "opp4", "", "risas"],
+ ["pub", "¡Que hable! ¡Que hable!", "publico", "", "aplauso"],
+ ["conc", "Nada, que lo he dicho todo. Y ahora a casa, que se enfría la cena.", "opp4", "", "risas"],
+ ["locu", "El trofeo más brillante de la temporada. Recuerdo inventado, con brillo propio.", "wide", "", "confeti"]
+]},
+{ id: "n_m_monologo", titulo: "El mejor monólogo de Adrián", pasos: [
+ ["locu", "Recreación inventada: el discurso más largo de Adrián, que nadie recuerda porque no existió.", "wide", "", "rotulo:EL_MONÓLOGO"],
+ ["adrian", "Señoras y señores, cuando era pequeño quería ser astronauta. Pero me mareaba en los columpios.", "gloria", "habla", ""],
+ ["adrian", "Luego quise ser cocinero. Pero se me pegaba hasta el agua en la sartén.", "gloria", "encoge", "risas"],
+ ["adrian", "Y entonces descubrí que mi vocación era hacer preguntas. Y ver caer gente. Con cariño.", "gloria", "senala", "risas"],
+ ["pub", "¡Bravo! ¡Bravo! ¡Que siga! ¡Que siga!", "publico", "", "aplauso"],
+ ["adrian", "Gracias, gracias. Pero no sigo, que me han dicho que se acaba el tiempo y empieza la publicidad.", "gloria", "gracias", "risas"],
+ ["locu", "Un monólogo inventado con un público muy real. Y con astronautas mareados.", "wide", "", "aplauso"]
+]},
+{ id: "n_m_debut", titulo: "El debut de Adrián", pasos: [
+ ["locu", "Recreación inventada: el primer programa que nunca existió. Imágenes en blanco y negro, por si acaso.", "wide", "", "bn+rebobina"],
+ ["adrian", "Buenas noches, soy Adrián Vega y... ¿esto ya está grabando? ¿Sí? Ay, madre.", "host", "saluda", "claqueta:1"],
+ ["adrian", "Bienvenidos a ¡Ahora caigo! Hoy, por primera vez, vamos a ver cómo se cae gente por una trampilla.", "host", "habla", ""],
+ ["lola", "Más despacio, Adrián. Respira. Que se te ve muy emocionado.", "wide", "", "risas"],
+ ["adrian", "Es que es mi primer día. Y mi primera trampilla. Y mi primera corbata.", "gloria", "encoge", "risas"],
+ ["conc", "Qué corbata más bonita, Adrián. Le queda como a un camarero muy elegante.", "opp2", "", "risas"],
+ ["adrian", "Gracias. Esto va a ir muy bien. Salvo que se me caiga el micro. Ay, se me ha caído.", "host", "lamenta", "boing"],
+ ["locu", "Un debut que nunca tuvo lugar. Recuerdo inventado, y muy bien peinado.", "wide", "", "color+aplausos"]
+]},
+{ id: "n_m_risas", titulo: "La final de las risas", pasos: [
+ ["locu", "Recreación inventada: la final en la que todo el plató se rio durante diez minutos seguidos.", "wide", "", "rotulo:LA_FINAL_DE_LAS_RISAS"],
+ ["adrian", "Llegamos a la pregunta final. Atención, concursante: ¿cuál es el animal que hace «muuu»?", "host", "senala", "redoble"],
+ ["conc", "La vaca, claro. Pero me he reído tanto que casi digo «mu» yo también.", "opp1", "", "risas"],
+ ["adrian", "Correcto. Y ahora, la siguiente: ¿qué hace la gallina? Cuidado, no respondas poniendo un huevo.", "host", "habla", "risas"],
+ ["conc", "¡Ay! ¡Cacarea! Cacarea y pone. Me estoy riendo mucho, Adrián.", "opp1", "", "risas"],
+ ["pub", "¡Ja, ja, ja! ¡Ja, ja, ja!", "publico", "", "risas"],
+ ["adrian", "No puedo seguir. Se me corre el maquillaje. Esto es un desastre. ¡Qué bien!", "gloria", "aplaude", "globos"],
+ ["locu", "La final más divertida de la historia. Recuerdo inventado, y con la risa de todos.", "wide", "", "aplauso"]
+]},
+{ id: "n_m_despedida", titulo: "La despedida de la temporada", pasos: [
+ ["locu", "Recreación inventada: el último programa de la temporada, con nieve de mentira y luces de verdad.", "wide", "", "rotulo:HASTA_LA_VUELTA"],
+ ["adrian", "Esta noche cerramos la temporada. Y queremos daros las gracias por acompañarnos.", "gloria", "gracias", "nieve"],
+ ["lola", "Gracias por las risas, por las trampillas y por los nervios. Volvemos pronto.", "wide", "", "ooh"],
+ ["reg", "Y gracias por no tirarnos nada al regidor, que ya lo hacemos nosotros solos.", "wide", "", "risas"],
+ ["pub", "¡Hasta pronto! ¡Hasta pronto, Adrián!", "publico", "", "aplauso"],
+ ["adrian", "Un último consejo: cuando os caigáis, hacedlo con una sonrisa y un buen chiste.", "gloria", "senala", "luces"],
+ ["adrian", "Gracias. Buenas noches. Y hasta que volvamos a decir: ¡ahora caigo!", "orbita", "saluda", "rueda"],
+ ["locu", "Fin de la temporada. Recuerdo inventado, y con mucha más nieve que de costumbre.", "wide", "", "aplauso"]
+]}
+];
