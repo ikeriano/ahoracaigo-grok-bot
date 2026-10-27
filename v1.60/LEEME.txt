@@ -1,0 +1,4 @@
+v1.60 (versionCode 67): arregla «🏆 Mejores momentos», que solo enseñaba el plató.
+Causa: la lista de Mejores momentos llamaba al generador de escenas (AP/xP), que solo existe para cámara oculta, tomas falsas y fuera de cámaras; para «mejor» lanzaba TypeError ("reading 'sit'") y el menú quedaba vacío.
+Arreglo: tools/patch_app.py (puntos 5 y 6). Prueba: tools/t_mejor.mjs (listas + una escena reproducida con cámara, personajes, subtítulos y voz).
+Además: etiqueta «Ahora Caigo 1.60» y pie del menú v1.60 (antes decía v1.57).
